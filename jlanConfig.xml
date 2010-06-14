@@ -1,0 +1,85 @@
+<?xml version="1.0" standalone="no"?>
+<!-- <!DOCTYPE jlanserver SYSTEM "jlanserver.dtd"> -->
+
+<jlanserver>
+    <servers>
+        <SMB/>
+        <noFTP/>
+        <noNFS/>
+    </servers>
+
+    <SMB>
+        <host name="JLANSRV" domain="FLEXILOGIC">
+            <broadcast>192.168.0.255</broadcast>
+            <smbdialects>Core,LanMan,NT</smbdialects>
+            <comment>Alfresco JLAN Server</comment>
+            <!--<netBIOSSMB/>            -->
+            <Win32NetBIOS/>
+		<hostAnnounce interval="5"/>
+            <Win32Announce interval="5"/>
+        </host>
+        <authenticator type="local"/>
+        <sessionDebug flags="Negotiate,Socket,Tree"/>
+        <netbiosDebug/>
+        <announceDebug/>
+    </SMB>
+
+    <debug>
+        <output>
+            <class>org.alfresco.jlan.debug.ConsoleDebug</class>
+            <logFile>jlansrv.log</logFile>
+            <append/>
+        </output>
+    </debug>
+
+    <shares>
+        <diskshare name="JLAN" comment="Test share">
+            <driver>
+                <class>com.arcusys.liferay.smb.DocumentLibraryDiskDriver</class>
+		    <LiferaySharedFolder></LiferaySharedFolder>
+	            <LiferayURL>http://localhost:6666</LiferayURL>
+		    <LiferayUser>test@liferay.com</LiferayUser>
+		    <LiferayUserId>10144</LiferayUserId>
+		    <LiferayPassword>test</LiferayPassword>
+        	 </driver>
+        </diskshare>
+        <diskshare name="TestShare" comment="Test share">
+            <driver>
+                <class>com.arcusys.liferay.smb.DocumentLibraryDiskDriver</class>
+		    <LiferaySharedFolder>TestRootFolder</LiferaySharedFolder>
+	            <LiferayURL>http://localhost:6666</LiferayURL>
+		    <LiferayUser>test@liferay.com</LiferayUser>
+		    <LiferayUserId>10144</LiferayUserId>
+		    <LiferayPassword>test</LiferayPassword>
+        	 </driver>
+        </diskshare>
+<diskshare name="TestRootId" comment="Test share">
+            <driver>
+                <class>com.arcusys.liferay.smb.DocumentLibraryDiskDriver</class>
+		    <LiferaySharedFolder>huinane\</LiferaySharedFolder>
+	          <LiferayURL>http://localhost:6666</LiferayURL>
+       	    <LiferayUser>test@liferay.com</LiferayUser>
+		    <LiferayUserId>10144</LiferayUserId>
+		    <LiferayPassword>test</LiferayPassword>
+        	 </driver>
+        </diskshare>
+    </shares>
+
+    <security>
+       <JCEProvider>cryptix.jce.provider.CryptixCrypto</JCEProvider>
+    <authenticator>
+      <class>org.alfresco.jlan.server.auth.LocalAuthenticator</class>
+      <mode>SHARE</mode>
+      <allowGuest/>
+    </authenticator>
+
+    <users>
+      <user name="admin">
+        <password>123</password>
+        <comment>System administrator</comment>
+        <administrator/>
+      </user>
+
+      </users>
+       </security>
+</jlanserver>
