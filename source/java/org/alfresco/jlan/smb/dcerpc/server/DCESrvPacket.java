@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -41,28 +41,28 @@ public class DCESrvPacket extends SMBTransPacket {
 
 	// DCE/RPC header offsets
 
-	private static final int VERSIONMAJOR = 0;
-	private static final int VERSIONMINOR = 1;
-	private static final int PDUTYPE = 2;
-	private static final int HEADERFLAGS = 3;
-	private static final int PACKEDDATAREP = 4;
-	private static final int FRAGMENTLEN = 8;
-	private static final int AUTHLEN = 10;
-	private static final int CALLID = 12;
-	private static final int DCEDATA = 16;
+	private static final int VERSIONMAJOR 	= 0;
+	private static final int VERSIONMINOR 	= 1;
+	private static final int PDUTYPE 		= 2;
+	private static final int HEADERFLAGS 	= 3;
+	private static final int PACKEDDATAREP 	= 4;
+	private static final int FRAGMENTLEN 	= 8;
+	private static final int AUTHLEN 		= 10;
+	private static final int CALLID 		= 12;
+	private static final int DCEDATA 		= 16;
 
 	// DCE/RPC Request offsets
 
 	private static final int ALLOCATIONHINT = 16;
-	private static final int PRESENTIDENT = 20;
-	private static final int OPERATIONID = 22;
-	private static final int OPERATIONDATA = 24;
+	private static final int PRESENTIDENT 	= 20;
+	private static final int OPERATIONID 	= 22;
+	private static final int OPERATIONDATA 	= 24;
 
 	// Header flags
 
-	public static final int FLG_FIRSTFRAG = 0x01;
-	public static final int FLG_LASTFRAG = 0x02;
-	public static final int FLG_ONLYFRAG = 0x03;
+	public static final int FLG_FIRSTFRAG 	= 0x01;
+	public static final int FLG_LASTFRAG 	= 0x02;
+	public static final int FLG_ONLYFRAG 	= 0x03;
 
 	// DCE/RPC header constants
 
@@ -81,9 +81,7 @@ public class DCESrvPacket extends SMBTransPacket {
 	 */
 	public DCESrvPacket(byte[] buf) {
 		super(buf);
-
 		// m_offset = getParameterOffset();
-	
 	}
 
 	/**
@@ -189,7 +187,7 @@ public class DCESrvPacket extends SMBTransPacket {
 	 * @return boolean
 	 */
 	public final boolean isFirstFragment() {
-		if ((getDCEHeaderFlags() & FLG_FIRSTFRAG) != 0)
+		if ( (getDCEHeaderFlags() & FLG_FIRSTFRAG) != 0)
 			return true;
 		return false;
 	}
@@ -200,7 +198,7 @@ public class DCESrvPacket extends SMBTransPacket {
 	 * @return boolean
 	 */
 	public final boolean isLastFragment() {
-		if ((getDCEHeaderFlags() & FLG_LASTFRAG) != 0)
+		if ( (getDCEHeaderFlags() & FLG_LASTFRAG) != 0)
 			return true;
 		return false;
 	}
@@ -211,7 +209,7 @@ public class DCESrvPacket extends SMBTransPacket {
 	 * @return boolean
 	 */
 	public final boolean isOnlyFragment() {
-		if ((getDCEHeaderFlags() & FLG_ONLYFRAG) == FLG_ONLYFRAG)
+		if ( (getDCEHeaderFlags() & FLG_ONLYFRAG) == FLG_ONLYFRAG)
 			return true;
 		return false;
 	}
@@ -294,16 +292,15 @@ public class DCESrvPacket extends SMBTransPacket {
 	}
 
 	/**
-	 * Initialize the DCE/RPC request. Set the SMB transaction parameter count
-	 * so that the data offset can be calculated.
+	 * Initialize the DCE/RPC request. Set the SMB transaction parameter count so that the data
+	 * offset can be calculated.
 	 * 
 	 * @param handle int
 	 * @param typ byte
 	 * @param flags int
 	 * @param callId int
 	 */
-	public final void initializeDCERequest(
-		int handle, byte typ, int flags, int callId) {
+	public final void initializeDCERequest(int handle, byte typ, int flags, int callId) {
 
 		// Initialize the transaction
 
@@ -357,8 +354,8 @@ public class DCESrvPacket extends SMBTransPacket {
 	}
 
 	/**
-	 * Initialize the DCE/RPC reply. Set the SMB transaction parameter count so
-	 * that the data offset can be calculated.
+	 * Initialize the DCE/RPC reply. Set the SMB transaction parameter count so that the data offset
+	 * can be calculated.
 	 */
 	public final void initializeDCEReply() {
 
@@ -403,16 +400,12 @@ public class DCESrvPacket extends SMBTransPacket {
 
 		// Dump the PDU type
 
-		System.out.println("** DCE/RPC Header - PDU Type = " +
-			DCECommand.getCommandString(getPDUType()));
-		System.out.println("  Version         : " + getMajorVersion() + "." +
-			getMinorVersion());
+		System.out.println("** DCE/RPC Header - PDU Type = " + DCECommand.getCommandString(getPDUType()));
+		System.out.println("  Version         : " + getMajorVersion() + "." + getMinorVersion());
 		System.out.println("  Flags           : 0x" + getDCEHeaderFlags());
-		System.out.println("  Packed Data Rep : 0x" +
-			getPackedDataRepresentation());
+		System.out.println("  Packed Data Rep : 0x" + getPackedDataRepresentation());
 		System.out.println("  Fragment Length : " + getFragmentLength());
 		System.out.println("  Auth Length     : " + getAuthenticationLength());
 		System.out.println("  Call ID         : " + getCallId());
 	}
-
 }

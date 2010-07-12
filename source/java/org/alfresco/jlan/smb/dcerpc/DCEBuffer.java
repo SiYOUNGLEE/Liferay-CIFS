@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -33,126 +33,123 @@ import org.alfresco.jlan.util.DataPacker;
 import org.alfresco.jlan.util.HexDump;
 
 /**
- * DCE Buffer Class <p>Used to pack and unpack DCE/RPC requests/responses.
+ * DCE Buffer Class
  * 
+ * <p>Used to pack and unpack DCE/RPC requests/responses.
+ *
  * @author gkspencer
  */
 public class DCEBuffer {
 
-	// Header value types
+	//	Header value types
+	
+	public static final int HDR_VERMAJOR		= 0;
+	public static final int HDR_VERMINOR		= 1;
+	public static final int HDR_PDUTYPE			= 2;
+	public static final int HDR_FLAGS				= 3;
+	public static final int HDR_DATAREP			= 4;
+	public static final int HDR_FRAGLEN			= 5;
+	public static final int HDR_AUTHLEN			= 6;
+	public static final int HDR_CALLID			= 7;
+	public static final int HDR_ALLOCHINT		= 8;
+	public static final int HDR_OPCODE			= 9;
+	
+	//	Header flags
+	
+	public static final int FLG_FIRSTFRAG		= 0x01;
+	public static final int FLG_LASTFRAG		= 0x02;
+	public static final int FLG_CANCEL			= 0x04;
+	public static final int FLG_IDEMPOTENT	= 0x20;
+	public static final int FLG_BROADCAST		= 0x40;
+	
+	public static final int FLG_ONLYFRAG		= 0x03;
+	
+	//	DCE/RPC header offsets
+	
+	public static final int VERSIONMAJOR		= 0;
+	public static final int VERSIONMINOR		= 1;
+	public static final int PDUTYPE					= 2;
+	public static final int HEADERFLAGS			= 3;
+	public static final int PACKEDDATAREP		= 4;
+	public static final int FRAGMENTLEN			= 8;
+	public static final int AUTHLEN					= 10;
+	public static final int CALLID					= 12;
+	public static final int DCEDATA					= 16;
+	
+	//	DCE/RPC Request offsets
+	
+	public static final int ALLOCATIONHINT	= 16;
+	public static final int PRESENTIDENT		= 20;
+	public static final int OPERATIONID			= 22;
+	public static final int OPERATIONDATA		= 24;
+	
+	//	DCE/RPC header constants
+	
+	private static final byte VAL_VERSIONMAJOR	= 5;
+	private static final byte VAL_VERSIONMINOR	= 0;
+	private static final int  VAL_PACKEDDATAREP	= 0x00000010;
+	
+	//	Data alignment types
+	
+	public final static int ALIGN_NONE		= -1;
+	public final static int ALIGN_SHORT		= 0;
+	public final static int ALIGN_INT			= 1;
+	public final static int ALIGN_LONG		= 2;
+	
+	//	Maximum string length
+	
+	public final static int MAX_STRING_LEN	= 1000;
+	
+	//	Alignment masks and rounding
+	
+	private final static int[] _alignMask  = { 0xFFFFFFFE, 0xFFFFFFFC, 0xFFFFFFF8 };
+	private final static int[] _alignRound = { 1, 3, 7 };
+	
+	//	Default buffer allocation
+	
+	private static final int DEFAULT_BUFSIZE	= 8192;
 
-	public static final int HDR_VERMAJOR = 0;
-	public static final int HDR_VERMINOR = 1;
-	public static final int HDR_PDUTYPE = 2;
-	public static final int HDR_FLAGS = 3;
-	public static final int HDR_DATAREP = 4;
-	public static final int HDR_FRAGLEN = 5;
-	public static final int HDR_AUTHLEN = 6;
-	public static final int HDR_CALLID = 7;
-	public static final int HDR_ALLOCHINT = 8;
-	public static final int HDR_OPCODE = 9;
-
-	// Header flags
-
-	public static final int FLG_FIRSTFRAG = 0x01;
-	public static final int FLG_LASTFRAG = 0x02;
-	public static final int FLG_CANCEL = 0x04;
-	public static final int FLG_IDEMPOTENT = 0x20;
-	public static final int FLG_BROADCAST = 0x40;
-
-	public static final int FLG_ONLYFRAG = 0x03;
-
-	// DCE/RPC header offsets
-
-	public static final int VERSIONMAJOR = 0;
-	public static final int VERSIONMINOR = 1;
-	public static final int PDUTYPE = 2;
-	public static final int HEADERFLAGS = 3;
-	public static final int PACKEDDATAREP = 4;
-	public static final int FRAGMENTLEN = 8;
-	public static final int AUTHLEN = 10;
-	public static final int CALLID = 12;
-	public static final int DCEDATA = 16;
-
-	// DCE/RPC Request offsets
-
-	public static final int ALLOCATIONHINT = 16;
-	public static final int PRESENTIDENT = 20;
-	public static final int OPERATIONID = 22;
-	public static final int OPERATIONDATA = 24;
-
-	// DCE/RPC header constants
-
-	private static final byte VAL_VERSIONMAJOR = 5;
-	private static final byte VAL_VERSIONMINOR = 0;
-	private static final int VAL_PACKEDDATAREP = 0x00000010;
-
-	// Data alignment types
-
-	public final static int ALIGN_NONE = -1;
-	public final static int ALIGN_SHORT = 0;
-	public final static int ALIGN_INT = 1;
-	public final static int ALIGN_LONG = 2;
-
-	// Maximum string length
-
-	public final static int MAX_STRING_LEN = 1000;
-
-	// Alignment masks and rounding
-
-	private final static int[] _alignMask = {
-		0xFFFFFFFE, 0xFFFFFFFC, 0xFFFFFFF8
-	};
-	private final static int[] _alignRound = {
-		1, 3, 7
-	};
-
-	// Default buffer allocation
-
-	private static final int DEFAULT_BUFSIZE = 8192;
-
-	// Maximum buffer size, used when the buffer is reset to release large
-	// buffers
-
-	private static final int MAX_BUFFER_SIZE = 65536;
-
-	// Dummy address value to use for pointers within the buffer
-
-	private static final int DUMMY_ADDRESS = 0x12345678;
-
-	// Data buffer and current read/write positions
-
+	//	Maximum buffer size, used when the buffer is reset to release large buffers
+	
+	private static final int MAX_BUFFER_SIZE	= 65536;
+	
+	//	Dummy address value to use for pointers within the buffer
+	
+	private static final int DUMMY_ADDRESS		= 0x12345678;
+		
+	//	Data buffer and current read/write positions
+	
 	private byte[] m_buffer;
 	private int m_base;
 	private int m_pos;
 	private int m_rdpos;
 
-	// Error status
-
+	//	Error status
+	
 	private int m_errorCode;
-
+	
 	/**
 	 * Default constructor
 	 */
 	public DCEBuffer() {
-		m_buffer = new byte[DEFAULT_BUFSIZE];
-		m_pos = 0;
-		m_rdpos = 0;
-		m_base = 0;
+	  m_buffer = new byte[DEFAULT_BUFSIZE];
+	  m_pos    = 0;
+	  m_rdpos  = 0;
+	  m_base   = 0;
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
 	 * @param siz int
 	 */
 	public DCEBuffer(int siz) {
-		m_buffer = new byte[siz];
-		m_pos = 0;
-		m_rdpos = 0;
-		m_base = 0;
+	  m_buffer = new byte[siz];
+	  m_pos    = 0;
+	  m_rdpos  = 0;
+	  m_base   = 0;
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -161,12 +158,12 @@ public class DCEBuffer {
 	 * @param len int
 	 */
 	public DCEBuffer(byte[] buf, int startPos, int len) {
-		m_buffer = buf;
-		m_pos = startPos + len;
-		m_rdpos = startPos;
-		m_base = startPos;
+	  m_buffer = buf;
+	  m_pos    = startPos + len;
+	  m_rdpos  = startPos;
+	  m_base   = startPos;
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -174,12 +171,12 @@ public class DCEBuffer {
 	 * @param startPos int
 	 */
 	public DCEBuffer(byte[] buf, int startPos) {
-		m_buffer = buf;
-		m_pos = startPos;
-		m_rdpos = startPos;
-		m_base = startPos;
+	  m_buffer = buf;
+	  m_pos    = startPos;
+	  m_rdpos  = startPos;
+	  m_base   = startPos;
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -188,27 +185,27 @@ public class DCEBuffer {
 	public DCEBuffer(TransactBuffer tbuf) {
 		DataBuffer dataBuf = tbuf.getDataBuffer();
 		m_buffer = dataBuf.getBuffer();
-		m_rdpos = dataBuf.getOffset();
-		m_base = dataBuf.getOffset();
-		m_pos = m_rdpos + dataBuf.getLength();
+		m_rdpos  = dataBuf.getOffset();
+		m_base   = dataBuf.getOffset();
+		m_pos    = m_rdpos + dataBuf.getLength();
 	}
-
+		
 	/**
 	 * Return the DCE buffer
 	 * 
 	 * @return byte[]
 	 */
 	public final byte[] getBuffer() {
-		return m_buffer;
+	  return m_buffer;
 	}
-
+	
 	/**
 	 * Return the current used buffer length
 	 * 
 	 * @return int
 	 */
 	public final int getLength() {
-		return m_pos;
+	  return m_pos;
 	}
 
 	/**
@@ -217,27 +214,27 @@ public class DCEBuffer {
 	 * @return int
 	 */
 	public final int getReadPosition() {
-		return m_rdpos;
+	  return m_rdpos;
 	}
-
+	
 	/**
 	 * Return the write buffer position
 	 * 
 	 * @return int
 	 */
 	public final int getWritePosition() {
-		return m_pos;
+	  return m_pos;
 	}
-
+	
 	/**
 	 * Return the amount of data left to read
 	 * 
 	 * @return int
 	 */
 	public final int getAvailableLength() {
-		return m_pos - m_rdpos;
+	  return m_pos - m_rdpos;
 	}
-
+	
 	/**
 	 * Get a byte from the buffer
 	 * 
@@ -248,18 +245,18 @@ public class DCEBuffer {
 	public final int getByte(int align)
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 1)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 1)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the integer value
-
+			
+		//	Unpack the integer value
+		
 		int bval = (m_buffer[m_rdpos++] & 0xFF);
 		alignRxPosition(align);
 		return bval;
 	}
-
+	
 	/**
 	 * Get a block of bytes from the buffer
 	 * 
@@ -271,23 +268,23 @@ public class DCEBuffer {
 	public final byte[] getBytes(byte[] buf, int len)
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < len)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < len)
 			throw new DCEBufferException("End of DCE buffer");
 
-		// Check if a return buffer should be allocated
-
-		if (buf == null)
+		//	Check if a return buffer should be allocated
+		
+		if ( buf == null)
 			buf = new byte[len];
+			
+		//	Unpack the bytes
 
-		// Unpack the bytes
-
-		for (int i = 0; i < len; i++)
-			buf[i] = m_buffer[m_rdpos++];
+		for ( int i =0 ; i < len; i++)
+			buf[i] = m_buffer[m_rdpos++];		
 		return buf;
 	}
-
+	
 	/**
 	 * Get a short from the buffer
 	 * 
@@ -297,41 +294,41 @@ public class DCEBuffer {
 	public final int getShort()
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 2)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 2)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the integer value
-
-		int sval = DataPacker.getIntelShort(m_buffer, m_rdpos);
+			
+		//	Unpack the integer value
+		
+		int sval = DataPacker.getIntelShort(m_buffer,m_rdpos);
 		m_rdpos += 2;
 		return sval;
 	}
-
+	
 	/**
 	 * Get a short from the buffer and align the read pointer
-	 * 
-	 * @param align int
+	 *
+	 * @param align int 
 	 * @return int
 	 * @exception DCEBufferException
 	 */
 	public final int getShort(int align)
 		throws DCEBufferException {
 
-		// Read the short
+		//	Read the short
 
 		int sval = getShort();
-
-		// Align the read position
-
+		
+		//	Align the read position
+				
 		alignRxPosition(align);
-
-		// Return the short value
-
+		
+		//	Return the short value
+		
 		return sval;
 	}
-
+	
 	/**
 	 * Get an integer from the buffer
 	 * 
@@ -341,18 +338,18 @@ public class DCEBuffer {
 	public final int getInt()
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 4)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 4)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the integer value
-
-		int ival = DataPacker.getIntelInt(m_buffer, m_rdpos);
+			
+		//	Unpack the integer value
+		
+		int ival = DataPacker.getIntelInt(m_buffer,m_rdpos);
 		m_rdpos += 4;
 		return ival;
 	}
-
+	
 	/**
 	 * Get a pointer from the buffer
 	 * 
@@ -361,47 +358,42 @@ public class DCEBuffer {
 	 */
 	public final int getPointer()
 		throws DCEBufferException {
-		
 		return getInt();
 	}
-
+	
 	/**
-	 * Get a pointer from the buffer and return either an empty string if the
-	 * pointer is valid or null.
+	 * Get a pointer from the buffer and return either an empty string if the pointer is valid or null.
 	 * 
 	 * @return String
 	 * @exception DCEBufferException
 	 */
 	public final String getStringPointer()
 		throws DCEBufferException {
-
-		if (getInt() == 0)
-			return null;
+	  if ( getInt() == 0)
+	    return null;
 		return "";
 	}
-
+	
 	/**
-	 * Get a character array header from the buffer and return either an empty
-	 * string if the pointer is valid or null.
+	 * Get a character array header from the buffer and return either an empty string if the pointer is valid or null.
 	 * 
 	 * @return String
 	 * @exception DCEBufferException
 	 */
 	public final String getCharArrayPointer()
 		throws DCEBufferException {
-
-		// Get the array length and size
-
-		int len = getShort();
-		int siz = getShort();
-		return getStringPointer();
+	  
+	  //	Get the array length and size
+	  
+	  int len = getShort();
+	  int siz = getShort();
+	  return getStringPointer();
 	}
-
+	
 	/**
-	 * Get a character array from the buffer if the String variable is not null,
-	 * and align on the specified boundary
-	 * 
-	 * @param strVar String
+	 * Get a character array from the buffer if the String variable is not null, and align on the specified boundary
+	 *
+	 * @param strVar String 
 	 * @param align int
 	 * @return String
 	 * @exception DCEBufferException
@@ -409,23 +401,23 @@ public class DCEBuffer {
 	public final String getCharArrayNotNull(String strVar, int align)
 		throws DCEBufferException {
 
-		// Check if the string variable is not null
+	  //	Check if the string variable is not null
+	  
+	  String str = "";
+	  
+	  if ( strVar != null) {
 
-		String str = "";
-
-		if (strVar != null) {
-
-			// Read the string
+	    //	Read the string
 
 			str = getCharArray();
-
-			// Align the read position
-
+			
+			//	Align the read position
+					
 			alignRxPosition(align);
-		}
-
-		// Return the string
-
+	  }
+	  
+		//	Return the string
+		
 		return str;
 	}
 
@@ -438,18 +430,18 @@ public class DCEBuffer {
 	public final long getLong()
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 8)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 8)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the integer value
-
-		long lval = DataPacker.getIntelLong(m_buffer, m_rdpos);
+			
+		//	Unpack the integer value
+		
+		long lval = DataPacker.getIntelLong(m_buffer,m_rdpos);
 		m_rdpos += 8;
 		return lval;
 	}
-
+	
 	/**
 	 * Return a DCE/RPC header value
 	 * 
@@ -457,77 +449,77 @@ public class DCEBuffer {
 	 * @return int
 	 */
 	public final int getHeaderValue(int valTyp) {
-
+		
 		int result = -1;
+		
+		switch(valTyp) {
+		  
+		  //	Version major
+		  
+		  case HDR_VERMAJOR:
+		  	result = (m_buffer[m_base + VERSIONMAJOR] & 0xFF);
+		  	break;
+		  	
+		  //	Version minor
+		  
+		  case HDR_VERMINOR:
+		  	result = (m_buffer[m_base + VERSIONMINOR] & 0xFF);
+		  	break;
 
-		switch (valTyp) {
-
-		// Version major
-
-		case HDR_VERMAJOR:
-			result = (m_buffer[m_base + VERSIONMAJOR] & 0xFF);
-			break;
-
-		// Version minor
-
-		case HDR_VERMINOR:
-			result = (m_buffer[m_base + VERSIONMINOR] & 0xFF);
-			break;
-
-		// PDU type
-
-		case HDR_PDUTYPE:
-			result = (m_buffer[m_base + PDUTYPE] & 0xFF);
-			break;
-
-		// Flags
-
-		case HDR_FLAGS:
-			result = (m_buffer[m_base + HEADERFLAGS] & 0xFF);
-			break;
-
-		// Data representation
-
-		case HDR_DATAREP:
-			result = DataPacker.getIntelInt(m_buffer, m_base + VERSIONMINOR);
-			break;
-
-		// Authorisation length
-
-		case HDR_AUTHLEN:
-			result = DataPacker.getIntelInt(m_buffer, m_base + AUTHLEN);
-			break;
-
-		// Fragment length
-
-		case HDR_FRAGLEN:
-			result = DataPacker.getIntelInt(m_buffer, m_base + FRAGMENTLEN);
-			break;
-
-		// Call id
-
-		case HDR_CALLID:
-			result = DataPacker.getIntelInt(m_buffer, m_base + CALLID);
-			break;
-
-		// Request allocation hint
-
-		case HDR_ALLOCHINT:
-			result = DataPacker.getIntelInt(m_buffer, m_base + ALLOCATIONHINT);
-			break;
-
-		// Request opcode
-
-		case HDR_OPCODE:
-			result = DataPacker.getIntelShort(m_buffer, m_base + OPERATIONID);
-			break;
+			//	PDU type
+			
+			case HDR_PDUTYPE:
+		  	result = (m_buffer[m_base + PDUTYPE] & 0xFF);
+		  	break;
+		  	
+		  //	Flags
+		  
+		  case HDR_FLAGS:
+		  	result = (m_buffer[m_base + HEADERFLAGS] & 0xFF);
+		  	break;
+		  	
+		  //	Data representation
+		  
+		  case HDR_DATAREP:
+		  	result = DataPacker.getIntelInt(m_buffer,m_base+VERSIONMINOR);
+		  	break;
+		  	
+		  //	Authorisation length
+		  
+		  case HDR_AUTHLEN:
+		  	result = DataPacker.getIntelInt(m_buffer,m_base+AUTHLEN);
+		  	break;
+		  	
+		  //	Fragment length
+		  
+		  case HDR_FRAGLEN:
+		  	result = DataPacker.getIntelInt(m_buffer, m_base+FRAGMENTLEN);
+		  	break;
+		  	
+		  //	Call id
+		  
+		  case HDR_CALLID:
+		  	result = DataPacker.getIntelInt(m_buffer, m_base+CALLID);
+		  	break;
+		  	
+		  //	Request allocation hint
+		  
+		  case HDR_ALLOCHINT:
+		  	result = DataPacker.getIntelInt(m_buffer,m_base+ALLOCATIONHINT);
+		  	break;
+		  
+		  //	Request opcode
+		  
+		  case HDR_OPCODE:
+		  	result = DataPacker.getIntelShort(m_buffer,m_base+OPERATIONID);
+		  	break;
 		}
-
-		// Return the header value
-
+		
+		//	Return the header value
+		
 		return result;
 	}
-
+		
 	/**
 	 * Set a DCE/RPC header value
 	 * 
@@ -535,122 +527,122 @@ public class DCEBuffer {
 	 * @param val int
 	 */
 	public final void setHeaderValue(int typ, int val) {
+		
+		switch(typ) {
+		  
+		  //	Version major
+		  
+		  case HDR_VERMAJOR:
+		  	m_buffer[m_base + VERSIONMAJOR] = (byte) (val & 0xFF);
+		  	break;
+		  	
+		  //	Version minor
+		  
+		  case HDR_VERMINOR:
+		  	m_buffer[m_base + VERSIONMINOR] = (byte) (val & 0xFF);
+		  	break;
 
-		switch (typ) {
-
-		// Version major
-
-		case HDR_VERMAJOR:
-			m_buffer[m_base + VERSIONMAJOR] = (byte) (val & 0xFF);
-			break;
-
-		// Version minor
-
-		case HDR_VERMINOR:
-			m_buffer[m_base + VERSIONMINOR] = (byte) (val & 0xFF);
-			break;
-
-		// PDU type
-
-		case HDR_PDUTYPE:
-			m_buffer[m_base + PDUTYPE] = (byte) (val & 0xFF);
-			break;
-
-		// Flags
-
-		case HDR_FLAGS:
-			m_buffer[m_base + HEADERFLAGS] = (byte) (val & 0xFF);
-			break;
-
-		// Data representation
-
-		case HDR_DATAREP:
-			DataPacker.putIntelInt(val, m_buffer, m_base + PACKEDDATAREP);
-			break;
-
-		// Authorisation length
-
-		case HDR_AUTHLEN:
-			DataPacker.putIntelInt(val, m_buffer, m_base + AUTHLEN);
-			break;
-
-		// Fragment length
-
-		case HDR_FRAGLEN:
-			DataPacker.putIntelInt(val, m_buffer, m_base + FRAGMENTLEN);
-			break;
-
-		// Call id
-
-		case HDR_CALLID:
-			DataPacker.putIntelInt(val, m_buffer, m_base + CALLID);
-			break;
-
-		// Request allocation hint
-
-		case HDR_ALLOCHINT:
-			DataPacker.putIntelInt(val, m_buffer, m_base + ALLOCATIONHINT);
-			break;
-
-		// Request opcode
-
-		case HDR_OPCODE:
-			DataPacker.putIntelShort(val, m_buffer, m_base + OPERATIONID);
-			break;
+			//	PDU type
+			
+			case HDR_PDUTYPE:
+		  	m_buffer[m_base + PDUTYPE] = (byte) (val & 0xFF);
+		  	break;
+		  	
+		  //	Flags
+		  
+		  case HDR_FLAGS:
+		  	m_buffer[m_base + HEADERFLAGS] = (byte) (val & 0xFF);
+		  	break;
+		  	
+		  //	Data representation
+		  
+		  case HDR_DATAREP:
+		  	DataPacker.putIntelInt(val,m_buffer,m_base+PACKEDDATAREP);
+		  	break;
+		  	
+		  //	Authorisation length
+		  
+		  case HDR_AUTHLEN:
+		  	DataPacker.putIntelInt(val,m_buffer,m_base+AUTHLEN);
+		  	break;
+		  	
+		  //	Fragment length
+		  
+		  case HDR_FRAGLEN:
+		  	DataPacker.putIntelInt(val,m_buffer,m_base+FRAGMENTLEN);
+		  	break;
+		  	
+		  //	Call id
+		  
+		  case HDR_CALLID:
+		  	DataPacker.putIntelInt(val,m_buffer, m_base+CALLID);
+		  	break;
+		  	
+		  //	Request allocation hint
+		  
+		  case HDR_ALLOCHINT:
+		  	DataPacker.putIntelInt(val,m_buffer,m_base+ALLOCATIONHINT);
+		  	break;
+		  
+		  //	Request opcode
+		  
+		  case HDR_OPCODE:
+		  	DataPacker.putIntelShort(val,m_buffer,m_base+OPERATIONID);
+		  	break;
 		}
 	}
-
+	
 	/**
 	 * Determine if this is the first fragment
 	 * 
 	 * @return boolean
 	 */
 	public final boolean isFirstFragment() {
-		if ((getHeaderValue(HDR_FLAGS) & FLG_FIRSTFRAG) != 0)
-			return true;
-		return false;
+	  if (( getHeaderValue(HDR_FLAGS) & FLG_FIRSTFRAG) != 0)
+	  	return true;
+	  return false;
 	}
-
+			
 	/**
 	 * Determine if this is the last fragment
 	 * 
 	 * @return boolean
 	 */
 	public final boolean isLastFragment() {
-		if ((getHeaderValue(HDR_FLAGS) & FLG_LASTFRAG) != 0)
-			return true;
-		return false;
+	  if (( getHeaderValue(HDR_FLAGS) & FLG_LASTFRAG) != 0)
+	  	return true;
+	  return false;
 	}
-
+			
 	/**
 	 * Determine if this is the only fragment in the request
 	 * 
 	 * @return boolean
 	 */
 	public final boolean isOnlyFragment() {
-		if ((getHeaderValue(HDR_FLAGS) & FLG_ONLYFRAG) == FLG_ONLYFRAG)
-			return true;
-		return false;
+	  if (( getHeaderValue(HDR_FLAGS) & FLG_ONLYFRAG) == FLG_ONLYFRAG)
+	  	return true;
+	  return false;
 	}
-
+	
 	/**
 	 * Check if the status indicates that there are more entries available
-	 * 
-	 * @return boolean
+	 *
+	 * @return boolean 
 	 */
 	public final boolean hasMoreEntries() {
-		return getStatusCode() == SMBStatus.Win32MoreEntries ? true : false;
+	  return getStatusCode() == SMBStatus.Win32MoreEntries ? true : false;
 	}
-
+	
 	/**
 	 * Check if the status indicates success
-	 * 
-	 * @return boolean
+	 *
+	 * @return boolean 
 	 */
 	public final boolean hasSuccessStatus() {
-		return getStatusCode() == SMBStatus.NTSuccess ? true : false;
+	  return getStatusCode() == SMBStatus.NTSuccess ? true : false;
 	}
-
+	
 	/**
 	 * Skip over a number of bytes
 	 * 
@@ -659,17 +651,17 @@ public class DCEBuffer {
 	 */
 	public final void skipBytes(int cnt)
 		throws DCEBufferException {
-
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < cnt)
+		  
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < cnt)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Skip bytes
-
+			
+		//	Skip bytes
+		
 		m_rdpos += cnt;
 	}
-
+	
 	/**
 	 * Skip over a pointer
 	 * 
@@ -677,17 +669,17 @@ public class DCEBuffer {
 	 */
 	public final void skipPointer()
 		throws DCEBufferException {
-
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 4)
+		  
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 4)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Skip the 32bit pointer value
-
+			
+		//	Skip the 32bit pointer value
+		
 		m_rdpos += 4;
 	}
-
+	
 	/**
 	 * Set the read position
 	 * 
@@ -696,17 +688,17 @@ public class DCEBuffer {
 	 */
 	public final void positionAt(int pos)
 		throws DCEBufferException {
-
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length < pos)
+		  
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length < pos)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Set the read position
-
+			
+		//	Set the read position
+		
 		m_rdpos = pos;
-	}
-
+	}		  
+	
 	/**
 	 * Get a number of Unicode characters from the buffer and return as a string
 	 * 
@@ -716,31 +708,31 @@ public class DCEBuffer {
 	 */
 	public final String getChars(int len)
 		throws DCEBufferException {
-
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < (len * 2))
+			
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < (len * 2))
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Build up the return string
-
+			
+		//	Build up the return string
+		
 		StringBuffer str = new StringBuffer(len);
 		char curChar;
+				
+		while ( len-- > 0) {
+			
+      //  Get a Unicode character from the buffer
 
-		while (len-- > 0) {
+      curChar = (char) ((m_buffer[m_rdpos + 1] << 8) + m_buffer[m_rdpos]);
+      m_rdpos += 2;
 
-			// Get a Unicode character from the buffer
-
-			curChar = (char) ((m_buffer[m_rdpos + 1] << 8) + m_buffer[m_rdpos]);
-			m_rdpos += 2;
-
-			// Add the character to the string
+      //  Add the character to the string
 
 			str.append(curChar);
 		}
-
-		// Return the string
-
+		
+		//	Return the string
+		
 		return str.toString();
 	}
 
@@ -750,13 +742,13 @@ public class DCEBuffer {
 	 * @return int
 	 */
 	public final int getStatusCode() {
-
-		// Read the integer value at the end of the buffer
-
-		int ival = DataPacker.getIntelInt(m_buffer, m_pos - 4);
-		return ival;
+		
+		//	Read the integer value at the end of the buffer
+		
+		int ival = DataPacker.getIntelInt(m_buffer,m_pos - 4);
+		return ival; 	
 	}
-
+	
 	/**
 	 * Get a string from the buffer
 	 * 
@@ -766,18 +758,18 @@ public class DCEBuffer {
 	public final String getString()
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 12)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 12)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the string
+			
+		//	Unpack the string
 
 		int maxLen = getInt();
-		skipBytes(4); // offset
+		skipBytes(4);						//	offset
 		int strLen = getInt();
 
-		String str = DataPacker.getUnicodeString(m_buffer, m_rdpos, strLen);
+		String str = DataPacker.getUnicodeString(m_buffer,m_rdpos, strLen);
 		m_rdpos += (strLen * 2);
 		return str;
 	}
@@ -791,21 +783,21 @@ public class DCEBuffer {
 	public final String getCharArray()
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 12)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 12)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the string
+			
+		//	Unpack the string
 
 		int maxLen = getInt();
-		skipBytes(4); // offset
-		int strLen = getInt(); // in unicode chars
+		skipBytes(4);						//	offset
+		int strLen = getInt();	//	in unicode chars
 
 		String str = null;
-		if (strLen > 0) {
-			str = DataPacker.getUnicodeString(m_buffer, m_rdpos, strLen);
-			m_rdpos += (strLen * 2);
+		if ( strLen > 0) {
+		  str = DataPacker.getUnicodeString(m_buffer,m_rdpos, strLen);
+		  m_rdpos += (strLen * 2);
 		}
 		return str;
 	}
@@ -820,16 +812,16 @@ public class DCEBuffer {
 	public final String getCharArray(int align)
 		throws DCEBufferException {
 
-		// Read the string
+		//	Read the string
 
 		String str = getCharArray();
-
-		// Align the read position
-
+		
+		//	Align the read position
+				
 		alignRxPosition(align);
-
-		// Return the string
-
+		
+		//	Return the string
+		
 		return str;
 	}
 
@@ -843,24 +835,23 @@ public class DCEBuffer {
 	public final String getString(int align)
 		throws DCEBufferException {
 
-		// Read the string
+		//	Read the string
 
 		String str = getString();
-
-		// Align the read position
-
+		
+		//	Align the read position
+				
 		alignRxPosition(align);
-
-		// Return the string
-
+		
+		//	Return the string
+		
 		return str;
 	}
 
 	/**
-	 * Get a string from the buffer if the String variable is not null, and
-	 * align on the specified boundary
-	 * 
-	 * @param strVar String
+	 * Get a string from the buffer if the String variable is not null, and align on the specified boundary
+	 *
+	 * @param strVar String 
 	 * @param align int
 	 * @return String
 	 * @exception DCEBufferException
@@ -868,23 +859,23 @@ public class DCEBuffer {
 	public final String getStringNotNull(String strVar, int align)
 		throws DCEBufferException {
 
-		// Check if the string variable is not null
+	  //	Check if the string variable is not null
+	  
+	  String str = "";
+	  
+	  if ( strVar != null) {
 
-		String str = "";
-
-		if (strVar != null) {
-
-			// Read the string
+	    //	Read the string
 
 			str = getString();
-
-			// Align the read position
-
+			
+			//	Align the read position
+					
 			alignRxPosition(align);
-		}
-
-		// Return the string
-
+	  }
+	  
+		//	Return the string
+		
 		return str;
 	}
 
@@ -897,21 +888,21 @@ public class DCEBuffer {
 	 */
 	public final String getStringAt(int pos)
 		throws DCEBufferException {
-
-		// Check if position is within the buffer
-
-		if (m_buffer.length < pos)
+		  
+		//	Check if position is within the buffer
+		
+		if ( m_buffer.length < pos)
 			throw new DCEBufferException("Buffer offset out of range, " + pos);
+			
+		//	Unpack the string
 
-		// Unpack the string
-
-		String str = DataPacker.getUnicodeString(m_buffer, pos, MAX_STRING_LEN);
+		String str = DataPacker.getUnicodeString(m_buffer,pos,MAX_STRING_LEN);
 		return str;
 	}
-
+	
 	/**
-	 * Read a Unicode string header and return the string length. -1 indicates a
-	 * null pointer in the string header.
+	 * Read a Unicode string header and return the string length. -1 indicates a null pointer in the
+	 * string header.
 	 * 
 	 * @return int
 	 * @exception DCEBufferException
@@ -919,25 +910,25 @@ public class DCEBuffer {
 	public final int getUnicodeHeaderLength()
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer for the Unicode header
-
-		if (m_buffer.length - m_rdpos < 8)
+		//	Check if there is enough data in the buffer for the Unicode header
+		
+		if ( m_buffer.length - m_rdpos < 8)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Get the string length
-
-		int len = (int) DataPacker.getIntelShort(m_buffer, m_rdpos);
-		m_rdpos += 4; // skip the max length too
+			
+		//	Get the string length
+		
+		int len = (int) DataPacker.getIntelShort(m_buffer,m_rdpos);
+		m_rdpos += 4;		// skip the max length too
 		int ptr = DataPacker.getIntelInt(m_buffer, m_rdpos);
 		m_rdpos += 4;
-
-		// Check if the pointer is valid
-
-		if (ptr == 0)
+		
+		//	Check if the pointer is valid
+		
+		if ( ptr == 0)
 			return -1;
 		return len;
 	}
-
+	
 	/**
 	 * Get a unicode string from the current position in the buffer
 	 * 
@@ -946,21 +937,20 @@ public class DCEBuffer {
 	 */
 	public final String getUnicodeString()
 		throws DCEBufferException {
-
-		// Check if there is any buffer to read
-
-		if (m_buffer.length - m_rdpos <= 0)
+		  
+		//	Check if there is any buffer to read
+		
+		if ( m_buffer.length - m_rdpos <= 0)
 			throw new DCEBufferException("No more buffer");
+			
+		//	Unpack the string
 
-		// Unpack the string
-
-		String str =
-			DataPacker.getUnicodeString(m_buffer, m_rdpos, MAX_STRING_LEN);
-		if (str != null)
+		String str = DataPacker.getUnicodeString(m_buffer,m_rdpos,MAX_STRING_LEN);
+		if ( str != null)
 			m_rdpos += (str.length() * 2) + 2;
 		return str;
 	}
-
+	
 	/**
 	 * Get a data block from the buffer and align on the specified boundary
 	 * 
@@ -971,33 +961,33 @@ public class DCEBuffer {
 	public final byte[] getDataBlock(int align)
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 12)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 12)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the data block
+			
+		//	Unpack the data block
 
 		int len = getInt();
-		m_rdpos += 8; // skip undoc and max_len ints
+		m_rdpos += 8;		//	skip undoc and max_len ints
 
-		// Copy the raw data block
+		//	Copy the raw data block
 
 		byte[] dataBlk = null;
-
-		if (len > 0) {
-
-			// Allocate the data block buffer
-
+						
+		if ( len > 0) {
+			
+			//	Allocate the data block buffer
+			
 			dataBlk = new byte[len];
-
-			// Copy the raw data
-
-			System.arraycopy(m_buffer, m_rdpos, dataBlk, 0, len);
+			
+			//	Copy the raw data
+		
+			System.arraycopy(m_buffer,m_rdpos,dataBlk,0,len);
 		}
 
-		// Update the buffer position and align
-
+		//	Update the buffer position and align
+					
 		m_rdpos += len;
 		alignRxPosition(align);
 		return dataBlk;
@@ -1013,47 +1003,46 @@ public class DCEBuffer {
 	public final UUID getUUID(boolean readVer)
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
+		//	Check if there is enough data in the buffer
 
 		int len = UUID.UUID_LENGTH_BINARY;
-		if (readVer == true)
+		if ( readVer == true)
 			len += 4;
-
-		if (m_buffer.length - m_rdpos < len)
+			
+		if ( m_buffer.length - m_rdpos < len)
 			throw new DCEBufferException("End of DCE buffer");
+			
+		//	Unpack the UUID
 
-		// Unpack the UUID
-
-		UUID uuid = new UUID(m_buffer, m_rdpos);
+		UUID uuid = new UUID(m_buffer,m_rdpos);
 		m_rdpos += UUID.UUID_LENGTH_BINARY;
-
-		if (readVer == true) {
-			int ver = getInt();
-			uuid.setVersion(ver);
+		
+		if ( readVer == true) {
+		  int ver = getInt();
+		  uuid.setVersion(ver);
 		}
-
+		
 		return uuid;
 	}
 
 	/**
-	 * Get an NT 64bit time value. If the value is valid then convert to a Java
-	 * time value
+	 * Get an NT 64bit time value. If the value is valid then convert to a Java time value
 	 * 
 	 * @return long
 	 * @throws DCEBufferException
 	 */
 	public final long getNTTime()
 		throws DCEBufferException {
-
-		// Get the raw NT time value
-
-		long ntTime = getLong();
-		if (ntTime == 0 || ntTime == NTTime.InfiniteTime)
-			return ntTime;
-
-		// Convert the time to a Java time value
-
-		return NTTime.toJavaDate(ntTime);
+	  
+	  //	Get the raw NT time value
+	  
+	  long ntTime = getLong();
+	  if ( ntTime == 0 || ntTime == NTTime.InfiniteTime)
+	    return ntTime;
+	    
+	  //	Convert the time to a Java time value
+	    
+	  return NTTime.toJavaDate(ntTime);
 	}
 
 	/**
@@ -1065,23 +1054,23 @@ public class DCEBuffer {
 	public final byte[] getByteStructure(byte[] buf)
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
-
-		if (m_buffer.length - m_rdpos < 12)
+		//	Check if there is enough data in the buffer
+		
+		if ( m_buffer.length - m_rdpos < 12)
 			throw new DCEBufferException("End of DCE buffer");
-
-		// Unpack the header
+			
+		//	Unpack the header
 
 		int maxLen = getInt();
-		skipBytes(4); // offset
+		skipBytes(4);						//	offset
 		int bytLen = getInt();
 
 		byte[] bytBuf = buf;
-		if (bytBuf.length < bytLen)
-			bytBuf = new byte[bytLen];
+		if ( bytBuf.length < bytLen)
+		  bytBuf = new byte[bytLen];
 		return getBytes(bytBuf, bytLen);
 	}
-
+	
 	/**
 	 * Get a handle from the buffer
 	 * 
@@ -1091,19 +1080,18 @@ public class DCEBuffer {
 	public final void getHandle(PolicyHandle handle)
 		throws DCEBufferException {
 
-		// Check if there is enough data in the buffer
+		//	Check if there is enough data in the buffer
 
-		if (m_buffer.length - m_rdpos < PolicyHandle.POLICY_HANDLE_SIZE)
+		if ( m_buffer.length - m_rdpos < PolicyHandle.POLICY_HANDLE_SIZE)
 			throw new DCEBufferException("End of DCE buffer");
+			
+		//	Unpack the policy handle
 
-		// Unpack the policy handle
-
-		m_rdpos = handle.loadPolicyHandle(m_buffer, m_rdpos);
+		m_rdpos = handle.loadPolicyHandle(m_buffer,m_rdpos);
 	}
-
+	
 	/**
-	 * Copy data from the DCE buffer to the user buffer, and update the current
-	 * read position.
+	 * Copy data from the DCE buffer to the user buffer, and update the current read position.
 	 * 
 	 * @param buf byte[]
 	 * @param off int
@@ -1113,28 +1101,28 @@ public class DCEBuffer {
 	 */
 	public final int copyData(byte[] buf, int off, int cnt)
 		throws DCEBufferException {
-
-		// Check if there is any more data to copy
-
-		if (m_rdpos == m_pos)
+		
+		//	Check if there is any more data to copy
+		
+		if ( m_rdpos == m_pos)
 			return 0;
-
-		// Calculate the amount of data to copy
-
+			
+		//	Calculate the amount of data to copy
+		
 		int siz = m_pos - m_rdpos;
-		if (siz > cnt)
+		if ( siz > cnt)
 			siz = cnt;
-
-		// Copy the data to the user buffer and update the current read position
-
-		System.arraycopy(m_buffer, m_rdpos, buf, off, siz);
+			
+		//	Copy the data to the user buffer and update the current read position
+		
+		System.arraycopy(m_buffer,m_rdpos,buf,off,siz);
 		m_rdpos += siz;
-
-		// Return the amount of data copied
-
+		
+		//	Return the amount of data copied
+		
 		return siz;
 	}
-
+	
 	/**
 	 * Append a raw data block to the buffer
 	 * 
@@ -1146,52 +1134,52 @@ public class DCEBuffer {
 	public final void appendData(byte[] buf, int off, int len)
 		throws DCEBufferException {
 
-		// Check if there is enough space in the buffer
+		//	Check if there is enough space in the buffer		  
 
-		if (m_buffer.length - m_pos < len)
-			extendBuffer(len);
+	  if ( m_buffer.length - m_pos < len)
+	  	extendBuffer(len);
 
-		// Copy the data to the buffer and update the current write position
-
-		System.arraycopy(buf, off, m_buffer, m_pos, len);
+		//	Copy the data to the buffer and update the current write position
+		
+		System.arraycopy(buf,off,m_buffer,m_pos,len);
 		m_pos += len;
 	}
-
+	
 	/**
 	 * Append an integer to the buffer
 	 * 
 	 * @param ival int
 	 */
 	public final void putInt(int ival) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 4)
-			extendBuffer();
-
-		// Pack the integer value
-
-		DataPacker.putIntelInt(ival, m_buffer, m_pos);
-		m_pos += 4;
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 4)
+	  	extendBuffer();
+	  	
+	  //	Pack the integer value
+	  
+	  DataPacker.putIntelInt(ival,m_buffer,m_pos);
+	  m_pos += 4;
 	}
-
+	
 	/**
 	 * Append a byte value to the buffer
 	 * 
 	 * @param bval int
 	 */
 	public final void putByte(int bval) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 1)
-			extendBuffer();
-
-		// Pack the short value
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 1)
+	  	extendBuffer();
+	  	
+	  //	Pack the short value
 
 		m_buffer[m_pos++] = (byte) (bval & 0xFF);
 	}
-
+	
 	/**
 	 * Append a byte value to the buffer and align to the specified boundary
 	 * 
@@ -1199,18 +1187,18 @@ public class DCEBuffer {
 	 * @param align int
 	 */
 	public final void putByte(byte bval, int align) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 1)
-			extendBuffer();
-
-		// Pack the short value
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 1)
+	  	extendBuffer();
+	  	
+	  //	Pack the short value
 
 		m_buffer[m_pos++] = bval;
 		alignPosition(align);
 	}
-
+	
 	/**
 	 * Append a byte value to the buffer and align to the specified boundary
 	 * 
@@ -1218,18 +1206,18 @@ public class DCEBuffer {
 	 * @param align int
 	 */
 	public final void putByte(int bval, int align) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 1)
-			extendBuffer();
-
-		// Pack the short value
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 1)
+	  	extendBuffer();
+	  	
+	  //	Pack the short value
 
 		m_buffer[m_pos++] = (byte) (bval & 0xFF);
 		alignPosition(align);
 	}
-
+	
 	/**
 	 * Append a block of bytes to the buffer
 	 * 
@@ -1237,18 +1225,18 @@ public class DCEBuffer {
 	 * @param len int
 	 */
 	public final void putBytes(byte[] bval, int len) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < len)
+	  
+		//	Check if there is enough space in the buffer
+	  
+		if ( m_buffer.length - m_pos < len)
 			extendBuffer();
+	  	
+		//	Pack the bytes
 
-		// Pack the bytes
-
-		for (int i = 0; i < len; i++)
+		for ( int i = 0; i < len; i++)
 			m_buffer[m_pos++] = bval[i];
 	}
-
+	
 	/**
 	 * Append a block of bytes to the buffer
 	 * 
@@ -1257,59 +1245,59 @@ public class DCEBuffer {
 	 * @param align int
 	 */
 	public final void putBytes(byte[] bval, int len, int align) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < len)
+	  
+		//	Check if there is enough space in the buffer
+	  
+		if ( m_buffer.length - m_pos < len)
 			extendBuffer();
+	  	
+		//	Pack the bytes
 
-		// Pack the bytes
-
-		for (int i = 0; i < len; i++)
+		for ( int i = 0; i < len; i++)
 			m_buffer[m_pos++] = bval[i];
 
-		// Align the new buffer position
-
+		//	Align the new buffer position
+	  
 		alignPosition(align);
 	}
-
+	
 	/**
 	 * Append a short value to the buffer
 	 * 
 	 * @param sval int
 	 */
 	public final void putShort(int sval) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 2)
-			extendBuffer();
-
-		// Pack the short value
-
-		DataPacker.putIntelShort(sval, m_buffer, m_pos);
-		m_pos += 2;
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 2)
+	  	extendBuffer();
+	  	
+	  //	Pack the short value
+	  
+	  DataPacker.putIntelShort(sval,m_buffer,m_pos);
+	  m_pos += 2;
 	}
-
+	
 	/**
 	 * Append a DCE string to the buffer
 	 * 
 	 * @param str String
 	 */
 	public final void putString(String str) {
-
-		// Check if there is enough space in the buffer
-
+	  
+	  //	Check if there is enough space in the buffer
+	  
 		int reqLen = (str.length() * 2) + 24;
-
-		if (m_buffer.length - m_pos < reqLen)
-			extendBuffer(reqLen);
-
-		// Pack the string
-
-		m_pos = DCEDataPacker.putDCEString(m_buffer, m_pos, str, false);
+			
+	  if ( m_buffer.length - m_pos < reqLen)
+	  	extendBuffer(reqLen);
+	  	
+	  //	Pack the string
+	  
+	  m_pos = DCEDataPacker.putDCEString(m_buffer,m_pos,str,false);
 	}
-
+	
 	/**
 	 * Append a DCE string to the buffer and align to the specified boundary
 	 * 
@@ -1317,77 +1305,75 @@ public class DCEBuffer {
 	 * @param align int
 	 */
 	public final void putString(String str, int align) {
-
-		// Check if there is enough space in the buffer
-
+	  
+	  //	Check if there is enough space in the buffer
+	  
 		int reqLen = (str.length() * 2) + 24;
-
-		if (m_buffer.length - m_pos < reqLen)
-			extendBuffer(reqLen);
-
-		// Pack the string
-
-		m_pos = DCEDataPacker.putDCEString(m_buffer, m_pos, str, false);
-
-		// Align the new buffer position
-
-		alignPosition(align);
+			
+	  if ( m_buffer.length - m_pos < reqLen)
+	  	extendBuffer(reqLen);
+	  	
+	  //	Pack the string
+	  
+	  m_pos = DCEDataPacker.putDCEString(m_buffer,m_pos,str,false);
+	  
+	  //	Align the new buffer position
+	  
+	  alignPosition(align);
 	}
-
+	
 	/**
-	 * Append a DCE string to the buffer, specify whether the nul is included in
-	 * the string length or not
+	 * Append a DCE string to the buffer, specify whether the nul is included in the string length or not
 	 * 
 	 * @param str String
 	 * @param align int
 	 * @param incNul boolean
 	 */
 	public final void putString(String str, int align, boolean incNul) {
-
-		// Check if there is enough space in the buffer
-
-		int reqLen = (str.length() * 2) + 24;
-		if (incNul)
-			reqLen += 2;
-
-		if (m_buffer.length - m_pos < reqLen)
-			extendBuffer(reqLen);
-
-		// Pack the string
-
-		m_pos = DCEDataPacker.putDCEString(m_buffer, m_pos, str, incNul);
-
-		// Align the new buffer position
-
-		alignPosition(align);
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  int reqLen = (str.length() * 2) + 24;
+	  if ( incNul)
+	  	reqLen += 2;
+	  
+	  if ( m_buffer.length - m_pos < reqLen)
+	  	extendBuffer( reqLen);
+	  	
+	  //	Pack the string
+	  
+	  m_pos = DCEDataPacker.putDCEString(m_buffer,m_pos,str,incNul);
+	  
+	  //	Align the new buffer position
+	  
+	  alignPosition(align);
 	}
-
+	
 	/**
-	 * Append string return buffer details. Some DCE/RPC requests incorrectly
-	 * send output parameters as input.
+	 * Append string return buffer details. Some DCE/RPC requests incorrectly send output parameters as input.
 	 * 
 	 * @param len int
 	 * @param align int
 	 */
 	public final void putStringReturn(int len, int align) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 20)
-			extendBuffer();
-
-		// Pack the string return details
+	
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 20)
+	  	extendBuffer();
+	  	
+	  //	Pack the string return details
 
 		DataPacker.putIntelInt(len, m_buffer, m_pos);
-		DataPacker.putZeros(m_buffer, m_pos + 4, 8);
+		DataPacker.putZeros(m_buffer,m_pos+4, 8);
 		DataPacker.putIntelInt(DUMMY_ADDRESS, m_buffer, m_pos + 12);
 		m_pos += 16;
-
-		// Align the new buffer position
-
-		alignPosition(align);
+			  
+	  //	Align the new buffer position
+	  
+	  alignPosition(align);
 	}
-
+	
 	/**
 	 * Append a DCE string header to the buffer
 	 * 
@@ -1395,80 +1381,78 @@ public class DCEBuffer {
 	 * @param incNul boolean
 	 */
 	public final void putUnicodeHeader(String str, boolean incNul) {
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 8)
+	  	extendBuffer();
 
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 8)
-			extendBuffer();
-
-		// Calculate the string length in bytes
-
+		//	Calculate the string length in bytes
+		
 		int sLen = 0;
-		if (str != null)
+		if ( str != null)
 			sLen = str.length() * 2;
+			
+	  //	Pack the string header
 
-		// Pack the string header
-
-		if (str != null)
-			DataPacker.putIntelShort(incNul ? sLen + 2 : sLen, m_buffer, m_pos);
-		else
-			DataPacker.putIntelShort(0, m_buffer, m_pos);
-
-		DataPacker.putIntelShort(sLen != 0 ? sLen + 2 : 0, m_buffer, m_pos + 2);
-		DataPacker.putIntelInt(
-			str != null ? DUMMY_ADDRESS : 0, m_buffer, m_pos + 4);
-
-		m_pos += 8;
+		if ( str != null)
+	  	DataPacker.putIntelShort(incNul ? sLen + 2 : sLen,m_buffer,m_pos);
+	  else
+	  	DataPacker.putIntelShort(0,m_buffer,m_pos);
+	  	
+	  DataPacker.putIntelShort(sLen != 0 ? sLen + 2 : 0,m_buffer,m_pos + 2);
+	  DataPacker.putIntelInt(str != null ? DUMMY_ADDRESS : 0,m_buffer,m_pos + 4);
+	  
+	  m_pos += 8;
 	}
-
+	
 	/**
-	 * Append a Unicode return string header to the buffer. Some DCE/RPC
-	 * requests incorrectly send output parameters as input.
+	 * Append a Unicode return string header to the buffer.  Some DCE/RPC requests incorrectly send output
+	 * parameters as input.
 	 * 
 	 * @param len int
 	 */
 	public final void putUnicodeReturn(int len) {
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 8)
+	  	extendBuffer();
 
-		// Check if there is enough space in the buffer
+	  //	Pack the string header
 
-		if (m_buffer.length - m_pos < 8)
-			extendBuffer();
-
-		// Pack the string header
-
-		DataPacker.putIntelShort(0, m_buffer, m_pos);
-		DataPacker.putIntelShort(len, m_buffer, m_pos + 2);
-		DataPacker.putIntelInt(DUMMY_ADDRESS, m_buffer, m_pos + 4);
-
-		m_pos += 8;
+  	DataPacker.putIntelShort(0,m_buffer,m_pos);
+	  DataPacker.putIntelShort(len,m_buffer,m_pos + 2);
+	  DataPacker.putIntelInt(DUMMY_ADDRESS,m_buffer,m_pos + 4);
+	  
+	  m_pos += 8;
 	}
-
+	
 	/**
 	 * Append a DCE string header to the buffer
 	 * 
 	 * @param len int
 	 */
 	public final void putUnicodeHeader(int len) {
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 8)
+	  	extendBuffer();
 
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 8)
-			extendBuffer();
-
-		// Calculate the string length in bytes
-
+		//	Calculate the string length in bytes
+		
 		int sLen = len * 2;
+			
+	  //	Pack the string header
 
-		// Pack the string header
-
-		DataPacker.putIntelShort(sLen, m_buffer, m_pos);
-		DataPacker.putIntelShort(sLen + 2, m_buffer, m_pos + 2);
-		DataPacker.putIntelInt(
-			sLen != 0 ? DUMMY_ADDRESS : 0, m_buffer, m_pos + 4);
-
-		m_pos += 8;
+  	DataPacker.putIntelShort(sLen,m_buffer,m_pos);
+	  DataPacker.putIntelShort(sLen + 2,m_buffer,m_pos + 2);
+	  DataPacker.putIntelInt(sLen != 0 ? DUMMY_ADDRESS : 0,m_buffer,m_pos + 4);
+	  
+	  m_pos += 8;
 	}
-
+	
 	/**
 	 * Append an ASCII string to the DCE buffer
 	 * 
@@ -1476,85 +1460,82 @@ public class DCEBuffer {
 	 * @param incNul boolean
 	 */
 	public final void putASCIIString(String str, boolean incNul) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < (str.length() + 1))
-			extendBuffer(str.length() + 2);
-
-		// Pack the string
-
-		m_pos = DataPacker.putString(str, m_buffer, m_pos, incNul);
-	}
-
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < (str.length() + 1))
+	  	extendBuffer(str.length() + 2);
+	  	
+	  //	Pack the string
+	  
+	  m_pos = DataPacker.putString(str,m_buffer,m_pos,incNul);
+	}	
+	
 	/**
-	 * Append an ASCII string to the DCE buffer, and align on the specified
-	 * boundary
+	 * Append an ASCII string to the DCE buffer, and align on the specified boundary
 	 * 
 	 * @param str String
 	 * @param incNul boolean
 	 * @param align int
 	 */
 	public final void putASCIIString(String str, boolean incNul, int align) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < (str.length() + 1))
-			extendBuffer(str.length() + 8);
-
-		// Pack the string
-
-		m_pos = DataPacker.putString(str, m_buffer, m_pos, incNul);
-
-		// Align the buffer position
-
-		alignPosition(align);
-	}
-
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < (str.length() + 1))
+	  	extendBuffer(str.length() + 8);
+	  	
+	  //	Pack the string
+	  
+	  m_pos = DataPacker.putString(str,m_buffer,m_pos,incNul);
+	  
+	  //	Align the buffer position
+	  
+	  alignPosition(align);
+	}	
+	
 	/**
 	 * Append a pointer to the buffer.
 	 * 
 	 * @param obj Object
 	 */
 	public final void putPointer(Object obj) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 4)
-			extendBuffer();
-
-		// Check if the object is valid, if not then put a null pointer into the
-		// buffer
-
-		if (obj == null)
-			DataPacker.putZeros(m_buffer, m_pos, 4);
-		else
-			DataPacker.putIntelInt(DUMMY_ADDRESS, m_buffer, m_pos);
-		m_pos += 4;
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 4)
+	  	extendBuffer();
+	  	
+	  //	Check if the object is valid, if not then put a null pointer into the buffer
+	  
+	  if ( obj == null)
+	  	DataPacker.putZeros(m_buffer, m_pos, 4);
+	  else
+	  	DataPacker.putIntelInt(DUMMY_ADDRESS,m_buffer,m_pos);
+	  m_pos += 4;
 	}
-
+	
 	/**
 	 * Append a pointer to the buffer.
 	 * 
 	 * @param notNull boolean
 	 */
 	public final void putPointer(boolean notNull) {
-
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 4)
-			extendBuffer();
-
-		// Check if the object is valid, if not then put a null pointer into the
-		// buffer
-
-		if (notNull == false)
-			DataPacker.putZeros(m_buffer, m_pos, 4);
-		else
-			DataPacker.putIntelInt(DUMMY_ADDRESS, m_buffer, m_pos);
-		m_pos += 4;
+	  
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 4)
+	  	extendBuffer();
+	  	
+	  //	Check if the object is valid, if not then put a null pointer into the buffer
+	  
+	  if ( notNull == false)
+	  	DataPacker.putZeros(m_buffer, m_pos, 4);
+	  else
+	  	DataPacker.putIntelInt(DUMMY_ADDRESS,m_buffer,m_pos);
+	  m_pos += 4;
 	}
-
+	
 	/**
 	 * Append a UUID to the buffer
 	 * 
@@ -1562,36 +1543,36 @@ public class DCEBuffer {
 	 * @param writeVer boolean
 	 */
 	public final void putUUID(UUID uuid, boolean writeVer) {
-
-		// Check if there is enough space in the buffer
+	  
+	  //	Check if there is enough space in the buffer
 
 		int len = UUID.UUID_LENGTH_BINARY;
-		if (writeVer == true)
+		if ( writeVer == true)
 			len += 4;
-
-		if (m_buffer.length - m_pos < len)
-			extendBuffer();
-
-		// Pack the UUID
-
-		m_pos = uuid.storeUUID(m_buffer, m_pos, writeVer);
+			
+	  if ( m_buffer.length - m_pos < len)
+	  	extendBuffer();
+	  	
+	  //	Pack the UUID
+	  
+	  m_pos = uuid.storeUUID(m_buffer,m_pos,writeVer);
 	}
-
+	
 	/**
 	 * Append a policy handle to the buffer
 	 * 
 	 * @param handle PolicyHandle
 	 */
 	public final void putHandle(PolicyHandle handle) {
+	  
+	  //	Check if there is enough space in the buffer
 
-		// Check if there is enough space in the buffer
+	  if ( m_buffer.length - m_pos < PolicyHandle.POLICY_HANDLE_SIZE)
+	  	extendBuffer(PolicyHandle.POLICY_HANDLE_SIZE);
+	  	
+	  //	Pack the policy handle
 
-		if (m_buffer.length - m_pos < PolicyHandle.POLICY_HANDLE_SIZE)
-			extendBuffer(PolicyHandle.POLICY_HANDLE_SIZE);
-
-		// Pack the policy handle
-
-		m_pos = handle.storePolicyHandle(m_buffer, m_pos);
+		m_pos = handle.storePolicyHandle(m_buffer,m_pos);
 	}
 
 	/**
@@ -1600,13 +1581,13 @@ public class DCEBuffer {
 	 * @param buf DCEBuffer
 	 */
 	public final void putBuffer(DCEBuffer buf) {
-		try {
-			appendData(buf.getBuffer(), buf.getReadPosition(), buf.getLength());
-		}
-		catch (DCEBufferException ex) {
-		}
+	  try {
+  	  appendData(buf.getBuffer(),buf.getReadPosition(), buf.getLength());
+	  }
+	  catch (DCEBufferException ex) {
+	  }
 	}
-
+		
 	/**
 	 * Append an error status to the buffer, also sets the error status value
 	 * 
@@ -1614,21 +1595,22 @@ public class DCEBuffer {
 	 */
 	public final void putErrorStatus(int sts) {
 
-		// Check if there is enough space in the buffer
-
-		if (m_buffer.length - m_pos < 4)
-			extendBuffer();
-
-		// Pack the status value
-
-		DataPacker.putIntelInt(sts, m_buffer, m_pos);
-		m_pos += 4;
-
-		// Save the status value
-
-		m_errorCode = sts;
+	  //	Check if there is enough space in the buffer
+	  
+	  if ( m_buffer.length - m_pos < 4)
+	  	extendBuffer();
+	  	
+	  //	Pack the status value
+	  
+	  DataPacker.putIntelInt(sts,m_buffer,m_pos);
+	  m_pos += 4;
+	  
+	  //	Save the status value
+	  
+	  m_errorCode = sts;
 	}
-
+	  
+	
 	/**
 	 * Append a DCE header to the buffer
 	 * 
@@ -1636,39 +1618,39 @@ public class DCEBuffer {
 	 * @param callid int
 	 */
 	public final void putHeader(int pdutyp, int callid) {
-		m_buffer[m_pos++] = VAL_VERSIONMAJOR;
-		m_buffer[m_pos++] = VAL_VERSIONMINOR;
-		m_buffer[m_pos++] = (byte) (pdutyp & 0xFF);
-		m_buffer[m_pos++] = 0;
+	  m_buffer[m_pos++] = VAL_VERSIONMAJOR;
+	  m_buffer[m_pos++] = VAL_VERSIONMINOR;
+	  m_buffer[m_pos++] = (byte) (pdutyp & 0xFF);
+	  m_buffer[m_pos++] = 0;
+	  
+    DataPacker.putIntelInt(VAL_PACKEDDATAREP,m_buffer, m_pos);
+    m_pos += 4;
 
-		DataPacker.putIntelInt(VAL_PACKEDDATAREP, m_buffer, m_pos);
-		m_pos += 4;
-
-		DataPacker.putZeros(m_buffer, m_pos, 4);
-		m_pos += 4;
-
-		DataPacker.putIntelInt(callid, m_buffer, m_pos);
-		m_pos += 4;
+		DataPacker.putZeros(m_buffer,m_pos,4);
+    m_pos += 4;
+    
+    DataPacker.putIntelInt(callid, m_buffer, m_pos);
+    m_pos += 4;
 	}
-
+	
 	/**
 	 * Append a bind header to the buffer
 	 * 
 	 * @param callid int
 	 */
 	public final void putBindHeader(int callid) {
-		putHeader(DCECommand.BIND, callid);
+	  putHeader(DCECommand.BIND, callid);
 	}
-
+	
 	/**
 	 * Append a bind acknowlegde header to the buffer
 	 * 
 	 * @param callid int
 	 */
 	public final void putBindAckHeader(int callid) {
-		putHeader(DCECommand.BINDACK, callid);
+	  putHeader(DCECommand.BINDACK, callid);
 	}
-
+	
 	/**
 	 * Append a request header to the buffer
 	 * 
@@ -1677,15 +1659,15 @@ public class DCEBuffer {
 	 * @param allocHint int
 	 */
 	public final void putRequestHeader(int callid, int opcode, int allocHint) {
-		putHeader(DCECommand.REQUEST, callid);
-		DataPacker.putIntelInt(allocHint, m_buffer, m_pos);
-		m_pos += 4;
-		DataPacker.putZeros(m_buffer, m_pos, 2);
-		m_pos += 2;
-		DataPacker.putIntelShort(opcode, m_buffer, m_pos);
-		m_pos += 2;
+	  putHeader(DCECommand.REQUEST, callid);
+	  DataPacker.putIntelInt(allocHint,m_buffer,m_pos);
+	  m_pos += 4;
+	  DataPacker.putZeros(m_buffer,m_pos,2);
+	  m_pos += 2;
+	  DataPacker.putIntelShort(opcode,m_buffer,m_pos);
+	  m_pos += 2;
 	}
-
+	
 	/**
 	 * Append a response header to the buffer
 	 * 
@@ -1693,47 +1675,46 @@ public class DCEBuffer {
 	 * @param allocHint int
 	 */
 	public final void putResponseHeader(int callid, int allocHint) {
-		putHeader(DCECommand.RESPONSE, callid);
-		DataPacker.putIntelInt(allocHint, m_buffer, m_pos);
-		m_pos += 4;
-		DataPacker.putZeros(m_buffer, m_pos, 4);
-		m_pos += 4;
+	  putHeader(DCECommand.RESPONSE, callid);
+	  DataPacker.putIntelInt(allocHint,m_buffer,m_pos);
+	  m_pos += 4;
+	  DataPacker.putZeros(m_buffer,m_pos,4);
+	  m_pos += 4;
 	}
-
+	
 	/**
 	 * Append zero integers to the buffer
 	 * 
 	 * @param cnt int
 	 */
 	public final void putZeroInts(int cnt) {
+	  
+	  //	Check if there is enough space in the buffer
 
-		// Check if there is enough space in the buffer
-
-		int bytCnt = cnt * 4;
-		if (m_buffer.length - m_pos < bytCnt)
-			extendBuffer(bytCnt * 2);
-
-		// Pack the zero integer values
-
-		DataPacker.putZeros(m_buffer, m_pos, bytCnt);
-		m_pos += bytCnt;
+		int bytCnt = cnt * 4;	  
+	  if ( m_buffer.length - m_pos < bytCnt)
+	  	extendBuffer(bytCnt * 2);
+	  	
+	  //	Pack the zero integer values
+	  
+	  DataPacker.putZeros(m_buffer,m_pos, bytCnt);
+	  m_pos += bytCnt;
 	}
-
+	
 	/**
 	 * Reset the buffer pointers to reuse the buffer
 	 */
 	public final void resetBuffer() {
-
-		// Reset the read/write positions
-
-		m_pos = 0;
-		m_rdpos = 0;
-
-		// If the buffer is over sized release it and allocate a standard sized
-		// buffer
-
-		if (m_buffer.length >= MAX_BUFFER_SIZE)
-			m_buffer = new byte[DEFAULT_BUFSIZE];
+	  
+	  //	Reset the read/write positions
+	  
+	  m_pos   = 0;
+	  m_rdpos = 0;
+	  
+	  //	If the buffer is over sized release it and allocate a standard sized buffer
+	  
+	  if ( m_buffer.length >= MAX_BUFFER_SIZE)
+	    m_buffer = new byte[DEFAULT_BUFSIZE];
 	}
 
 	/**
@@ -1744,86 +1725,86 @@ public class DCEBuffer {
 	public final void setWritePosition(int pos) {
 		m_pos = pos;
 	}
-
+	
 	/**
 	 * Update the write position by the specified amount
 	 * 
 	 * @param len int
 	 */
 	public final void updateWritePosition(int len) {
-		m_pos += len;
+		m_pos += len;	
 	}
-
+	
 	/**
 	 * Determine if there is an error status set
 	 * 
 	 * @return boolean
 	 */
 	public final boolean hasErrorStatus() {
-		return m_errorCode != 0 ? true : false;
+	  return m_errorCode != 0 ? true : false;
 	}
-
+	
 	/**
 	 * Return the error status code
 	 * 
 	 * @return int
 	 */
 	public final int getErrorStatus() {
-		return m_errorCode;
+	  return m_errorCode;
 	}
-
+	
 	/**
 	 * Set the error status code
 	 * 
 	 * @param sts int
 	 */
 	public final void setErrorStatus(int sts) {
-		m_errorCode = sts;
+	  m_errorCode = sts;
 	}
-
+	
 	/**
 	 * Extend the DCE buffer by the specified amount
 	 * 
 	 * @param ext int
 	 */
 	private final void extendBuffer(int ext) {
-
-		// Create a new buffer of the required size
-
-		byte[] newBuf = new byte[m_buffer.length + ext];
-
-		// Copy the data from the current buffer to the new buffer
-
-		System.arraycopy(m_buffer, 0, newBuf, 0, m_buffer.length);
-
-		// Set the new buffer to be the main buffer
-
-		m_buffer = newBuf;
+	  
+	  //	Create a new buffer of the required size
+	  
+	  byte[] newBuf = new byte[m_buffer.length + ext];
+	  
+	  //	Copy the data from the current buffer to the new buffer
+	  
+	  System.arraycopy(m_buffer, 0, newBuf, 0, m_buffer.length);
+	  
+	  //	Set the new buffer to be the main buffer
+	  
+	  m_buffer = newBuf;
 	}
-
+	
 	/**
 	 * Extend the DCE buffer, double the currently allocated buffer size
 	 */
 	private final void extendBuffer() {
-		extendBuffer(m_buffer.length * 2);
+	  extendBuffer(m_buffer.length * 2);
 	}
-
+	
 	/**
 	 * Align the current buffer position on the specified boundary
 	 * 
 	 * @param align int
 	 */
 	private final void alignPosition(int align) {
-
-		// Range check the alignment
-
-		if (align < 0 || align > 2)
-			return;
-
-		// Align the buffer position on the required boundary
-
-		m_pos = (m_pos + _alignRound[align]) & _alignMask[align];
-	}
+	  
+	  //	Range check the alignment
+	  
+	  if ( align < 0 || align > 2)
+	  	return;
+	  	
+	  //	Align the buffer position on the required boundary
+	  
+	  m_pos = (m_pos + _alignRound[align]) & _alignMask[align];
+	}	  	
 
 	/**
 	 * Align the receive buffer position on the specified boundary
@@ -1831,25 +1812,24 @@ public class DCEBuffer {
 	 * @param align int
 	 */
 	private final void alignRxPosition(int align) {
-
-		// Range check the alignment
-
-		if (align < 0 || align > 2 || m_rdpos >= m_buffer.length)
-			return;
-
-		// Align the buffer position on the required boundary
-
-		m_rdpos = (m_rdpos + _alignRound[align]) & _alignMask[align];
+	  
+	  //	Range check the alignment
+	  
+	  if ( align < 0 || align > 2 || m_rdpos >= m_buffer.length)
+	  	return;
+	  	
+	  //	Align the buffer position on the required boundary
+	  
+	  m_rdpos = (m_rdpos + _alignRound[align]) & _alignMask[align];
 	}
-
+	
 	/**
 	 * Dump the DCE buffered data
 	 */
 	public final void Dump() {
-		int len = getLength();
-		if (len == 0)
-			len = 24;
-		HexDump.Dump(getBuffer(), len, m_base);
+	  int len = getLength();
+	  if ( len == 0)
+	  	len = 24;
+	  HexDump.Dump(getBuffer(),len,m_base);
 	}
-
 }

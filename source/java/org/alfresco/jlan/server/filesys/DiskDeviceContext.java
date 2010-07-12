@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -35,48 +35,46 @@ import org.alfresco.jlan.smb.server.notify.NotifyRequest;
 
 /**
  * Disk Device Context Class
- * 
+ *
  * @author gkspencer
  */
 public class DiskDeviceContext extends DeviceContext {
-
-	// Change notification handler and flag to indicate if file server should
-	// generate notifications
-
+	
+	//	Change notification handler and flag to indicate if file server should generate notifications
+	
 	private NotifyChangeHandler m_changeHandler;
-	private boolean m_filesysNotifications = true;
+	private boolean  m_filesysNotifications = true;
 
-	// Volume information
-
+	//	Volume information
+	
 	private VolumeInfo m_volumeInfo;
 
-	// Disk sizing information
-
+	//	Disk sizing information
+	
 	private SrvDiskInfo m_diskInfo;
 
-	// Quota manager
-
+	//	Quota manager
+	
 	private QuotaManager m_quotaManager;
-
-	// Filesystem attributes, required to enable features such as compression
-	// and encryption
-
+			
+	//	Filesystem attributes, required to enable features such as compression and encryption
+	
 	private int m_filesysAttribs;
-
-	// Disk device attributes, can be used to make the device appear as a
-	// removeable, read-only,
-	// or write-once device for example.
+	
+	//	Disk device attributes, can be used to make the device appear as a removeable, read-only,
+	//	or write-once device for example.
 
 	private int m_deviceAttribs;
-
+	
 	/**
 	 * Class constructor
 	 */
-	public DiskDeviceContext() {
-		super();
-
+	public DiskDeviceContext() { super();
+	 
+   
+           
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -86,15 +84,15 @@ public class DiskDeviceContext extends DeviceContext {
 		super(devName);
 	}
 
-	/**
-	 * Class constructor
-	 * 
-	 * @param devName String
-	 * @param shareName String
-	 */
-	public DiskDeviceContext(String devName, String shareName) {
-		super(devName, shareName);
-	}
+  /**
+   * Class constructor
+   * 
+   * @param devName String
+   * @param shareName String
+   */
+  public DiskDeviceContext(String devName, String shareName) {
+    super(devName, shareName);
+  }
 
 	/**
 	 * Determine if the volume information is valid
@@ -104,7 +102,7 @@ public class DiskDeviceContext extends DeviceContext {
 	public final boolean hasVolumeInformation() {
 		return m_volumeInfo != null ? true : false;
 	}
-
+	
 	/**
 	 * Return the volume information
 	 * 
@@ -113,7 +111,7 @@ public class DiskDeviceContext extends DeviceContext {
 	public final VolumeInfo getVolumeInformation() {
 		return m_volumeInfo;
 	}
-
+	
 	/**
 	 * Determine if the disk sizing information is valid
 	 * 
@@ -122,7 +120,7 @@ public class DiskDeviceContext extends DeviceContext {
 	public final boolean hasDiskInformation() {
 		return m_diskInfo != null ? true : false;
 	}
-
+	
 	/**
 	 * Return the disk sizing information
 	 * 
@@ -131,14 +129,14 @@ public class DiskDeviceContext extends DeviceContext {
 	public final SrvDiskInfo getDiskInformation() {
 		return m_diskInfo;
 	}
-
+	
 	/**
 	 * Return the filesystem attributes
 	 * 
 	 * @return int
 	 */
 	public final int getFilesystemAttributes() {
-		return m_filesysAttribs;
+	  return m_filesysAttribs;
 	}
 
 	/**
@@ -147,61 +145,61 @@ public class DiskDeviceContext extends DeviceContext {
 	 * @return int
 	 */
 	public final int getDeviceAttributes() {
-		return m_deviceAttribs;
+	  return m_deviceAttribs;
 	}
-
-	/**
-	 * Return the filesystem type, either FileSystem.TypeFAT or
-	 * FileSystem.TypeNTFS. Defaults to FileSystem.FAT but will be overridden if
-	 * the filesystem driver implements the NTFSStreamsInterface.
-	 * 
-	 * @return String
-	 */
-	public String getFilesystemType() {
-		return FileSystem.TypeFAT;
-	}
-
+	
+  /**
+   * Return the filesystem type, either FileSystem.TypeFAT or FileSystem.TypeNTFS.
+   * 
+   * Defaults to FileSystem.FAT but will be overridden if the filesystem driver implements the
+   * NTFSStreamsInterface.
+   * 
+   * @return String
+   */
+  public String getFilesystemType() {
+    return FileSystem.TypeFAT;
+  }
+  
 	/**
 	 * Determine if the filesystem is case sensitive or not
 	 * 
 	 * @return boolean
 	 */
 	public final boolean isCaseless() {
-		return (m_filesysAttribs & FileSystem.CasePreservedNames) == 0
-			? true : false;
+	  return ( m_filesysAttribs & FileSystem.CasePreservedNames) == 0 ? true : false;
 	}
-
+	
 	/**
 	 * Enable/disable the change notification handler for this device
 	 * 
 	 * @param ena boolean
 	 */
 	public final void enableChangeHandler(boolean ena) {
-		if (ena == true)
+		if ( ena == true)
 			m_changeHandler = new NotifyChangeHandler(this);
 		else {
-
-			// Shutdown the change handler, if valid
-
-			if (m_changeHandler != null)
+			
+			//	Shutdown the change handler, if valid
+			
+			if ( m_changeHandler != null)
 				m_changeHandler.shutdownRequest();
 			m_changeHandler = null;
 		}
 	}
-
+	
 	/**
 	 * Close the disk device context. Release the file state cache resources.
 	 */
 	public void CloseContext() {
-
-		// Call the base class
-
+		
+		//	Call the base class
+		
 		super.CloseContext();
-
+		
 		// Close the change notification handler
-
-		if (hasChangeHandler())
-			enableChangeHandler(false);
+    
+		if ( hasChangeHandler())
+			enableChangeHandler( false);
 	}
 
 	/**
@@ -212,7 +210,7 @@ public class DiskDeviceContext extends DeviceContext {
 	public final boolean hasChangeHandler() {
 		return m_changeHandler != null ? true : false;
 	}
-
+	
 	/**
 	 * Return the change notification handler
 	 * 
@@ -228,11 +226,11 @@ public class DiskDeviceContext extends DeviceContext {
 	 * @return boolean
 	 */
 	public final boolean hasFileServerNotifications() {
-		if (m_changeHandler == null)
+		if ( m_changeHandler == null)
 			return false;
 		return m_filesysNotifications;
 	}
-
+	
 	/**
 	 * Add a request to the change notification list
 	 * 
@@ -241,7 +239,7 @@ public class DiskDeviceContext extends DeviceContext {
 	public final void addNotifyRequest(NotifyRequest req) {
 		m_changeHandler.addNotifyRequest(req);
 	}
-
+	
 	/**
 	 * Remove a request from the notify change request list
 	 * 
@@ -259,7 +257,7 @@ public class DiskDeviceContext extends DeviceContext {
 	public final void setVolumeInformation(VolumeInfo vol) {
 		m_volumeInfo = vol;
 	}
-
+	
 	/**
 	 * Set the disk information
 	 * 
@@ -268,7 +266,7 @@ public class DiskDeviceContext extends DeviceContext {
 	public final void setDiskInformation(SrvDiskInfo disk) {
 		m_diskInfo = disk;
 	}
-
+	
 	/**
 	 * Check if there is a quota manager configured for this filesystem.
 	 * 
@@ -277,16 +275,16 @@ public class DiskDeviceContext extends DeviceContext {
 	public final boolean hasQuotaManager() {
 		return m_quotaManager != null ? true : false;
 	}
-
+	
 	/**
 	 * Return the quota manager for the filesystem
-	 * 
+	 *
 	 * @return QuotaManager
 	 */
 	public final QuotaManager getQuotaManager() {
 		return m_quotaManager;
 	}
-
+	
 	/**
 	 * Set the quota manager for this filesystem
 	 * 
@@ -302,7 +300,7 @@ public class DiskDeviceContext extends DeviceContext {
 	 * @param attrib int
 	 */
 	public final void setFilesystemAttributes(int attrib) {
-		m_filesysAttribs = attrib;
+	  m_filesysAttribs = attrib;
 	}
 
 	/**
@@ -311,7 +309,7 @@ public class DiskDeviceContext extends DeviceContext {
 	 * @param attrib int
 	 */
 	public final void setDeviceAttributes(int attrib) {
-		m_deviceAttribs = attrib;
+	  m_deviceAttribs = attrib;
 	}
 
 	/**
@@ -322,15 +320,15 @@ public class DiskDeviceContext extends DeviceContext {
 	public final void setFileServerNotifications(boolean ena) {
 		m_filesysNotifications = ena;
 	}
-
+	
 	/**
-	 * Context has been initialized and attached to a shared device, do any
-	 * startup processing in this method.
+	 * Context has been initialized and attached to a shared device, do any startup processing in
+	 * this method.
 	 * 
 	 * @param share DiskSharedDevice
 	 * @exception DeviceContextException
 	 */
 	public void startFilesystem(DiskSharedDevice share)
-		throws DeviceContextException {
+		throws DeviceContextException {  
 	}
 }

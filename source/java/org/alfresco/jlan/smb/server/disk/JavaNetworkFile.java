@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -37,485 +37,472 @@ import org.alfresco.jlan.smb.SeekType;
 
 /**
  * Network file implementation that uses the java.io.File class.
- * 
+ *
  * @author gkspencer
  */
 public class JavaNetworkFile extends NetworkFile {
 
-	// File details
+  //	File details
 
-	protected File m_file;
+  protected File m_file;
 
-	// Random access file used to read/write the actual file
+  //	Random access file used to read/write the actual file
 
-	protected RandomAccessFile m_io;
+  protected RandomAccessFile m_io;
 
-	// End of file flag
+  //	End of file flag
 
-	protected boolean m_eof;
+  protected boolean m_eof;
 
-	/**
-	 * Class constructor.
-	 * 
-	 * @param file File
-	 * @param netPath String
-	 */
-	public JavaNetworkFile(File file, String netPath) {
-		super(file.getName());
+  /**
+   * Class constructor.
+   *
+   * @param file File
+   * @param netPath String
+   */
+  public JavaNetworkFile(File file, String netPath) {
+    super(file.getName());
 
-		// Set the file using the existing file object
+    //  Set the file using the existing file object
 
-		m_file = file;
+    m_file = file;
 
-		// Set the file size
+    //  Set the file size
 
-		setFileSize(m_file.length());
-		m_eof = false;
+    setFileSize(m_file.length());
+    m_eof = false;
+    
+    //	Set the modification date/time, if available. Fake the creation date/time as it's not
+    //	available from the File class
+    
+    long modDate = m_file.lastModified(); 
+    setModifyDate(modDate);
+    setCreationDate(modDate);
+    
+    //	Set the file id
+    
+    setFileId(netPath.hashCode());
+  }
 
-		// Set the modification date/time, if available. Fake the creation
-		// date/time as it's not
-		// available from the File class
+  /**
+   * Class constructor.
+   *
+   * @param name String
+   * @param netPath String
+   */
+  public JavaNetworkFile(String name, String netPath) {
+    super(name);
 
-		long modDate = m_file.lastModified();
+    //  Create the file object
+
+    File newFile = new File(name);
+
+    //  Check if the file exists
+
+    if (newFile.exists()) {
+
+      //  Set the file object
+
+      m_file = newFile;
+    }
+    else {
+
+      //  Convert the file name to lowercase and try again
+
+      String lowerName = name.toLowerCase();
+      File newFile2 = new File(lowerName);
+
+      if (newFile2.exists()) {
+
+        //  Set the file
+
+        m_file = newFile2;
+      }
+      else {
+
+        //  Set the file to be the original file name
+
+        m_file = newFile;
+
+        //  Create the file
+
+        try {
+          FileOutputStream outFile = new FileOutputStream(newFile);
+          outFile.close();
+        }
+        catch (Exception ex) {
+        }
+      }
+    }
+
+    //  Set the file size
+
+    setFileSize(m_file.length());
+    m_eof = false;
+    
+		//	Set the modification date/time, if available. Fake the creation date/time as it's not
+		//	available from the File class
+    
+		long modDate = m_file.lastModified(); 
 		setModifyDate(modDate);
 		setCreationDate(modDate);
-
-		// Set the file id
-
+    
+		//	Set the file id
+    
 		setFileId(netPath.hashCode());
-	}
+  }
 
-	/**
-	 * Class constructor.
-	 * 
-	 * @param name String
-	 * @param netPath String
-	 */
-	public JavaNetworkFile(String name, String netPath) {
-		super(name);
+  /**
+   * Class constructor.
+   *
+   * @param name  File name/path
+   * @param mode  File access mode
+   */
+  public JavaNetworkFile(String name, int mode) {
+    super(name);
 
-		// Create the file object
+    //  Create the file object
 
-		File newFile = new File(name);
+    File newFile = new File(name);
 
-		// Check if the file exists
+    //  Check if the file exists
 
-		if (newFile.exists()) {
+    if (newFile.exists() == false) {
 
-			// Set the file object
+      //  Convert the file name to lowercase and try again
 
-			m_file = newFile;
-		}
-		else {
+      String lowerName = name.toLowerCase();
+      File newFile2 = new File(lowerName);
 
-			// Convert the file name to lowercase and try again
+      if (newFile2.exists()) {
 
-			String lowerName = name.toLowerCase();
-			File newFile2 = new File(lowerName);
+        //  Set the file
 
-			if (newFile2.exists()) {
+        m_file = newFile2;
+      }
+      else {
 
-				// Set the file
+        //  Set the file to be the original file name
 
-				m_file = newFile2;
-			}
-			else {
+        m_file = newFile;
 
-				// Set the file to be the original file name
+        //  Create the file, if not opening the file read-only
 
-				m_file = newFile;
+        if (AccessMode.getAccessMode(mode) != AccessMode.ReadOnly) {
 
-				// Create the file
+          //  Create a new file
 
-				try {
-					FileOutputStream outFile = new FileOutputStream(newFile);
-					outFile.close();
-				}
-				catch (Exception ex) {
-				}
-			}
-		}
+          try {
+            FileOutputStream outFile = new FileOutputStream(newFile);
+            outFile.close();
+          }
+          catch (Exception ex) {
+          }
+        }
+      }
+    }
 
-		// Set the file size
+    //  Set the file size
 
-		setFileSize(m_file.length());
-		m_eof = false;
-
-		// Set the modification date/time, if available. Fake the creation
-		// date/time as it's not
-		// available from the File class
-
-		long modDate = m_file.lastModified();
+    setFileSize(m_file.length());
+    m_eof = false;
+    
+		//	Set the modification date/time, if available. Fake the creation date/time as it's not
+		//	available from the File class
+    
+		long modDate = m_file.lastModified(); 
 		setModifyDate(modDate);
 		setCreationDate(modDate);
+  }
 
-		// Set the file id
+  /**
+   * Close the network file.
+   */
+  public void closeFile() throws java.io.IOException {
 
-		setFileId(netPath.hashCode());
-	}
+    //  Close the file, if used
 
-	/**
-	 * Class constructor.
-	 * 
-	 * @param name File name/path
-	 * @param mode File access mode
-	 */
-	public JavaNetworkFile(String name, int mode) {
-		super(name);
+    if (m_io != null) {
+    	
+    	//	Close the file
+    	
+      m_io.close();
+      m_io = null;
+      
+      //	Set the last modified date/time for the file
 
-		// Create the file object
+			if ( this.getWriteCount() > 0)      
+      	m_file.setLastModified(System.currentTimeMillis());
+      	
+      //	Indicate that the file is closed
+      
+      setClosed(true);
+    }
+  }
 
-		File newFile = new File(name);
+  /**
+   * Return the current file position.
+   *
+   * @return long
+   */
+  public long currentPosition() {
 
-		// Check if the file exists
+    //  Check if the file is open
 
-		if (newFile.exists() == false) {
+    try {
+      if (m_io != null)
+        return m_io.getFilePointer();
+    }
+    catch (Exception ex) {
+    }
+    return 0;
+  }
 
-			// Convert the file name to lowercase and try again
+  /**
+   * Flush the file.
+   * 
+   * @exception IOException
+   */
+  public void flushFile()
+  	throws IOException {
+  	
+  	//	Flush all buffered data
+  	
+  	if ( m_io != null)
+  		m_io.getFD().sync();
+  }
 
-			String lowerName = name.toLowerCase();
-			File newFile2 = new File(lowerName);
+  /**
+   * Determine if the end of file has been reached.
+   *
+   * @return boolean
+   */
+  public boolean isEndOfFile() throws java.io.IOException {
 
-			if (newFile2.exists()) {
+    //  Check if we reached end of file
 
-				// Set the file
+    if (m_io != null && m_io.getFilePointer() == m_io.length())
+      return true;
+    return false;
+  }
 
-				m_file = newFile2;
-			}
-			else {
+  /**
+   * Open the file.
+   * 
+   * @param createFlag boolean
+   * @exception IOException
+   */
+  public void openFile(boolean createFlag)
+  	throws java.io.IOException {
 
-				// Set the file to be the original file name
+		synchronized ( m_file) {
 
-				m_file = newFile;
-
-				// Create the file, if not opening the file read-only
-
-				if (AccessMode.getAccessMode(mode) != AccessMode.ReadOnly) {
-
-					// Create a new file
-
-					try {
-						FileOutputStream outFile =
-							new FileOutputStream(newFile);
-						outFile.close();
-					}
-					catch (Exception ex) {
-					}
-				}
-			}
-		}
-
-		// Set the file size
-
-		setFileSize(m_file.length());
-		m_eof = false;
-
-		// Set the modification date/time, if available. Fake the creation
-		// date/time as it's not
-		// available from the File class
-
-		long modDate = m_file.lastModified();
-		setModifyDate(modDate);
-		setCreationDate(modDate);
-	}
-
-	/**
-	 * Close the network file.
-	 */
-	public void closeFile()
-		throws java.io.IOException {
-
-		// Close the file, if used
-
-		if (m_io != null) {
-
-			// Close the file
-
-			m_io.close();
-			m_io = null;
-
-			// Set the last modified date/time for the file
-
-			if (this.getWriteCount() > 0)
-				m_file.setLastModified(System.currentTimeMillis());
-
-			// Indicate that the file is closed
-
-			setClosed(true);
-		}
-	}
-
-	/**
-	 * Return the current file position.
-	 * 
-	 * @return long
-	 */
-	public long currentPosition() {
-
-		// Check if the file is open
-
-		try {
-			if (m_io != null)
-				return m_io.getFilePointer();
-		}
-		catch (Exception ex) {
-		}
-		return 0;
-	}
-
-	/**
-	 * Flush the file.
-	 * 
-	 * @exception IOException
-	 */
-	public void flushFile()
-		throws IOException {
-
-		// Flush all buffered data
-
-		if (m_io != null)
-			m_io.getFD().sync();
-	}
-
-	/**
-	 * Determine if the end of file has been reached.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isEndOfFile()
-		throws java.io.IOException {
-
-		// Check if we reached end of file
-
-		if (m_io != null && m_io.getFilePointer() == m_io.length())
-			return true;
-		return false;
-	}
-
-	/**
-	 * Open the file.
-	 * 
-	 * @param createFlag boolean
-	 * @exception IOException
-	 */
-	public void openFile(boolean createFlag)
-		throws java.io.IOException {
-
-		synchronized (m_file) {
-
-			// Check if the file is open
-
+			//	Check if the file is open
+			
 			if (m_io == null) {
 
-				// Open the file
-
-				m_io =
-					new RandomAccessFile(
-						m_file, getGrantedAccess() == NetworkFile.READWRITE
-							? "rw" : "r");
-
-				// Indicate that the file is open
-
+		    //  Open the file
+		
+				m_io = new RandomAccessFile( m_file, getGrantedAccess() == NetworkFile.READWRITE ? "rw" : "r");
+				
+				//	Indicate that the file is open
+		
 				setClosed(false);
 			}
 		}
-	}
+  }
 
-	/**
-	 * Read from the file.
-	 * 
-	 * @param buf byte[]
-	 * @param len int
-	 * @param pos int
-	 * @param fileOff long
-	 * @return Length of data read.
-	 * @exception IOException
-	 */
-	public int readFile(byte[] buf, int len, int pos, long fileOff)
-		throws java.io.IOException {
+  /**
+   * Read from the file.
+   *
+   * @param buf byte[]
+   * @param len int
+   * @param pos int
+   * @param fileOff long
+   * @return     Length of data read.
+   * @exception IOException
+   */
+  public int readFile(byte[] buf, int len, int pos, long fileOff)
+    throws java.io.IOException {
 
-		// Open the file, if not already open
+    //  Open the file, if not already open
 
-		if (m_io == null)
-			openFile(false);
+    if (m_io == null)
+      openFile(false);
 
-		// Seek to the required file position
+    //	Seek to the required file position
+    
+    if ( currentPosition() != fileOff)
+      seekFile(fileOff, SeekType.StartOfFile);
+    
+    //  Read from the file
 
-		if (currentPosition() != fileOff)
-			seekFile(fileOff, SeekType.StartOfFile);
+    int rdlen = m_io.read(buf, pos, len);
+    
+    //	Return the actual length of data read
+    
+    return rdlen;
+  }
 
-		// Read from the file
+  /**
+   * Seek to the specified file position.
+   *
+   * @param pos long
+   * @param typ int
+   * @return long
+   * @exception IOException
+   */
+  public long seekFile(long pos, int typ) throws IOException {
 
-		int rdlen = m_io.read(buf, pos, len);
+    //  Open the file, if not already open
 
-		// Return the actual length of data read
+    if (m_io == null)
+      openFile(false);
 
-		return rdlen;
-	}
+    //  Check if the current file position is the required file position
 
-	/**
-	 * Seek to the specified file position.
-	 * 
-	 * @param pos long
-	 * @param typ int
-	 * @return long
-	 * @exception IOException
-	 */
-	public long seekFile(long pos, int typ)
-		throws IOException {
+    switch (typ) {
 
-		// Open the file, if not already open
+      //  From start of file
 
-		if (m_io == null)
-			openFile(false);
+      case SeekType.StartOfFile :
+        if (currentPosition() != pos)
+          m_io.seek(pos);
+        break;
 
-		// Check if the current file position is the required file position
+        //  From current position
 
-		switch (typ) {
+      case SeekType.CurrentPos :
+        m_io.seek(currentPosition() + pos);
+        break;
 
-		// From start of file
+        //  From end of file
 
-		case SeekType.StartOfFile:
-			if (currentPosition() != pos)
-				m_io.seek(pos);
-			break;
+      case SeekType.EndOfFile :
+        {
+          long newPos = m_io.length() + pos;
+          m_io.seek(newPos);
+        }
+        break;
+    }
 
-		// From current position
+    //  Return the new file position
 
-		case SeekType.CurrentPos:
-			m_io.seek(currentPosition() + pos);
-			break;
-
-		// From end of file
-
-		case SeekType.EndOfFile: {
-			long newPos = m_io.length() + pos;
-			m_io.seek(newPos);
-		}
-			break;
-		}
-
-		// Return the new file position
-
-		return currentPosition();
-	}
+    return currentPosition();
+  }
 
 	/**
 	 * Truncate the file
 	 * 
 	 * @param siz long
-	 * @exception IOException
+   * @exception IOException
 	 */
 	public void truncateFile(long siz)
 		throws IOException {
 
-		// Open the file, if not already open
+    //  Open the file, if not already open
 
-		if (m_io == null)
-			openFile(true);
-		else
-			m_io.getFD().sync();
+    if (m_io == null)
+      openFile(true);
+    else
+  		m_io.getFD().sync();
 
-		// Check if the file length is being truncated or extended
-
+		//	Check if the file length is being truncated or extended
+		
 		boolean extendFile = siz > getFileSize() ? true : false;
-
-		// Set the file length
+		
+    //  Set the file length
 
 		try {
 			m_io.setLength(siz);
-
-			// Update the file size
-
+			
+			//	Update the file size
+			
 			setFileSize(siz);
 		}
 		catch (IOException ex) {
-
-			// Error during file extend, assume it's a disk full type error
-
-			if (extendFile == true)
-				throw new DiskFullException("Failed to extend file, " +
-					getFullName());
+			
+			//	Error during file extend, assume it's a disk full type error
+			
+			if ( extendFile == true)
+				throw new DiskFullException("Failed to extend file, " + getFullName());
 			else {
-
-				// Rethrow the original I/O exception
-
+				
+				//	Rethrow the original I/O exception
+			  
 				throw ex;
 			}
 		}
 	}
+	
+  /**
+   * Write a block of data to the file.
+   *
+   * @param buf byte[]
+   * @param len int
+   * @exception IOException
+   */
+  public void writeFile(byte[] buf, int len, int pos)
+    throws java.io.IOException {
 
-	/**
-	 * Write a block of data to the file.
-	 * 
-	 * @param buf byte[]
-	 * @param len int
-	 * @exception IOException
-	 */
-	public void writeFile(byte[] buf, int len, int pos)
-		throws java.io.IOException {
+    //  Open the file, if not already open
 
-		// Open the file, if not already open
+    if (m_io == null)
+      openFile(true);
 
-		if (m_io == null)
-			openFile(true);
+    //  Write to the file
 
-		// Write to the file
-
-		m_io.write(buf, pos, len);
-
-		// Update the write count for the file
-
+    m_io.write(buf, pos, len);
+    
+		//	Update the write count for the file
+    
 		incrementWriteCount();
-	}
+  }
 
-	/**
-	 * Write a block of data to the file.
-	 * 
-	 * @param buf byte[]
-	 * @param len int
-	 * @param pos int
-	 * @param offset long
-	 * @exception IOException
-	 */
-	public void writeFile(byte[] buf, int len, int pos, long offset)
-		throws java.io.IOException {
+  /**
+   * Write a block of data to the file.
+   *
+   * @param buf byte[]
+   * @param len int
+   * @param pos int
+   * @param offset long
+   * @exception IOException
+   */
+  public void writeFile(byte[] buf, int len, int pos, long offset)
+    throws java.io.IOException {
 
-		// Open the file, if not already open
+    //  Open the file, if not already open
 
-		if (m_io == null)
-			openFile(true);
+    if (m_io == null)
+      openFile(true);
 
-		// We need to seek to the write position. If the write position is off
-		// the end of the file
-		// we must null out the area between the current end of file and the
-		// write position.
+    //	We need to seek to the write position. If the write position is off the end of the file
+    //	we must null out the area between the current end of file and the write position.
 
-		long fileLen = m_io.length();
+    long fileLen = m_io.length();
 
-		if (offset > fileLen) {
-
-			// Extend the file
-
+		if ( offset > fileLen) {
+			
+			//	Extend the file
+			
 			m_io.setLength(offset + len);
 		}
 
-		// Check for a zero length write
-
-		if (len == 0)
+		//	Check for a zero length write
+		
+		if ( len == 0)	
 			return;
+			
+	  //	Seek to the write position
+	
+	  m_io.seek(offset);
+	  
+    //  Write to the file
 
-		// Seek to the write position
-
-		m_io.seek(offset);
-
-		// Write to the file
-
-		m_io.write(buf, pos, len);
-
-		// Update the write count for the file
-
+    m_io.write(buf, pos, len);
+    
+		//	Update the write count for the file
+    
 		incrementWriteCount();
-	}
-
+  }
 }

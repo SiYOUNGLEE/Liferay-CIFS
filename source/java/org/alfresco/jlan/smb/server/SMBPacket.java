@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -40,29 +40,28 @@ public class SMBPacket {
 
 	// SMB packet offsets, assuming an RFC NetBIOS transport
 
-	public static final int SIGNATURE = RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int COMMAND = 4 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ERRORCODE = 5 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ERRORCLASS = 5 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ERROR = 7 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int FLAGS = 9 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int FLAGS2 = 10 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int PIDHIGH = 12 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int SID = 18 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int SEQNO = 20 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int TID = 24 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int PID = 26 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int UID = 28 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int MID = 30 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int WORDCNT = 32 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ANDXCOMMAND = 33 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ANDXRESERVED = 34 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int PARAMWORDS = 33 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int SIGNATURE 		= RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int COMMAND 		= 4 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ERRORCODE 		= 5 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ERRORCLASS 		= 5 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ERROR 			= 7 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int FLAGS 			= 9 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int FLAGS2 			= 10 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int PIDHIGH 		= 12 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int SID 			= 18 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int SEQNO 			= 20 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int TID 			= 24 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int PID 			= 26 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int UID 			= 28 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int MID 			= 30 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int WORDCNT 		= 32 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ANDXCOMMAND 	= 33 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ANDXRESERVED 	= 34 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int PARAMWORDS 		= 33 + RFCNetBIOSProtocol.HEADER_LEN;
 
 	// SMB packet header length for a transaction type request
 
-	public static final int TRANS_HEADERLEN =
-		66 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int TRANS_HEADERLEN = 66 + RFCNetBIOSProtocol.HEADER_LEN;
 
 	// Minimum receive length for a valid SMB packet
 
@@ -74,24 +73,24 @@ public class SMBPacket {
 
 	// Flag bits
 
-	public static final int FLG_SUBDIALECT = 0x01;
-	public static final int FLG_CASELESS = 0x08;
-	public static final int FLG_CANONICAL = 0x10;
-	public static final int FLG_OPLOCK = 0x20;
-	public static final int FLG_NOTIFY = 0x40;
-	public static final int FLG_RESPONSE = 0x80;
+	public static final int FLG_SUBDIALECT 	= 0x01;
+	public static final int FLG_CASELESS 	= 0x08;
+	public static final int FLG_CANONICAL 	= 0x10;
+	public static final int FLG_OPLOCK 		= 0x20;
+	public static final int FLG_NOTIFY 		= 0x40;
+	public static final int FLG_RESPONSE 	= 0x80;
 
 	// Flag2 bits
 
-	public static final int FLG2_LONGFILENAMES = 0x0001;
-	public static final int FLG2_EXTENDEDATTRIB = 0x0002;
-	public static final int FLG2_SECURITYSIGS = 0x0004;
-	public static final int FLG2_LONGNAMESUSED = 0x0040;
-	public static final int FLG2_EXTENDNEGOTIATE = 0x0800;
-	public static final int FLG2_DFSRESOLVE = 0x1000;
-	public static final int FLG2_READIFEXE = 0x2000;
-	public static final int FLG2_LONGERRORCODE = 0x4000;
-	public static final int FLG2_UNICODE = 0x8000;
+	public static final int FLG2_LONGFILENAMES 		= 0x0001;
+	public static final int FLG2_EXTENDEDATTRIB 	= 0x0002;
+	public static final int FLG2_SECURITYSIGS 		= 0x0004;
+	public static final int FLG2_LONGNAMESUSED 		= 0x0040;
+	public static final int FLG2_EXTENDNEGOTIATE 	= 0x0800;
+	public static final int FLG2_DFSRESOLVE 		= 0x1000;
+	public static final int FLG2_READIFEXE 			= 0x2000;
+	public static final int FLG2_LONGERRORCODE 		= 0x4000;
+	public static final int FLG2_UNICODE 			= 0x8000;
 
 	// Security mode bits
 
@@ -181,7 +180,7 @@ public class SMBPacket {
 	 * @return boolean
 	 */
 	public final boolean equalsError(int errClass, int errCode) {
-		if (getErrorClass() == errClass && getErrorCode() == errCode)
+		if ( getErrorClass() == errClass && getErrorCode() == errCode)
 			return true;
 		return false;
 	}
@@ -255,7 +254,7 @@ public class SMBPacket {
 	 * @return boolean
 	 */
 	public final boolean hasLongErrorCode() {
-		if ((getFlags2() & FLG2_LONGERRORCODE) == 0)
+		if ( (getFlags2() & FLG2_LONGERRORCODE) == 0)
 			return false;
 		return true;
 	}
@@ -364,15 +363,14 @@ public class SMBPacket {
 	 * 
 	 * @param idx Parameter index (zero based).
 	 * @return Parameter word value.
-	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is
-	 *                out of range.
+	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is out of range.
 	 */
 	public final int getParameter(int idx)
 		throws java.lang.IndexOutOfBoundsException {
 
 		// Range check the parameter index
 
-		if (idx > getParameterCount())
+		if ( idx > getParameterCount())
 			throw new java.lang.IndexOutOfBoundsException();
 
 		// Calculate the parameter word offset
@@ -448,7 +446,7 @@ public class SMBPacket {
 	 */
 	public final boolean isResponse() {
 		int resp = getFlags();
-		if ((resp & FLG_RESPONSE) != 0)
+		if ( (resp & FLG_RESPONSE) != 0)
 			return true;
 		return false;
 	}
@@ -456,23 +454,21 @@ public class SMBPacket {
 	/**
 	 * Check if the response packet is valid, ie. type and flags
 	 * 
-	 * @return true if the SMB packet is a response packet and the response is
-	 *         valid, else false.
+	 * @return true if the SMB packet is a response packet and the response is valid, else false.
 	 */
 	public final boolean isValidResponse() {
 
 		// Check if this is a response packet, and the correct type of packet
 
-		if (isResponse() && getCommand() == m_pkttype) {
+		if ( isResponse() && getCommand() == m_pkttype) {
 
-			// Check if standard error codes or NT 32-bit error codes are being
-			// used
+			// Check if standard error codes or NT 32-bit error codes are being used
 
-			if ((getFlags2() & FLG2_LONGERRORCODE) == 0) {
-				if (getErrorClass() == SMBStatus.Success)
+			if ( (getFlags2() & FLG2_LONGERRORCODE) == 0) {
+				if ( getErrorClass() == SMBStatus.Success)
 					return true;
 			}
-			else if (getLongErrorCode() == SMBStatus.NTSuccess)
+			else if ( getLongErrorCode() == SMBStatus.NTSuccess)
 				return true;
 		}
 		return false;
@@ -517,7 +513,7 @@ public class SMBPacket {
 
 		// Check for Unicode or ASCII
 
-		if (uni) {
+		if ( uni) {
 
 			// Word align the buffer position, pack the Unicode string
 
@@ -589,7 +585,7 @@ public class SMBPacket {
 	 * @return byte[]
 	 */
 	public final byte[] unpackBytes(int len) {
-		if (len <= 0)
+		if ( len <= 0)
 			return null;
 
 		byte[] buf = new byte[len];
@@ -643,13 +639,13 @@ public class SMBPacket {
 
 		String ret = null;
 
-		if (uni) {
+		if ( uni) {
 
 			// Word align the current buffer position
 
 			m_pos = DataPacker.wordAlign(m_pos);
 			ret = DataPacker.getUnicodeString(m_smbbuf, m_pos, 255);
-			if (ret != null)
+			if ( ret != null)
 				m_pos += (ret.length() * 2) + 2;
 		}
 		else {
@@ -657,7 +653,7 @@ public class SMBPacket {
 			// Unpack the ASCII string
 
 			ret = DataPacker.getString(m_smbbuf, m_pos, 255);
-			if (ret != null)
+			if ( ret != null)
 				m_pos += ret.length() + 1;
 		}
 
@@ -679,13 +675,13 @@ public class SMBPacket {
 
 		String ret = null;
 
-		if (uni) {
+		if ( uni) {
 
 			// Word align the current buffer position
 
 			m_pos = DataPacker.wordAlign(m_pos);
 			ret = DataPacker.getUnicodeString(m_smbbuf, m_pos, len);
-			if (ret != null)
+			if ( ret != null)
 				m_pos += (ret.length() * 2);
 		}
 		else {
@@ -693,7 +689,7 @@ public class SMBPacket {
 			// Unpack the ASCII string
 
 			ret = DataPacker.getString(m_smbbuf, m_pos, len);
-			if (ret != null)
+			if ( ret != null)
 				m_pos += ret.length();
 		}
 
@@ -708,7 +704,7 @@ public class SMBPacket {
 	 * @return boolean
 	 */
 	public final boolean hasMoreData() {
-		if (m_pos < m_endpos)
+		if ( m_pos < m_endpos)
 			return true;
 		return false;
 	}
@@ -722,7 +718,7 @@ public class SMBPacket {
 	private final void ReceiveSMB(NetBIOSSession sess)
 		throws java.io.IOException {
 
-		if (sess.Receive(m_smbbuf) >= MIN_RXLEN)
+		if ( sess.Receive(m_smbbuf) >= MIN_RXLEN)
 			return;
 
 		// Not enough data received for an SMB header
@@ -742,10 +738,9 @@ public class SMBPacket {
 		m_smbbuf[ANDXCOMMAND] = (byte) cmd;
 		m_smbbuf[ANDXRESERVED] = (byte) 0;
 
-		// If the AndX command is disabled clear the offset to the chained
-		// packet
+		// If the AndX command is disabled clear the offset to the chained packet
 
-		if (cmd == PacketType.NoChainedCommand)
+		if ( cmd == PacketType.NoChainedCommand)
 			setParameter(1, 0);
 	}
 
@@ -772,8 +767,7 @@ public class SMBPacket {
 	/**
 	 * Set the data byte area in the SMB packet
 	 * 
-	 * @param byts Byte array containing the data to be copied to the SMB
-	 *            packet.
+	 * @param byts Byte array containing the data to be copied to the SMB packet.
 	 */
 	public final void setBytes(byte[] byts) {
 		int offset = getByteOffset() - 2;
@@ -781,8 +775,8 @@ public class SMBPacket {
 
 		offset += 2;
 
-		for (int idx = 0; idx < byts.length; m_smbbuf[offset + idx] =
-			byts[idx++]);
+		for (int idx = 0; idx < byts.length; m_smbbuf[offset + idx] = byts[idx++])
+			;
 	}
 
 	/**
@@ -925,8 +919,7 @@ public class SMBPacket {
 	}
 
 	/**
-	 * Reset the byte/parameter pointer area for packing/unpacking data items
-	 * from the packet
+	 * Reset the byte/parameter pointer area for packing/unpacking data items from the packet
 	 */
 	public final void resetBytePointer() {
 		m_pos = getByteOffset();
@@ -934,8 +927,8 @@ public class SMBPacket {
 	}
 
 	/**
-	 * Reset the byte/parameter pointer area for packing/unpacking data items
-	 * from the packet, and align the buffer on an int (32bit) boundary
+	 * Reset the byte/parameter pointer area for packing/unpacking data items from the packet, and
+	 * align the buffer on an int (32bit) boundary
 	 */
 	public final void resetBytePointerAlign() {
 		m_pos = DataPacker.longwordAlign(getByteOffset());
@@ -943,8 +936,7 @@ public class SMBPacket {
 	}
 
 	/**
-	 * Reset the byte/parameter pointer area for packing/unpacking paramaters
-	 * from the packet
+	 * Reset the byte/parameter pointer area for packing/unpacking paramaters from the packet
 	 */
 	public final void resetParameterPointer() {
 		m_pos = PARAMWORDS;
@@ -969,5 +961,4 @@ public class SMBPacket {
 	public final void skipBytes(int cnt) {
 		m_pos += cnt;
 	}
-
 }

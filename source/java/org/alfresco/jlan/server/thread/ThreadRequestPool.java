@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -30,8 +30,10 @@ import java.util.Vector;
 import org.alfresco.jlan.debug.Debug;
 
 /**
- * Thread Request Pool Class <p> Thread pool that processes a queue of thread
- * requests.
+ * Thread Request Pool Class
+ * 
+ * <p>
+ * Thread pool that processes a queue of thread requests.
  * 
  * @author gkspencer
  */
@@ -103,7 +105,7 @@ public class ThreadRequestPool {
 			// Loop until shutdown
 
 			ThreadRequest threadReq = null;
-
+			
 			while (mi_shutdown == false) {
 
 				try {
@@ -116,25 +118,22 @@ public class ThreadRequestPool {
 
 					// Check for shutdown
 
-					if (mi_shutdown == true)
+					if ( mi_shutdown == true)
 						break;
 				}
-				catch (Throwable ex2) {
+				catch ( Throwable ex2) {
 					ex2.printStackTrace();
 				}
 
 				// If the request is valid process it
 
-				if (threadReq != null) {
+				if ( threadReq != null) {
 
 					// DEBUG
-
-					if (hasDebug())
-						Debug.println(
-							"Worker " +
-							Thread.currentThread().getName() + ": Req=" +
-							threadReq);
-
+					
+					if ( hasDebug())
+						Debug.println("Worker " + Thread.currentThread().getName() + ": Req=" + threadReq);
+					
 					try {
 
 						// Process the request
@@ -145,10 +144,8 @@ public class ThreadRequestPool {
 
 						// Do not display errors if shutting down
 
-						if (mi_shutdown == false) {
-							Debug.println(
-								"Worker " +
-								Thread.currentThread().getName() + ":");
+						if ( mi_shutdown == false) {
+							Debug.println("Worker " + Thread.currentThread().getName() + ":");
 							Debug.println(ex);
 						}
 					}
@@ -180,7 +177,7 @@ public class ThreadRequestPool {
 
 		// Check that we have at least minimum worker threads
 
-		if (poolSize < MinimumWorkerThreads)
+		if ( poolSize < MinimumWorkerThreads)
 			poolSize = MinimumWorkerThreads;
 
 		// Create the worker threads
@@ -215,7 +212,7 @@ public class ThreadRequestPool {
 	 * @param req ThreadRequest
 	 */
 	public final void queueRequest(ThreadRequest req) {
-		m_queue.addRequest(req);
+		m_queue.addRequest( req);
 	}
 
 	/**
@@ -223,10 +220,10 @@ public class ThreadRequestPool {
 	 * 
 	 * @param reqList Vector<ThreadRequest>
 	 */
-	public final void queueRequests(Vector<ThreadRequest> reqList) {
-		m_queue.addRequests(reqList);
+	public final void queueRequests( Vector<ThreadRequest> reqList) {
+		m_queue.addRequests( reqList);
 	}
-
+	
 	/**
 	 * Shutdown the thread pool and release all resources
 	 */
@@ -234,19 +231,18 @@ public class ThreadRequestPool {
 
 		// Shutdown the worker threads
 
-		if (m_workers != null) {
+		if ( m_workers != null) {
 			for (int i = 0; i < m_workers.length; i++)
 				m_workers[i].shutdownRequest();
 		}
 	}
-
+	
 	/**
 	 * Enable/dsiable debug output
 	 * 
 	 * @param ena boolean
 	 */
-	public final void setDebug(boolean ena) {
+	public final void setDebug( boolean ena) {
 		m_debug = ena;
 	}
-
 }

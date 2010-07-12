@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2009 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -56,9 +56,11 @@ import org.alfresco.jlan.util.HexDump;
 import org.alfresco.jlan.util.IPAddress;
 
 /**
- * CIFS Authenticator Class <p> An authenticator is used by the CIFS server to
- * authenticate users when in user level access mode and authenticate requests
- * to connect to a share when in share level access.
+ * CIFS Authenticator Class
+ * 
+ * <p>
+ * An authenticator is used by the CIFS server to authenticate users when in user level access mode
+ * and authenticate requests to connect to a share when in share level access.
  * 
  * @author gkspencer
  */
@@ -74,8 +76,7 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 	// Security mode flags
 
-	private int m_securityMode =
-		SecurityMode.UserMode + SecurityMode.EncryptedPasswords;
+	private int m_securityMode = SecurityMode.UserMode + SecurityMode.EncryptedPasswords;
 
 	// Password encryption algorithms
 
@@ -89,8 +90,7 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 	private boolean m_extendedSecurity;
 
-	// Flag to enable/disable the guest account, and control mapping of unknown
-	// users to the guest
+	// Flag to enable/disable the guest account, and control mapping of unknown users to the guest
 	// account
 
 	private boolean m_allowGuest;
@@ -113,31 +113,25 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 	private boolean m_debug;
 
 	/**
-	 * @param debug activate debug mode?
-	 */
-	public void setDebug(boolean debug) {
-		this.m_debug = debug;
-	}
+     * @param debug activate debug mode?
+     */
+    public void setDebug(boolean debug)
+    {
+        this.m_debug = debug;
+    }
+    
+    /**
+     * @param config an accessor for the file server configuration sections
+     */
+    public void setConfig(ServerConfigurationAccessor config)
+    {
+        this.m_config = config;
+    }
 
-	/**
-	 * @param config an accessor for the file server configuration sections
-	 */
-	public void setConfig(ServerConfigurationAccessor config) {
-		this.m_config = config;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#authenticateShareConnect
-	 * (org.alfresco.jlan.server.auth.ClientInfo,
-	 * org.alfresco.jlan.server.core.SharedDevice, java.lang.String,
-	 * org.alfresco.jlan.server.SrvSession)
-	 */
-	public int authenticateShareConnect(
-		ClientInfo client, SharedDevice share, String sharePwd, 
-		SrvSession sess) {
+    /* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#authenticateShareConnect(org.alfresco.jlan.server.auth.ClientInfo, org.alfresco.jlan.server.core.SharedDevice, java.lang.String, org.alfresco.jlan.server.SrvSession)
+     */
+	public int authenticateShareConnect(ClientInfo client, SharedDevice share, String sharePwd, SrvSession sess) {
 
 		// Allow write access
 		//
@@ -146,40 +140,31 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		return ICifsAuthenticator.Writeable;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#authenticateUser(org
-	 * .alfresco.jlan.server.auth.ClientInfo,
-	 * org.alfresco.jlan.server.SrvSession, int)
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#authenticateUser(org.alfresco.jlan.server.auth.ClientInfo, org.alfresco.jlan.server.SrvSession, int)
+     */
 	public int authenticateUser(ClientInfo client, SrvSession sess, int alg) {
 
 		// Check if the user exists in the user list
 
 		UserAccount userAcc = getUserDetails(client.getUserName());
-		if (userAcc != null) {
+		if ( userAcc != null) {
 
 			// Validate the password
 
 			boolean authSts = false;
 
-			if (client.getPassword() != null) {
+			if ( client.getPassword() != null) {
 
 				// Validate using the Unicode password
 
-				authSts = validatePassword(
-					userAcc, client, sess.getAuthenticationContext(), alg);
+				authSts = validatePassword(userAcc, client, sess.getAuthenticationContext(), alg);
 			}
-			else if (client.hasANSIPassword()) {
+			else if ( client.hasANSIPassword()) {
 
 				// Validate using the ANSI password with the LanMan encryption
 
-				authSts =
-					validatePassword(
-						userAcc, client, sess.getAuthenticationContext(),
-						LANMAN);
+				authSts = validatePassword(userAcc, client, sess.getAuthenticationContext(), LANMAN);
 			}
 
 			// Return the authentication status
@@ -189,10 +174,9 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		// Check if this is an SMB/CIFS null session logon.
 		//
-		// The null session will only be allowed to connect to the IPC$ named
-		// pipe share.
+		// The null session will only be allowed to connect to the IPC$ named pipe share.
 
-		if (client.isNullSession() && sess instanceof SMBSrvSession)
+		if ( client.isNullSession() && sess instanceof SMBSrvSession)
 			return AUTH_ALLOW;
 
 		// Unknown user
@@ -200,23 +184,15 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		return allowGuest() ? AUTH_GUEST : AUTH_DISALLOW;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator
-	 * 		#authenticateUserPlainText
-	 * (org.alfresco.jlan.server.auth.ClientInfo,
-	 * org.alfresco.jlan.server.SrvSession)
-	 */
-	public final int authenticateUserPlainText(
-		ClientInfo client, SrvSession sess) {
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#authenticateUserPlainText(org.alfresco.jlan.server.auth.ClientInfo, org.alfresco.jlan.server.SrvSession)
+     */
+	public final int authenticateUserPlainText(ClientInfo client, SrvSession sess) {
 
 		// Get a challenge key
 
-		NTLanManAuthContext authCtx =
-			(NTLanManAuthContext) sess.getAuthenticationContext();
-		if (authCtx == null) {
+		NTLanManAuthContext authCtx = (NTLanManAuthContext) sess.getAuthenticationContext();
+		if ( authCtx == null) {
 			authCtx = new NTLanManAuthContext();
 			sess.setAuthenticationContext(authCtx);
 		}
@@ -224,14 +200,13 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		// Get the plain text password
 
 		String textPwd = client.getPasswordAsString();
-		if (textPwd == null)
+		if ( textPwd == null)
 			textPwd = client.getANSIPasswordAsString();
 
 		// Encrypt the password
 
-		byte[] encPwd = generateEncryptedPassword(
-			textPwd, authCtx.getChallenge(), NTLM1, client.getUserName(),
-			client.getDomain());
+		byte[] encPwd = generateEncryptedPassword(textPwd, authCtx.getChallenge(), NTLM1, client.getUserName(), client
+				.getDomain());
 		client.setPassword(encPwd);
 
 		// Authenticate the user
@@ -247,14 +222,12 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 	public void initialize()
 		throws InvalidConfigurationException {
 
-		// Check all required properties have been set
+	    // Check all required properties have been set
 
-		if (m_config == null)
-			throw new InvalidConfigurationException(
-				"server configuration accessor not set");
+	    if ( m_config == null)
+            throw new InvalidConfigurationException("server configuration accessor not set");
 
-		// Allocate the SMB dialect selector, and initialize using the default
-		// list of dialects
+        // Allocate the SMB dialect selector, and initialize using the default list of dialects
 
 		m_dialects = new DialectSelector();
 
@@ -266,29 +239,28 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		m_dialects.AddDialect(Dialect.NT);
 	}
 
-	/**
-	 * Initialize the authenticator
-	 * 
-	 * @param config ServerConfiguration
-	 * @param params ConfigElement
-	 * @exception InvalidConfigurationException
-	 */
-	public void initialize(ServerConfiguration config, ConfigElement params)
-		throws InvalidConfigurationException {
+    /**
+     * Initialize the authenticator
+     * 
+     * @param config ServerConfiguration
+     * @param params ConfigElement
+     * @exception InvalidConfigurationException
+     */
+    public void initialize(ServerConfiguration config, ConfigElement params)
+        throws InvalidConfigurationException {
 
-		if (params.getChild("Debug") != null)
-			setDebug(true);
+        if ( params.getChild("Debug") != null)
+            setDebug(true);
+        
+        // Save the server configuration so we can access the authentication component
+        setConfig(config);
+        
+        initialize();
+    }
 
-		// Save the server configuration so we can access the authentication
-		// component
-		setConfig(config);
-
-		initialize();
-	}
-
-	/**
-	 * Encrypt the plain text password with the specified encryption key using
-	 * the specified encryption algorithm.
+    /**
+	 * Encrypt the plain text password with the specified encryption key using the specified
+	 * encryption algorithm.
 	 * 
 	 * @param plainPwd String
 	 * @param encryptKey byte[]
@@ -297,9 +269,7 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 	 * @param domain String
 	 * @return byte[]
 	 */
-	protected final byte[] generateEncryptedPassword(
-		String plainPwd, byte[] encryptKey, int alg, String userName,
-		String domain) {
+	protected final byte[] generateEncryptedPassword(String plainPwd, byte[] encryptKey, int alg, String userName, String domain) {
 
 		// Use the password encryptor
 
@@ -308,8 +278,7 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		try {
 			// Encrypt the password
 
-			encPwd = m_encryptor.generateEncryptedPassword(
-				plainPwd, encryptKey, alg, userName, domain);
+			encPwd = m_encryptor.generateEncryptedPassword(plainPwd, encryptKey, alg, userName, domain);
 		}
 		catch (NoSuchAlgorithmException ex) {
 		}
@@ -321,38 +290,28 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		return encPwd;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getAccessMode()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getAccessMode()
+     */
 	public final int getAccessMode() {
 		return m_accessMode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#hasExtendedSecurity()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#hasExtendedSecurity()
+     */
 	public final boolean hasExtendedSecurity() {
 		return m_extendedSecurity;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#getAuthContext(org.alfresco
-	 * .jlan.smb.server.SMBSrvSession)
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getAuthContext(org.alfresco.jlan.smb.server.SMBSrvSession)
+     */
 	public AuthContext getAuthContext(SMBSrvSession sess) {
 
 		AuthContext authCtx = null;
 
-		if (sess.hasAuthenticationContext() &&
-			sess.getAuthenticationContext() instanceof NTLanManAuthContext) {
+		if ( sess.hasAuthenticationContext() && sess.getAuthenticationContext() instanceof NTLanManAuthContext) {
 
 			// Use the existing authentication context
 
@@ -371,33 +330,25 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		return authCtx;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#getEnabledDialects()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getEnabledDialects()
+     */
 	public final DialectSelector getEnabledDialects() {
 		return m_dialects;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getSecurityMode()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getSecurityMode()
+     */
 	public final int getSecurityMode() {
 		return m_securityMode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getCIFSConfig()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getCIFSConfig()
+     */
 	public final CIFSConfigSection getCIFSConfig() {
-		return (CIFSConfigSection) m_config.getConfigSection(
-			CIFSConfigSection.SectionName);
+        return (CIFSConfigSection) m_config.getConfigSection(CIFSConfigSection.SectionName);
 	}
 
 	/**
@@ -406,44 +357,32 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 	 * @return SecurityConfigSection
 	 */
 	public final SecurityConfigSection getsecurityConfig() {
-		return (SecurityConfigSection) m_config.getConfigSection(
-			SecurityConfigSection.SectionName);
+        return (SecurityConfigSection) m_config.getConfigSection(SecurityConfigSection.SectionName);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#hasDebug()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#hasDebug()
+     */
 	public final boolean hasDebug() {
 		return m_debug;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#generateNegotiateResponse
-	 * (org.alfresco.jlan.smb.server.SMBSrvSession,
-	 * org.alfresco.jlan.smb.server.SMBSrvPacket, boolean)
-	 */
-	public void generateNegotiateResponse(
-		SMBSrvSession sess, SMBSrvPacket respPkt, boolean extendedSecurity)
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#generateNegotiateResponse(org.alfresco.jlan.smb.server.SMBSrvSession, org.alfresco.jlan.smb.server.SMBSrvPacket, boolean)
+     */
+	public void generateNegotiateResponse(SMBSrvSession sess, SMBSrvPacket respPkt, boolean extendedSecurity)
 		throws AuthenticatorException {
 
-		// Pack the negotiate response for NT/LanMan challenge/response
-		// authentication
+		// Pack the negotiate response for NT/LanMan challenge/response authentication
 
-		ChallengeAuthContext authCtx =
-			(ChallengeAuthContext) getAuthContext(sess);
+		ChallengeAuthContext authCtx = (ChallengeAuthContext) getAuthContext(sess);
 
-		// Encryption key and primary domain string should be returned in the
-		// byte area
+		// Encryption key and primary domain string should be returned in the byte area
 
 		int pos = respPkt.getByteOffset();
 		byte[] buf = respPkt.getBuffer();
 
-		if (authCtx == null || authCtx.getChallenge() == null) {
+		if ( authCtx == null || authCtx.getChallenge() == null) {
 
 			// Return a dummy encryption key
 
@@ -461,39 +400,29 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		// Pack the local domain name
 
-		String domain =
-			sess.getSMBServer().getCIFSConfiguration().getDomainName();
-		if (domain != null)
+		String domain = sess.getSMBServer().getCIFSConfiguration().getDomainName();
+		if ( domain != null)
 			pos = DataPacker.putString(domain, buf, pos, true, true);
 
 		// Pack the local server name
 
-		pos = DataPacker.putString(
-			sess.getSMBServer().getServerName(), buf, pos, true, true);
+		pos = DataPacker.putString(sess.getSMBServer().getServerName(), buf, pos, true, true);
 
 		// Set the packet length
 
 		respPkt.setByteCount(pos - respPkt.getByteOffset());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#processSessionSetup(
-	 * org.alfresco.jlan.smb.server.SMBSrvSession,
-	 * org.alfresco.jlan.smb.server.SMBSrvPacket)
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#processSessionSetup(org.alfresco.jlan.smb.server.SMBSrvSession, org.alfresco.jlan.smb.server.SMBSrvPacket)
+     */
 	public void processSessionSetup(SMBSrvSession sess, SMBSrvPacket reqPkt)
 		throws SMBSrvException {
 
-		// Check that the received packet looks like a valid NT session setup
-		// andX request
+		// Check that the received packet looks like a valid NT session setup andX request
 
-		if (reqPkt.checkPacketIsValid(13, 0) == false) {
-			throw new SMBSrvException(
-				SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-				SMBStatus.SRVNonSpecificError);
+		if ( reqPkt.checkPacketIsValid(13, 0) == false) {
+			throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 		}
 
 		// Extract the session details
@@ -522,65 +451,52 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		String user = reqPkt.unpackString(isUni);
 
-		if (user == null)
-			throw new SMBSrvException(
-				SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-				SMBStatus.SRVNonSpecificError);
+		if ( user == null)
+			throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 
 		// Extract the clients primary domain name string
 
 		String domain = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers domain name
 
 			domain = reqPkt.unpackString(isUni);
 
-			if (domain == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-					SMBStatus.SRVNonSpecificError);
+			if ( domain == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 		}
 
 		// Extract the clients native operating system
 
 		String clientOS = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers operating system name
 
 			clientOS = reqPkt.unpackString(isUni);
 
-			if (clientOS == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-					SMBStatus.SRVNonSpecificError);
+			if ( clientOS == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 		}
 
 		// DEBUG
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
-			Debug.println(
-				"[SMB] NT Session setup from user=" + user + ", password=" +
-				(uniPwd != null ? HexDump.hexString(uniPwd) : "none") +
-				", ANSIpwd=" +
-				(ascPwd != null ? HexDump.hexString(ascPwd) : "none") +
-				", domain=" + domain + ", os=" + clientOS + ", VC=" + vcNum +
-				", maxBuf=" + maxBufSize + ", maxMpx=" + maxMpx + ", authCtx=" +
-				sess.getAuthenticationContext());
-			Debug.println(
-				"[SMB]  MID=" + reqPkt.getMultiplexId() + ", UID=" +
-				reqPkt.getUserId() + ", PID=" + reqPkt.getProcessId());
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
+			Debug.println("[SMB] NT Session setup from user=" + user + ", password="
+					+ (uniPwd != null ? HexDump.hexString(uniPwd) : "none") + ", ANSIpwd="
+					+ (ascPwd != null ? HexDump.hexString(ascPwd) : "none") + ", domain=" + domain + ", os=" + clientOS + ", VC="
+					+ vcNum + ", maxBuf=" + maxBufSize + ", maxMpx=" + maxMpx + ", authCtx=" + sess.getAuthenticationContext());
+			Debug.println("[SMB]  MID=" + reqPkt.getMultiplexId() + ", UID=" + reqPkt.getUserId() + ", PID="
+					+ reqPkt.getProcessId());
 		}
 
-		// Store the client maximum buffer size, maximum multiplexed requests
-		// count and client
+		// Store the client maximum buffer size, maximum multiplexed requests count and client
 		// capability flags
 
-		sess.setClientMaximumBufferSize(maxBufSize != 0
-			? maxBufSize : SMBSrvSession.DefaultBufferSize);
+		sess.setClientMaximumBufferSize(maxBufSize != 0 ? maxBufSize : SMBSrvSession.DefaultBufferSize);
 		sess.setClientMaximumMultiplex(maxMpx);
 		sess.setClientCapabilities(capabs);
 
@@ -591,13 +507,12 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		client.setDomain(domain);
 		client.setOperatingSystem(clientOS);
 
-		if (sess.hasRemoteAddress())
+		if ( sess.hasRemoteAddress())
 			client.setClientAddress(sess.getRemoteAddress().getHostAddress());
 
 		// Check if this is a null session logon
 
-		if (user.length() == 0 && domain.length() == 0 && uniPwdLen == 0 &&
-			ascPwdLen == 1)
+		if ( user.length() == 0 && domain.length() == 0 && uniPwdLen == 0 && ascPwdLen == 1)
 			client.setLogonType(ClientInfo.LogonNull);
 
 		// Authenticate the user
@@ -606,7 +521,7 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		int sts = authenticateUser(client, sess, ICifsAuthenticator.NTLM1);
 
-		if (sts > 0 && (sts & ICifsAuthenticator.AUTH_GUEST) != 0) {
+		if ( sts > 0 && (sts & ICifsAuthenticator.AUTH_GUEST) != 0) {
 
 			// Guest logon
 
@@ -614,30 +529,26 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
 				Debug.println("[SMB] User " + user + ", logged on as guest");
 		}
-		else if (sts != ICifsAuthenticator.AUTH_ALLOW) {
+		else if ( sts != ICifsAuthenticator.AUTH_ALLOW) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
 				Debug.println("[SMB] User " + user + ", access denied");
 
 			// Invalid user, reject the session setup request
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
-		else if (Debug.EnableInfo && sess.hasDebug(
-			SMBSrvSession.DBG_NEGOTIATE)) {
+		else if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
 
 			// DEBUG
 
-			Debug.println(
-				"[SMB] User " + user + " logged on " + (client != null
-					? " (type " + client.getLogonTypeString() + ")" : ""));
+			Debug.println("[SMB] User " + user + " logged on "
+					+ (client != null ? " (type " + client.getLogonTypeString() + ")" : ""));
 		}
 
 		// Create a virtual circuit and allocate a UID to the new circuit
@@ -645,58 +556,50 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		VirtualCircuit vc = new VirtualCircuit(vcNum, client);
 		int uid = sess.addVirtualCircuit(vc);
 
-		if (uid == VirtualCircuit.InvalidUID) {
+		if ( uid == VirtualCircuit.InvalidUID) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
-				Debug.println(
-					"[SMB] Failed to allocate UID for virtual circuit, " + vc);
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+				Debug.println("[SMB] Failed to allocate UID for virtual circuit, " + vc);
 
 			// Failed to allocate a UID
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
-		else if (Debug.EnableInfo && sess.hasDebug(
-			SMBSrvSession.DBG_NEGOTIATE)) {
+		else if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
 
 			// DEBUG
 
 			Debug.println("[SMB] Allocated UID=" + uid + " for VC=" + vc);
 		}
 
-		// Set the guest flag for the client, indicate that the session is
-		// logged on
+		// Set the guest flag for the client, indicate that the session is logged on
 
-		if (client.isNullSession() == false)
+		if ( client.isNullSession() == false)
 			client.setGuest(isGuest);
 		sess.setLoggedOn(true);
 
-		// Check if there is a chained commmand with the session setup request
-		// (usually a TreeConnect)
-
+		// Check if there is a chained commmand with the session setup request (usually a TreeConnect)
+		
 		SMBSrvPacket respPkt = reqPkt;
-
-		if (reqPkt.hasAndXCommand()) {
+		
+		if ( reqPkt.hasAndXCommand()) {
 
 			try {
 
 				// Allocate a new packet for the response
-
-				respPkt = sess.getPacketPool().allocatePacket(
-					reqPkt.getLength(), reqPkt);
+			
+				respPkt = sess.getPacketPool().allocatePacket( reqPkt.getLength(), reqPkt);
 			}
-			catch (NoPooledMemoryException ex) {
-
+			catch ( NoPooledMemoryException ex) {
+				
 				// No memory, return a server error
-
-				throw new SMBSrvException(
-					SMBStatus.ErrSrv, SMBStatus.SRVNoBuffers);
+				
+				throw new SMBSrvException(SMBStatus.ErrSrv, SMBStatus.SRVNoBuffers);
 			}
 		}
-
+		
 		// Build the session setup response SMB
 
 		respPkt.setParameterCount(3);
@@ -715,10 +618,10 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		respPkt.setFlags(flags);
 
 		int flags2 = SMBSrvPacket.FLG2_LONGFILENAMES;
-		if (isUni)
+		if ( isUni)
 			flags2 += SMBSrvPacket.FLG2_UNICODE;
 
-		if (hasExtendedSecurity() == false)
+		if ( hasExtendedSecurity() == false)
 			flags2 &= ~SMBSrvPacket.FLG2_EXTENDEDSECURITY;
 
 		respPkt.setFlags2(flags2);
@@ -728,69 +631,51 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		int pos = respPkt.getByteOffset();
 		buf = respPkt.getBuffer();
 
-		if (isUni)
+		if ( isUni)
 			pos = DataPacker.wordAlign(pos);
 
 		pos = DataPacker.putString("Java", buf, pos, true, isUni);
-		pos = DataPacker.putString(
-			"Alfresco CIFS Server " +
-			sess.getServer().isVersion(), buf, pos, true, isUni);
-		pos = DataPacker.putString(
-			sess.getSMBServer().getCIFSConfiguration().getDomainName(),
-			buf, pos, true, isUni);
+		pos = DataPacker.putString("Alfresco CIFS Server " + sess.getServer().isVersion(), buf, pos, true, isUni);
+		pos = DataPacker.putString(sess.getSMBServer().getCIFSConfiguration().getDomainName(), buf, pos, true, isUni);
 
 		respPkt.setByteCount(pos - respPkt.getByteOffset());
 		respPkt.setParameter(1, pos - RFCNetBIOSProtocol.HEADER_LEN);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#getEncryptionKeyLength()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getEncryptionKeyLength()
+     */
 	public int getEncryptionKeyLength() {
 
 		return STANDARD_CHALLENGE_LEN;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#getServerCapabilities()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getServerCapabilities()
+     */
 	public int getServerCapabilities() {
 
-		return Capability.Unicode + Capability.RemoteAPIs + Capability.NTSMBs +
-			Capability.NTFind + Capability.NTStatus + Capability.LargeFiles +
-			Capability.LargeRead + Capability.LargeWrite;
+		return Capability.Unicode + Capability.RemoteAPIs + Capability.NTSMBs + Capability.NTFind + Capability.NTStatus
+				+ Capability.LargeFiles + Capability.LargeRead + Capability.LargeWrite;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#allowGuest()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#allowGuest()
+     */
 	public final boolean allowGuest() {
 		return m_allowGuest;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getGuestUserName()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getGuestUserName()
+     */
 	public final String getGuestUserName() {
 		return m_guestUserName;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#mapUnknownUserToGuest()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#mapUnknownUserToGuest()
+     */
 	public final boolean mapUnknownUserToGuest() {
 		return m_mapToGuest;
 	}
@@ -798,8 +683,7 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 	/**
 	 * Enable/disable the guest account
 	 * 
-	 * @param ena Enable the guest account if true, only allow defined user
-	 *            accounts access if false
+	 * @param ena Enable the guest account if true, only allow defined user accounts access if false
 	 */
 	public final void setAllowGuest(boolean ena) {
 		m_allowGuest = ena;
@@ -841,20 +725,17 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		m_extendedSecurity = extSec;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#closeAuthenticator()
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#closeAuthenticator()
+     */
 	public void closeAuthenticator() {
 
 		// Override if cleanup required
 	}
 
 	/**
-	 * Validate a password by encrypting the plain text password using the
-	 * specified encryption key and encryption algorithm.
+	 * Validate a password by encrypting the plain text password using the specified encryption key
+	 * and encryption algorithm.
 	 * 
 	 * @param user UserAccount
 	 * @param client ClientInfo
@@ -862,14 +743,13 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 	 * @param alg int
 	 * @return boolean
 	 */
-	protected final boolean validatePassword(
-		UserAccount user, ClientInfo client, AuthContext authCtx, int alg) {
+	protected final boolean validatePassword(UserAccount user, ClientInfo client, AuthContext authCtx, int alg) {
 
 		// Get the challenge
 
 		byte[] encryptKey = null;
 
-		if (authCtx != null && authCtx instanceof NTLanManAuthContext) {
+		if ( authCtx != null && authCtx instanceof NTLanManAuthContext) {
 
 			// Get the NT/LanMan challenge
 
@@ -883,7 +763,7 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		byte[] encryptedPwd = null;
 
-		if (alg == LANMAN)
+		if ( alg == LANMAN)
 			encryptedPwd = client.getANSIPassword();
 		else
 			encryptedPwd = client.getPassword();
@@ -892,32 +772,28 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		byte[] encPwd = null;
 
-		if (user.hasMD4Password() && alg != LANMAN) {
+		if ( user.hasMD4Password() && alg != LANMAN) {
 
 			try {
 
 				// Generate the encrpyted password
 
-				if (alg == NTLM1) {
+				if ( alg == NTLM1) {
 
 					// Get the MD4 hashed password
 
 					byte[] p21 = new byte[21];
-					System.arraycopy(
-						user.getMD4Password(), 0, p21, 0,
-						user.getMD4Password().length);
+					System.arraycopy(user.getMD4Password(), 0, p21, 0, user.getMD4Password().length);
 
 					// Generate an NTLMv1 encrypted password
 
 					encPwd = getEncryptor().doNTLM1Encryption(p21, encryptKey);
 				}
-				else if (alg == NTLM2) {
+				else if ( alg == NTLM2) {
 
 					// Generate an NTLMv2 encrypted password
 
-					encPwd = getEncryptor().doNTLM2Encryption(
-						user.getMD4Password(), client.getUserName(),
-						client.getDomain());
+					encPwd = getEncryptor().doNTLM2Encryption(user.getMD4Password(), client.getUserName(), client.getDomain());
 				}
 			}
 			catch (NoSuchAlgorithmException ex) {
@@ -929,22 +805,19 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 			// Generate an encrypted version of the plain text password
 
-			encPwd =
-				generateEncryptedPassword(
-					user.getPassword() != null ? user.getPassword() : "",
-					encryptKey, alg, client.getUserName(), client.getDomain());
+			encPwd = generateEncryptedPassword(user.getPassword() != null ? user.getPassword() : "", encryptKey, alg, client
+					.getUserName(), client.getDomain());
 		}
 
 		// Compare the generated password with the received password
 
-		if (encPwd != null && encryptedPwd != null &&
-			encPwd.length == STANDARD_PASSWORD_LEN &&
-			encryptedPwd.length == STANDARD_PASSWORD_LEN) {
+		if ( encPwd != null && encryptedPwd != null && encPwd.length == STANDARD_PASSWORD_LEN
+				&& encryptedPwd.length == STANDARD_PASSWORD_LEN) {
 
 			// Compare the password arrays
 
 			for (int i = 0; i < STANDARD_PASSWORD_LEN; i++)
-				if (encPwd[i] != encryptedPwd[i])
+				if ( encPwd[i] != encryptedPwd[i])
 					return false;
 
 			// Password is valid
@@ -970,15 +843,14 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		StringBuffer p14str = new StringBuffer();
 		p14str.append(pwd);
-		if (p14str.length() > 14)
+		if ( p14str.length() > 14)
 			p14str.setLength(14);
 		else {
 			while (p14str.length() < 14)
 				p14str.append((char) 0x00);
 		}
 
-		// Convert the P14 string to an array of bytes. Allocate the return 16
-		// byte array.
+		// Convert the P14 string to an array of bytes. Allocate the return 16 byte array.
 
 		return p14str.toString().getBytes();
 	}
@@ -1003,21 +875,21 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		String str = null;
 
 		switch (sts) {
-		case AUTH_ALLOW:
-			str = "Allow";
-			break;
-		case AUTH_DISALLOW:
-			str = "Disallow";
-			break;
-		case AUTH_GUEST:
-			str = "Guest";
-			break;
-		case AUTH_BADPASSWORD:
-			str = "BadPassword";
-			break;
-		case AUTH_BADUSER:
-			str = "BadUser";
-			break;
+			case AUTH_ALLOW:
+				str = "Allow";
+				break;
+			case AUTH_DISALLOW:
+				str = "Disallow";
+				break;
+			case AUTH_GUEST:
+				str = "Guest";
+				break;
+			case AUTH_BADPASSWORD:
+				str = "BadPassword";
+				break;
+			case AUTH_BADUSER:
+				str = "BadUser";
+				break;
 		}
 
 		return str;
@@ -1049,13 +921,9 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		client.setGuest(true);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.alfresco.jlan.server.auth.ICifsAuthenticator#getUserDetails(java.
-	 * lang.String)
-	 */
+	/* (non-Javadoc)
+     * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#getUserDetails(java.lang.String)
+     */
 	public final UserAccount getUserDetails(String user) {
 
 		// Get the user account details via the users interface
@@ -1081,8 +949,8 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		// Check if there are any domain mappings
 
-		SecurityConfigSection securityConfig = getsecurityConfig();
-		if (securityConfig.hasDomainMappings() == false)
+	    SecurityConfigSection securityConfig = getsecurityConfig();
+		if ( securityConfig.hasDomainMappings() == false)
 			return null;
 
 		// Convert the client IP address to an integer value
@@ -1091,14 +959,12 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		for (DomainMapping domainMap : securityConfig.getDomainMappings()) {
 
-			if (domainMap.isMemberOfDomain(clientAddr)) {
+			if ( domainMap.isMemberOfDomain(clientAddr)) {
 
 				// DEBUG
 
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println(
-						"Mapped client IP " + clientIP +
-						" to domain " + domainMap.getDomain());
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("Mapped client IP " + clientIP + " to domain " + domainMap.getDomain());
 
 				return domainMap.getDomain();
 			}
@@ -1106,10 +972,8 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 		// DEBUG
 
-		if (Debug.EnableInfo && hasDebug())
-			Debug.println(
-				"Failed to map client IP " + clientIP +
-				" to a domain");
+		if ( Debug.EnableInfo && hasDebug())
+			Debug.println("Failed to map client IP " + clientIP + " to a domain");
 
 		// No domain mapping for the client address
 
@@ -1119,12 +983,10 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 	/**
 	 * Generate a description for debugging purposes
 	 */
-	@Override
-	public String toString() {
-		return getClass().getName() +
-			", mode=" +
-			(getAccessMode() == ICifsAuthenticator.SHARE_MODE
-				? "SHARE" : "USER");
-	}
-
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + ", mode="
+        + (getAccessMode() == ICifsAuthenticator.SHARE_MODE ? "SHARE" : "USER");
+    }
 }

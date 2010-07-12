@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -53,17 +53,15 @@ public class WkssvcDCEHandler implements DCEHandler {
 	 * 
 	 * @param sess SMBSrvSession
 	 * @param inBuf DCEBuffer
-	 * @param pipeFile DCEPipeFile 2param smbPkt Request packet
+	 * @param pipeFile DCEPipeFile
+	 * 2param smbPkt Request packet
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public void processRequest(
-		SMBSrvSession sess, DCEBuffer inBuf, DCEPipeFile pipeFile,
-		SMBSrvPacket smbPkt)
+	public void processRequest(SMBSrvSession sess, DCEBuffer inBuf, DCEPipeFile pipeFile, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
-		// Get the operation code and move the buffer pointer to the start of
-		// the request data
+		// Get the operation code and move the buffer pointer to the start of the request data
 
 		int opNum = inBuf.getHeaderValue(DCEBuffer.HDR_OPCODE);
 		try {
@@ -74,9 +72,8 @@ public class WkssvcDCEHandler implements DCEHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
-			sess.debugPrintln("DCE/RPC WksSvc request=" +
-				Wkssvc.getOpcodeName(opNum));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			sess.debugPrintln("DCE/RPC WksSvc request=" + Wkssvc.getOpcodeName(opNum));
 
 		// Create the output DCE buffer and add the response header
 
@@ -89,23 +86,22 @@ public class WkssvcDCEHandler implements DCEHandler {
 
 		switch (opNum) {
 
-		// Get workstation information
+			// Get workstation information
 
-		case Wkssvc.NetWkstaGetInfo:
-			processed = netWkstaGetInfo(sess, inBuf, outBuf);
-			break;
+			case Wkssvc.NetWkstaGetInfo:
+				processed = netWkstaGetInfo(sess, inBuf, outBuf);
+				break;
 
-		// Unsupported function
+			// Unsupported function
 
-		default:
-			break;
+			default:
+				break;
 		}
 
 		// Return an error status if the request was not processed
 
-		if (processed == false) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+		if ( processed == false) {
+			sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -126,8 +122,7 @@ public class WkssvcDCEHandler implements DCEHandler {
 	 * @param outBuf DCEPacket
 	 * @return boolean
 	 */
-	protected final boolean netWkstaGetInfo(
-		SMBSrvSession sess, DCEBuffer inBuf, DCEBuffer outBuf) {
+	protected final boolean netWkstaGetInfo(SMBSrvSession sess, DCEBuffer inBuf, DCEBuffer outBuf) {
 
 		// Decode the request
 
@@ -145,9 +140,8 @@ public class WkssvcDCEHandler implements DCEHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
-			sess.debugPrintln("NetWkstaGetInfo srvName=" + srvName +
-				", infoLevel=" + infoLevel);
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			sess.debugPrintln("NetWkstaGetInfo srvName=" + srvName + ", infoLevel=" + infoLevel);
 
 		// Create the workstation information and set the common values
 
@@ -157,13 +151,10 @@ public class WkssvcDCEHandler implements DCEHandler {
 		wkstaInfo.setWorkstationName(srv.getServerName());
 		wkstaInfo.setDomain(srv.getCIFSConfiguration().getDomainName());
 
-		// Determine if the server is using the NT SMB dialect and set the
-		// platofmr id accordingly
+		// Determine if the server is using the NT SMB dialect and set the platofmr id accordingly
 
-		CIFSConfigSection cifsConfig =
-			sess.getSMBServer().getCIFSConfiguration();
-		if (cifsConfig != null &&
-			cifsConfig.getEnabledDialects().hasDialect(Dialect.NT) == true) {
+		CIFSConfigSection cifsConfig = sess.getSMBServer().getCIFSConfiguration();
+		if ( cifsConfig != null && cifsConfig.getEnabledDialects().hasDialect(Dialect.NT) == true) {
 			wkstaInfo.setPlatformId(ServerInfo.PLATFORM_NT);
 			wkstaInfo.setVersion(5, 1);
 		}
@@ -181,5 +172,4 @@ public class WkssvcDCEHandler implements DCEHandler {
 
 		return true;
 	}
-
 }

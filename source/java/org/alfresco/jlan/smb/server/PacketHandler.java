@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -51,9 +51,9 @@ public abstract class PacketHandler {
 	private CIFSPacketPool m_packetPool;
 
 	// Debug output enable
-
+	
 	private boolean m_debug;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -63,9 +63,7 @@ public abstract class PacketHandler {
 	 * @param packetPool CIFSPacketPool
 	 * @exception IOException If a network error occurs
 	 */
-	public PacketHandler(
-		int typ, String name, String shortName, CIFSPacketPool packetPool)
-		throws IOException {
+	public PacketHandler(int typ, String name, String shortName, CIFSPacketPool packetPool) throws IOException {
 
 		m_protoType = typ;
 		m_protoName = name;
@@ -81,10 +79,7 @@ public abstract class PacketHandler {
 	 * @param name String
 	 * @param shortName String
 	 */
-	public PacketHandler(
-		int typ, String name, String shortName, String clientName,
-		CIFSPacketPool packetPool) {
-
+	public PacketHandler(int typ, String name, String shortName, String clientName, CIFSPacketPool packetPool) {
 		m_protoType = typ;
 		m_protoName = name;
 		m_shortName = shortName;
@@ -174,16 +169,16 @@ public abstract class PacketHandler {
 	public final boolean hasDebug() {
 		return m_debug;
 	}
-
+	
 	/**
 	 * Set/clear the debug enable flag
 	 * 
 	 * @param ena boolean
 	 */
-	public final void setDebug(boolean ena) {
+	public final void setDebug( boolean ena) {
 		m_debug = ena;
 	}
-
+	
 	/**
 	 * Return the count of available bytes in the receive input stream
 	 * 
@@ -221,7 +216,6 @@ public abstract class PacketHandler {
 	 */
 	public final void writePacket(SMBSrvPacket pkt, int len)
 		throws IOException {
-
 		writePacket(pkt, len, false);
 	}
 
@@ -233,7 +227,6 @@ public abstract class PacketHandler {
 	 */
 	public final void writePacket(SMBSrvPacket pkt)
 		throws IOException {
-	
 		writePacket(pkt, pkt.getLength());
 	}
 
@@ -268,5 +261,4 @@ public abstract class PacketHandler {
 	protected final void setRemoteAddress(InetAddress addr) {
 		m_remoteAddr = addr;
 	}
-
 }

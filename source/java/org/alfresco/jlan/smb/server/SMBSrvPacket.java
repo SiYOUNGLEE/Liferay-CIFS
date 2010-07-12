@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -43,43 +43,40 @@ public class SMBSrvPacket {
 
 	// Protocol type, either NetBIOS or TCP/IP native SMB
 	//
-	// All protocols reserve a 4 byte header, header is not used by Win32
-	// NetBIOS
+	// All protocols reserve a 4 byte header, header is not used by Win32 NetBIOS
 
-	public static final int PROTOCOL_NETBIOS = 0;
-	public static final int PROTOCOL_TCPIP = 1;
-	public static final int PROTOCOL_WIN32NETBIOS = 2;
+	public static final int PROTOCOL_NETBIOS 		= 0;
+	public static final int PROTOCOL_TCPIP 			= 1;
+	public static final int PROTOCOL_WIN32NETBIOS 	= 2;
 
 	// SMB packet offsets, assuming an RFC NetBIOS transport
 
-	public static final int SIGNATURE = RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int COMMAND = 4 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ERRORCODE = 5 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ERRORCLASS = 5 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ERROR = 7 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int FLAGS = 9 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int FLAGS2 = 10 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int PIDHIGH = 12 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int SID = 18 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int SEQNO = 20 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int TID = 24 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int PID = 26 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int UID = 28 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int MID = 30 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int WORDCNT = 32 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ANDXCOMMAND = 33 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int ANDXRESERVED = 34 + RFCNetBIOSProtocol.HEADER_LEN;
-	public static final int PARAMWORDS = 33 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int SIGNATURE 		= RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int COMMAND 		= 4 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ERRORCODE 		= 5 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ERRORCLASS 		= 5 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ERROR 			= 7 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int FLAGS 			= 9 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int FLAGS2 			= 10 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int PIDHIGH 		= 12 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int SID 			= 18 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int SEQNO 			= 20 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int TID 			= 24 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int PID 			= 26 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int UID 			= 28 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int MID 			= 30 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int WORDCNT 		= 32 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ANDXCOMMAND 	= 33 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int ANDXRESERVED 	= 34 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int PARAMWORDS 		= 33 + RFCNetBIOSProtocol.HEADER_LEN;
 
 	// SMB packet header length
-
-	public static final int HeaderLength =
-		PARAMWORDS - RFCNetBIOSProtocol.HEADER_LEN;
-
+	
+	public static final int HeaderLength	= PARAMWORDS - RFCNetBIOSProtocol.HEADER_LEN;
+	
 	// SMB packet header length for a transaction type request
 
-	public static final int TRANS_HEADERLEN =
-		66 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int TRANS_HEADERLEN = 66 + RFCNetBIOSProtocol.HEADER_LEN;
 
 	// Minimum receive length for a valid SMB packet
 
@@ -91,33 +88,33 @@ public class SMBSrvPacket {
 
 	// Flag bits
 
-	public static final int FLG_SUBDIALECT = 0x01;
-	public static final int FLG_CASELESS = 0x08;
-	public static final int FLG_CANONICAL = 0x10;
-	public static final int FLG_OPLOCK = 0x20;
-	public static final int FLG_NOTIFY = 0x40;
-	public static final int FLG_RESPONSE = 0x80;
+	public static final int FLG_SUBDIALECT 	= 0x01;
+	public static final int FLG_CASELESS 	= 0x08;
+	public static final int FLG_CANONICAL 	= 0x10;
+	public static final int FLG_OPLOCK 		= 0x20;
+	public static final int FLG_NOTIFY 		= 0x40;
+	public static final int FLG_RESPONSE 	= 0x80;
 
 	// Flag2 bits
 
-	public static final int FLG2_LONGFILENAMES = 0x0001;
-	public static final int FLG2_EXTENDEDATTRIB = 0x0002;
-	public static final int FLG2_SECURITYSIGS = 0x0004;
-	public static final int FLG2_EXTENDEDSECURITY = 0x0800;
-	public static final int FLG2_DFSRESOLVE = 0x1000;
-	public static final int FLG2_READIFEXE = 0x2000;
-	public static final int FLG2_LONGERRORCODE = 0x4000;
-	public static final int FLG2_UNICODE = 0x8000;
+	public static final int FLG2_LONGFILENAMES 		= 0x0001;
+	public static final int FLG2_EXTENDEDATTRIB 	= 0x0002;
+	public static final int FLG2_SECURITYSIGS 		= 0x0004;
+	public static final int FLG2_EXTENDEDSECURITY 	= 0x0800;
+	public static final int FLG2_DFSRESOLVE 		= 0x1000;
+	public static final int FLG2_READIFEXE 			= 0x2000;
+	public static final int FLG2_LONGERRORCODE 		= 0x4000;
+	public static final int FLG2_UNICODE 			= 0x8000;
 
 	// Security mode bits
 
-	public static final int SEC_USER = 0x0001;
+	public static final int SEC_USER 	= 0x0001;
 	public static final int SEC_ENCRYPT = 0x0002;
 
 	// Raw mode bits
 
-	public static final int RAW_READ = 0x0001;
-	public static final int RAW_WRITE = 0x0002;
+	public static final int RAW_READ 	= 0x0001;
+	public static final int RAW_WRITE 	= 0x0002;
 
 	// No chained AndX command indicator
 
@@ -141,13 +138,13 @@ public class SMBSrvPacket {
 	protected int m_endpos;
 
 	// Associated packet
-
+	
 	private SMBSrvPacket m_assocPkt;
-
+	
 	// Packet is queued for sending via asynchronous I/O
-
+	
 	private boolean m_asyncQueued;
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -209,21 +206,18 @@ public class SMBSrvPacket {
 	}
 
 	/**
-	 * Check the SMB AndX command for the required minimum parameter count and
-	 * byte count.
+	 * Check the SMB AndX command for the required minimum parameter count and byte count.
 	 * 
 	 * @param off Offset to the AndX command within the SMB packet.
 	 * @param reqWords Minimum number of parameter words expected.
 	 * @param reqBytes Minimum number of bytes expected.
 	 * @return boolean True if the packet passes the checks, else false.
 	 */
-	public final boolean checkAndXPacketIsValid(
-		int off, int reqWords, int reqBytes) {
+	public final boolean checkAndXPacketIsValid(int off, int reqWords, int reqBytes) {
 
 		// Check the received parameter word count
 
-		if (getAndXParameterCount(off) < reqWords ||
-			getAndXByteCount(off) < reqBytes)
+		if ( getAndXParameterCount(off) < reqWords || getAndXByteCount(off) < reqBytes)
 			return false;
 
 		// Initial SMB packet checks passed
@@ -232,8 +226,8 @@ public class SMBSrvPacket {
 	}
 
 	/**
-	 * Check the SMB packet for a valid SMB signature, and the required minimum
-	 * parameter count and byte count.
+	 * Check the SMB packet for a valid SMB signature, and the required minimum parameter count and
+	 * byte count.
 	 * 
 	 * @param reqWords Minimum number of parameter words expected.
 	 * @param reqBytes Minimum number of bytes expected.
@@ -243,14 +237,13 @@ public class SMBSrvPacket {
 
 		// Check for the SMB signature block
 
-		if (m_smbbuf[SIGNATURE] != (byte) 0xFF ||
-			m_smbbuf[SIGNATURE + 1] != 'S' || m_smbbuf[SIGNATURE + 2] != 'M' ||
-			m_smbbuf[SIGNATURE + 3] != 'B')
+		if ( m_smbbuf[SIGNATURE] != (byte) 0xFF || m_smbbuf[SIGNATURE + 1] != 'S' || m_smbbuf[SIGNATURE + 2] != 'M'
+				|| m_smbbuf[SIGNATURE + 3] != 'B')
 			return false;
 
 		// Check the received parameter word count
 
-		if (getParameterCount() < reqWords || getByteCount() < reqBytes)
+		if ( getParameterCount() < reqWords || getByteCount() < reqBytes)
 			return false;
 
 		// Initial SMB packet checks passed
@@ -267,9 +260,8 @@ public class SMBSrvPacket {
 
 		// Check for the SMB signature block
 
-		if (m_smbbuf[SIGNATURE] == (byte) 0xFF &&
-			m_smbbuf[SIGNATURE + 1] == 'S' && m_smbbuf[SIGNATURE + 2] == 'M' &&
-			m_smbbuf[SIGNATURE + 3] == 'B')
+		if ( m_smbbuf[SIGNATURE] == (byte) 0xFF && m_smbbuf[SIGNATURE + 1] == 'S' && m_smbbuf[SIGNATURE + 2] == 'M'
+				&& m_smbbuf[SIGNATURE + 3] == 'B')
 			return true;
 
 		// Invalid SMB packet format
@@ -286,9 +278,8 @@ public class SMBSrvPacket {
 
 		// Check for the SMB2 signature block
 
-		if (m_smbbuf[SIGNATURE] == (byte) 0xFE &&
-			m_smbbuf[SIGNATURE + 1] == 'S' && m_smbbuf[SIGNATURE + 2] == 'M' &&
-			m_smbbuf[SIGNATURE + 3] == 'B')
+		if ( m_smbbuf[SIGNATURE] == (byte) 0xFE && m_smbbuf[SIGNATURE + 1] == 'S' && m_smbbuf[SIGNATURE + 2] == 'M'
+				&& m_smbbuf[SIGNATURE + 3] == 'B')
 			return true;
 
 		// Not an SMB2 packet
@@ -328,21 +319,20 @@ public class SMBSrvPacket {
 
 		// Check if this is a response packet
 
-		if (isResponse())
+		if ( isResponse())
 			System.out.println(" [Response]");
 		else
 			System.out.println();
 
 		// Dump flags/secondary flags
 
-		if (true) {
+		if ( true) {
 
 			// Dump the packet length
 
 			System.out.println("** SMB Packet Dump");
 			System.out.println("Packet Length : " + getLength());
-			System.out.println("Byte Offset: " + getByteOffset() +
-				", Byte Count: " + getByteCount());
+			System.out.println("Byte Offset: " + getByteOffset() + ", Byte Count: " + getByteCount());
 
 			// Dump the flags
 
@@ -376,12 +366,11 @@ public class SMBSrvPacket {
 
 			// Response packet fields
 
-			if (isResponse()) {
+			if ( isResponse()) {
 
 				// Dump the error code
 
-				System.out.println("Error: 0x" +
-					Integer.toHexString(getErrorCode()));
+				System.out.println("Error: 0x" + Integer.toHexString(getErrorCode()));
 				System.out.print("Error Class: ");
 
 				switch (getErrorClass()) {
@@ -401,24 +390,22 @@ public class SMBSrvPacket {
 					System.out.println("ERRCMD");
 					break;
 				default:
-					System.out.println("0x" +
-						Integer.toHexString(getErrorClass()));
+					System.out.println("0x" + Integer.toHexString(getErrorClass()));
 					break;
 				}
 
 				// Display the SMB error text
 
 				System.out.print("Error Text: ");
-				System.out.println(SMBErrorText.ErrorString(
-					getErrorClass(), getErrorCode()));
+				System.out.println(SMBErrorText.ErrorString(getErrorClass(), getErrorCode()));
 			}
 		}
 
 		// Dump the raw data
 
-		if (true) {
+		if ( true) {
 			System.out.println("********** Raw SMB Data Dump **********");
-			if (dumpAll)
+			if ( dumpAll)
 				HexDump.Dump(m_smbbuf, getLength(), 4);
 			else
 				HexDump.Dump(m_smbbuf, getLength() < 100 ? getLength() : 100, 4);
@@ -455,9 +442,8 @@ public class SMBSrvPacket {
 		// Calculate the offset of the byte buffer
 
 		int pCnt = getAndXParameterCount(off);
-		int pos = off + (2 * pCnt) + 3; // parameter words + paramter count byte
-										// + byte data length
-		// word
+		int pos = off + (2 * pCnt) + 3; // parameter words + paramter count byte + byte data length
+										// word
 		return pos;
 	}
 
@@ -477,8 +463,7 @@ public class SMBSrvPacket {
 	 * @param off Offset to the AndX command.
 	 * @param idx Parameter index (zero based).
 	 * @return Parameter word value.
-	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is
-	 *                out of range.
+	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is out of range.
 	 */
 
 	public final int getAndXParameter(int off, int idx)
@@ -486,7 +471,7 @@ public class SMBSrvPacket {
 
 		// Range check the parameter index
 
-		if (idx > getAndXParameterCount(off))
+		if ( idx > getAndXParameterCount(off))
 			throw new java.lang.IndexOutOfBoundsException();
 
 		// Calculate the parameter word offset
@@ -501,8 +486,7 @@ public class SMBSrvPacket {
 	 * @param off Offset to the AndX command.
 	 * @param idx Parameter index (zero based).
 	 * @return Parameter integer value.
-	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is
-	 *                out of range.
+	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is out of range.
 	 */
 
 	public final int getAndXParameterLong(int off, int idx)
@@ -510,7 +494,7 @@ public class SMBSrvPacket {
 
 		// Range check the parameter index
 
-		if (idx > getAndXParameterCount(off))
+		if ( idx > getAndXParameterCount(off))
 			throw new java.lang.IndexOutOfBoundsException();
 
 		// Calculate the parameter word offset
@@ -655,6 +639,7 @@ public class SMBSrvPacket {
 		return m_smbbuf[0] & 0x00FF;
 	}
 
+
 	/**
 	 * Calculate the total used packet length.
 	 * 
@@ -689,8 +674,7 @@ public class SMBSrvPacket {
 	}
 
 	/**
-	 * Return the available buffer space for data bytes for the specified buffer
-	 * length
+	 * Return the available buffer space for data bytes for the specified buffer length
 	 * 
 	 * @param len int
 	 * @return int
@@ -829,8 +813,7 @@ public class SMBSrvPacket {
 	 * 
 	 * @param idx Parameter index (zero based).
 	 * @return Parameter word value.
-	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is
-	 *                out of range.
+	 * @exception java.lang.IndexOutOfBoundsException If the parameter index is out of range.
 	 */
 
 	public final int getParameter(int idx)
@@ -838,7 +821,7 @@ public class SMBSrvPacket {
 
 		// Range check the parameter index
 
-		if (idx > getParameterCount())
+		if ( idx > getParameterCount())
 			throw new java.lang.IndexOutOfBoundsException();
 
 		// Calculate the parameter word offset
@@ -895,13 +878,13 @@ public class SMBSrvPacket {
 	public final int getProcessIdFull() {
 		int pid = getProcessId();
 		int pidHigh = getProcessIdHigh();
-
-		if (pidHigh != 0)
+		
+		if ( pidHigh != 0)
 			pid += pidHigh << 16;
-
+		
 		return pid;
 	}
-
+	
 	/**
 	 * Get the actual received data length.
 	 * 
@@ -953,7 +936,7 @@ public class SMBSrvPacket {
 
 		int andxCmd = getAndXCommand();
 
-		if (andxCmd != 0xFF && andxCmd != 0)
+		if ( andxCmd != 0xFF && andxCmd != 0)
 			return true;
 		return false;
 	}
@@ -980,7 +963,7 @@ public class SMBSrvPacket {
 
 	public final boolean isResponse() {
 		int resp = getFlags();
-		if ((resp & FLG_RESPONSE) != 0)
+		if ( (resp & FLG_RESPONSE) != 0)
 			return true;
 		return false;
 	}
@@ -988,16 +971,14 @@ public class SMBSrvPacket {
 	/**
 	 * Check if the response packet is valid, ie. type and flags
 	 * 
-	 * @return true if the SMB packet is a response packet and the response is
-	 *         valid, else false.
+	 * @return true if the SMB packet is a response packet and the response is valid, else false.
 	 */
 
 	public final boolean isValidResponse() {
 
 		// Check if this is a response packet, and the correct type of packet
 
-		if (isResponse() && getCommand() == m_pkttype &&
-			this.getErrorClass() == SMBStatus.Success)
+		if ( isResponse() && getCommand() == m_pkttype && this.getErrorClass() == SMBStatus.Success)
 			return true;
 		return false;
 	}
@@ -1077,7 +1058,7 @@ public class SMBSrvPacket {
 
 		// Check for Unicode or ASCII
 
-		if (uni) {
+		if ( uni) {
 
 			// Word align the buffer position, pack the Unicode string
 
@@ -1105,14 +1086,14 @@ public class SMBSrvPacket {
 
 		// Check for Unicode or ASCII
 
-		if (uni) {
+		if ( uni) {
 
 			// Word align the buffer position, pack the Unicode string
 
 			m_pos = DataPacker.wordAlign(m_pos);
 			DataPacker.putUnicodeString(str, m_smbbuf, m_pos, nul);
 			m_pos += (str.length() * 2);
-			if (nul == true)
+			if ( nul == true)
 				m_pos += 2;
 		}
 		else {
@@ -1121,7 +1102,7 @@ public class SMBSrvPacket {
 
 			DataPacker.putString(str, m_smbbuf, m_pos, true);
 			m_pos += str.length();
-			if (nul == true)
+			if ( nul == true)
 				m_pos++;
 		}
 	}
@@ -1181,7 +1162,7 @@ public class SMBSrvPacket {
 	 * @return byte[]
 	 */
 	public final byte[] unpackBytes(int len) {
-		if (len <= 0)
+		if ( len <= 0)
 			return null;
 
 		byte[] buf = new byte[len];
@@ -1235,24 +1216,21 @@ public class SMBSrvPacket {
 
 		String ret = null;
 
-		if (uni) {
+		if ( uni) {
 
 			// Word align the current buffer position
 
 			m_pos = DataPacker.wordAlign(m_pos);
-			ret =
-				DataPacker.getUnicodeString(m_smbbuf, m_pos, m_smbbuf.length -
-					m_pos);
-			if (ret != null)
+			ret = DataPacker.getUnicodeString(m_smbbuf, m_pos, m_smbbuf.length - m_pos);
+			if ( ret != null)
 				m_pos += (ret.length() * 2) + 2;
 		}
 		else {
 
 			// Unpack the ASCII string
 
-			ret =
-				DataPacker.getString(m_smbbuf, m_pos, m_smbbuf.length - m_pos);
-			if (ret != null)
+			ret = DataPacker.getString(m_smbbuf, m_pos, m_smbbuf.length - m_pos);
+			if ( ret != null)
 				m_pos += ret.length() + 1;
 		}
 
@@ -1267,7 +1245,7 @@ public class SMBSrvPacket {
 	 * @return boolean
 	 */
 	public final boolean hasMoreData() {
-		if (m_pos < m_endpos)
+		if ( m_pos < m_endpos)
 			return true;
 		return false;
 	}
@@ -1302,12 +1280,12 @@ public class SMBSrvPacket {
 		// Make sure the response flag is set
 
 		int flg = getFlags();
-		if ((flg & FLG_RESPONSE) == 0)
+		if ( (flg & FLG_RESPONSE) == 0)
 			setFlags(flg + FLG_RESPONSE);
 
 		// NetBIOS SMB protocol
 
-		if (proto == PROTOCOL_NETBIOS) {
+		if ( proto == PROTOCOL_NETBIOS) {
 
 			// Fill in the NetBIOS message header, this is already allocated as
 			// part of the users buffer.
@@ -1367,8 +1345,7 @@ public class SMBSrvPacket {
 	 * Set the AndX data byte area in the SMB packet
 	 * 
 	 * @param off Offset to the AndX command.
-	 * @param byts Byte array containing the data to be copied to the SMB
-	 *            packet.
+	 * @param byts Byte array containing the data to be copied to the SMB packet.
 	 */
 
 	public final void setAndXBytes(int off, byte[] byts) {
@@ -1377,8 +1354,8 @@ public class SMBSrvPacket {
 
 		offset += 2;
 
-		for (int idx = 0; idx < byts.length; m_smbbuf[offset + idx] =
-			byts[idx++]);
+		for (int idx = 0; idx < byts.length; m_smbbuf[offset + idx] = byts[idx++])
+			;
 	}
 
 	/**
@@ -1452,8 +1429,7 @@ public class SMBSrvPacket {
 	/**
 	 * Set the data byte area in the SMB packet
 	 * 
-	 * @param byts Byte array containing the data to be copied to the SMB
-	 *            packet.
+	 * @param byts Byte array containing the data to be copied to the SMB packet.
 	 */
 
 	public final void setBytes(byte[] byts) {
@@ -1462,8 +1438,8 @@ public class SMBSrvPacket {
 
 		offset += 2;
 
-		for (int idx = 0; idx < byts.length; m_smbbuf[offset + idx] =
-			byts[idx++]);
+		for (int idx = 0; idx < byts.length; m_smbbuf[offset + idx] = byts[idx++])
+			;
 	}
 
 	/**
@@ -1499,12 +1475,11 @@ public class SMBSrvPacket {
 	 * @param errCode int
 	 * @param errClass int
 	 */
-	public final void setError(
-		boolean longError, int ntErr, int errCode, int errClass) {
+	public final void setError(boolean longError, int ntErr, int errCode, int errClass) {
 
 		// Check if the error code is a long/NT status code
 
-		if (longError) {
+		if ( longError) {
 
 			// Set the NT status code
 
@@ -1512,7 +1487,7 @@ public class SMBSrvPacket {
 
 			// Set the NT status code flag
 
-			if (isLongErrorCode() == false)
+			if ( isLongErrorCode() == false)
 				setFlags2(getFlags2() + SMBSrvPacket.FLG2_LONGERRORCODE);
 		}
 		else {
@@ -1720,8 +1695,7 @@ public class SMBSrvPacket {
 	}
 
 	/**
-	 * Reset the byte pointer area for packing/unpacking data items from the
-	 * packet
+	 * Reset the byte pointer area for packing/unpacking data items from the packet
 	 */
 	public final void resetBytePointer() {
 		m_pos = getByteOffset();
@@ -1747,8 +1721,8 @@ public class SMBSrvPacket {
 	}
 
 	/**
-	 * Reset the byte/parameter pointer area for packing/unpacking data items
-	 * from the packet, and align the buffer on an int (32bit) boundary
+	 * Reset the byte/parameter pointer area for packing/unpacking data items from the packet, and
+	 * align the buffer on an int (32bit) boundary
 	 */
 	public final void resetBytePointerAlign() {
 		m_pos = DataPacker.longwordAlign(getByteOffset());
@@ -1772,7 +1746,7 @@ public class SMBSrvPacket {
 	public final void setBuffer(byte[] buf) {
 		m_smbbuf = buf;
 	}
-
+	
 	/**
 	 * Check if there is an associated packet
 	 * 
@@ -1781,7 +1755,7 @@ public class SMBSrvPacket {
 	public final boolean hasAssociatedPacket() {
 		return m_assocPkt != null ? true : false;
 	}
-
+	
 	/**
 	 * Return the associated packet
 	 * 
@@ -1790,33 +1764,33 @@ public class SMBSrvPacket {
 	public final SMBSrvPacket getAssociatedPacket() {
 		return m_assocPkt;
 	}
-
+	
 	/**
 	 * Set the associated packet
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 */
-	public final void setAssociatedPacket(SMBSrvPacket smbPkt) {
+	public final void setAssociatedPacket( SMBSrvPacket smbPkt) {
 		m_assocPkt = smbPkt;
 	}
-
+	
 	/**
 	 * Clear the associated packet
 	 */
 	public final void clearAssociatedPacket() {
 		m_assocPkt = null;
 	}
-
+	
 	/**
 	 * Calculate the header length for the specified number of parameters
 	 * 
 	 * @param numParams int
 	 * @return int
 	 */
-	public static final int calculateHeaderLength(int numParams) {
-		return HeaderLength + (numParams * 2) + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int calculateHeaderLength( int numParams) {
+		return HeaderLength + ( numParams * 2) + RFCNetBIOSProtocol.HEADER_LEN;
 	}
-
+	
 	/**
 	 * Determine if the packet is queued for sending via asynchronous I/O
 	 * 
@@ -1825,16 +1799,16 @@ public class SMBSrvPacket {
 	public final boolean isQueuedForAsyncIO() {
 		return m_asyncQueued;
 	}
-
+	
 	/**
 	 * Set/clear the asynchronous I/O flag
 	 * 
 	 * @param asyncIO boolean
 	 */
-	public final void setQueuedForAsyncIO(boolean asyncIO) {
+	public final void setQueuedForAsyncIO( boolean asyncIO) {
 		m_asyncQueued = asyncIO;
 	}
-
+	
 	/**
 	 * Return the SMB packet details as a string
 	 * 
@@ -1842,35 +1816,35 @@ public class SMBSrvPacket {
 	 */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
-
+		
 		str.append("[SMBPkt Typ=");
-		str.append(getPacketTypeString());
+		str.append( getPacketTypeString());
 
-		if (isResponse())
-			str.append("(Resp)");
-
+		if ( isResponse())
+			str.append( "(Resp)");
+		
 		str.append(",TID=");
-		str.append(getTreeId());
+		str.append( getTreeId());
 		str.append(",PID=");
-		str.append(getProcessId());
+		str.append( getProcessId());
 		str.append(",UID=");
 		str.append(getUserId());
 		str.append(",MID=");
 		str.append(getMultiplexId());
-
+		
 		str.append(",Flags=0x");
 		str.append(Integer.toBinaryString(getFlags()));
 		str.append("/0x");
 		str.append(Integer.toBinaryString(getFlags2()));
-
+		
 		str.append(": Prms=");
-		str.append(getParameterCount());
+		str.append( getParameterCount());
 		str.append(",BytCnt=");
-		str.append(getByteCount());
+		str.append( getByteCount());
+		
 
 		str.append("]");
-
+		
 		return str.toString();
 	}
-
 }

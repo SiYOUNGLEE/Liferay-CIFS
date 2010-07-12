@@ -1,46 +1,48 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
 package org.alfresco.jlan.server.filesys.loader;
 
 /**
- * Memory Segment Class <p>Contains an in-memory copy of file data.
+ * Memory Segment Class
  * 
+ * <p>Contains an in-memory copy of file data.
+ *
  * @author gkspencer
  */
 public class MemorySegment {
 
-	// Data buffer and file offset
-
+	//	Data buffer and file offset
+	
 	private byte[] m_buffer;
 	private long m_fileOff;
-
-	// Read count
-
+	
+	//	Read count
+	
 	private int m_readCount;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -48,10 +50,10 @@ public class MemorySegment {
 	 * @param fileOff long
 	 */
 	public MemorySegment(byte[] buf, long fileOff) {
-		m_buffer = buf;
+		m_buffer  = buf;
 		m_fileOff = fileOff;
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -62,10 +64,10 @@ public class MemorySegment {
 	 */
 	public MemorySegment(byte[] buf, int pos, int len, long fileOff) {
 		m_buffer = new byte[len];
-		System.arraycopy(buf, pos, m_buffer, 0, len);
+		System.arraycopy(buf,pos,m_buffer,0,len);
 		m_fileOff = fileOff;
 	}
-
+	
 	/**
 	 * Return the buffer
 	 * 
@@ -74,7 +76,7 @@ public class MemorySegment {
 	public final byte[] getBuffer() {
 		return m_buffer;
 	}
-
+	
 	/**
 	 * Return the buffer length
 	 * 
@@ -83,7 +85,7 @@ public class MemorySegment {
 	public final int getLength() {
 		return m_buffer.length;
 	}
-
+	
 	/**
 	 * Return the file offset of the data
 	 * 
@@ -101,7 +103,7 @@ public class MemorySegment {
 	public final int getReadCounter() {
 		return m_readCount;
 	}
-
+		
 	/**
 	 * Check if this segment contains the data for the specified request
 	 * 
@@ -110,25 +112,25 @@ public class MemorySegment {
 	 * @return boolean
 	 */
 	public final boolean containsData(long fileOff, int len) {
-
-		// Check if the memory segment has enough data for the request
-
-		if (len > getLength())
+		
+		//	Check if the memory segment has enough data for the request
+		
+		if ( len > getLength())
 			return false;
-
-		// Check if the memory segment contains the required data
-
-		long endOff = fileOff + len;
+			
+		//	Check if the memory segment contains the required data
+		
+		long endOff  = fileOff + len;
 		long dataEnd = getFileOffset() + getLength();
-
-		if (fileOff >= getFileOffset() && endOff <= dataEnd)
+		
+		if ( fileOff >= getFileOffset() && endOff <= dataEnd)
 			return true;
-
-		// Data not in this segment
-
+			
+		//	Data not in this segment
+		
 		return false;
 	}
-
+	
 	/**
 	 * Copy data to the specified user buffer
 	 * 
@@ -138,20 +140,20 @@ public class MemorySegment {
 	 * @param fileOff long
 	 */
 	public final void copyBytes(byte[] buf, int pos, int len, long fileOff) {
-
-		// Update the file offset
-
-		int bufOff = (int) (fileOff - getFileOffset());
-
-		// Copy data to the user buffer
-
-		System.arraycopy(m_buffer, bufOff, buf, pos, len);
-
-		// Update the read count
-
+		
+		//	Update the file offset
+		
+		int bufOff = (int) ( fileOff - getFileOffset());
+		
+		//	Copy data to the user buffer
+		
+		System.arraycopy(m_buffer,bufOff,buf,pos,len);
+		
+		//	Update the read count
+		
 		m_readCount++;
 	}
-
+	
 	/**
 	 * Increment the read counter by the specified amount
 	 * 
@@ -160,14 +162,14 @@ public class MemorySegment {
 	public final void incrementReadCounter(int incr) {
 		m_readCount += incr;
 	}
-
+	
 	/**
 	 * Decrement the read counter, if greater than zero
 	 * 
 	 * @param decr int
 	 */
 	protected final void decrementReadCounter(int decr) {
-		if (m_readCount > decr)
+		if ( m_readCount > decr)
 			m_readCount -= decr;
 		else
 			m_readCount = 0;
@@ -179,7 +181,7 @@ public class MemorySegment {
 	protected final void decrementReadCounter() {
 		decrementReadCounter(1);
 	}
-
+	
 	/**
 	 * Return the memory segment as a string
 	 * 
@@ -194,8 +196,7 @@ public class MemorySegment {
 		str.append(",reads=");
 		str.append(getReadCounter());
 		str.append("]");
-
+		
 		return str.toString();
 	}
-
 }

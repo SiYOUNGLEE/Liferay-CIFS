@@ -1,18 +1,19 @@
 /*
  * Copyright (C) 2005-2008 Alfresco, Inc.
- * 
- * Licensed under the Mozilla Public License version 1.1 with a permitted
- * attribution clause. You may obtain a copy of the License at
- * 
- * http://www.alfresco.org/legal/license.txt
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ *
+ * Licensed under the Mozilla Public License version 1.1 
+ * with a permitted attribution clause. You may obtain a
+ * copy of the License at
+ *
+ *   http://www.alfresco.org/legal/license.txt
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the
+ * License.
  */
-
 package org.alfresco.jlan.server;
 
 import java.io.IOException;
@@ -26,8 +27,9 @@ import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.smb.server.PacketHandler;
 
 /**
- * Channel Session Handler Class <p>Base class for channel based session handler
- * implementations.
+ * Channel Session Handler Class
+ * 
+ * <p>Base class for channel based session handler implementations.
  * 
  * @author gkspencer
  */
@@ -46,9 +48,7 @@ public abstract class ChannelSessionHandler extends SessionHandlerBase {
 	 * @param addr InetAddress
 	 * @param port int
 	 */
-	public ChannelSessionHandler(
-		String name, String protocol, NetworkServer server, InetAddress addr,
-		int port) {
+	public ChannelSessionHandler(String name, String protocol, NetworkServer server, InetAddress addr, int port) {
 		super(name, protocol, server, addr, port);
 	}
 
@@ -60,7 +60,7 @@ public abstract class ChannelSessionHandler extends SessionHandlerBase {
 	public final ServerSocketChannel getSocketChannel() {
 		return m_srvSockChannel;
 	}
-
+	
 	/**
 	 * Initialize the session handler
 	 * 
@@ -70,34 +70,32 @@ public abstract class ChannelSessionHandler extends SessionHandlerBase {
 		throws IOException {
 
 		// Create the server socket channel
-
+		
 		m_srvSockChannel = ServerSocketChannel.open();
-
+		
 		// Open the server socket
 
 		InetSocketAddress sockAddr = null;
-
-		if (hasBindAddress())
-			sockAddr = new InetSocketAddress(getBindAddress(), getPort());
+		
+		if ( hasBindAddress())
+			sockAddr = new InetSocketAddress( getBindAddress(), getPort());
 		else
-			sockAddr = new InetSocketAddress(getPort());
+			sockAddr = new InetSocketAddress( getPort());
 
 		// Bind the socket
-
-		m_srvSockChannel.socket().bind(sockAddr, getListenBacklog());
-
+		
+		m_srvSockChannel.socket().bind( sockAddr, getListenBacklog());
+		
 		// Set the allocated port
 
-		if (getPort() == 0)
+		if ( getPort() == 0)
 			setPort(m_srvSockChannel.socket().getLocalPort());
 
 		// DEBUG
 
-		if (Debug.EnableInfo && hasDebug()) {
-			Debug.print(
-				"[" + getProtocolName() + "] Binding " +
-				getHandlerName() + " session handler to address : ");
-			if (hasBindAddress())
+		if ( Debug.EnableInfo && hasDebug()) {
+			Debug.print("[" + getProtocolName() + "] Binding " + getHandlerName() + " session handler to address : ");
+			if ( hasBindAddress())
 				Debug.println(getBindAddress().getHostAddress());
 			else
 				Debug.println("ALL");
@@ -113,13 +111,13 @@ public abstract class ChannelSessionHandler extends SessionHandlerBase {
 
 		// Request the main listener thread shutdown
 
-		setShutdown(true);
+		setShutdown( true);
 
 		try {
 
 			// Close the server socket to release any pending listen
 
-			if (m_srvSockChannel != null)
+			if ( m_srvSockChannel != null)
 				m_srvSockChannel.close();
 		}
 		catch (SocketException ex) {
@@ -135,7 +133,6 @@ public abstract class ChannelSessionHandler extends SessionHandlerBase {
 	 * @return PacketHandler
 	 * @exception IOException
 	 */
-	public abstract PacketHandler createPacketHandler(SocketChannel sockChannel)
+	public abstract PacketHandler createPacketHandler( SocketChannel sockChannel)
 		throws IOException;
-
 }

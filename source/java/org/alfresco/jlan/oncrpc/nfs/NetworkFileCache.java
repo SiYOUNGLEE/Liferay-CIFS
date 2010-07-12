@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -35,75 +35,75 @@ import org.alfresco.jlan.server.filesys.DiskInterface;
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.TreeConnection;
 
+
 /**
- * Network File Cache Class <p>Caches the network files that are currently being
- * accessed by the NFS server.
+ * Network File Cache Class
  * 
+ * <p>Caches the network files that are currently being accessed by the NFS server.
+ *
  * @author gkspencer
  */
 public class NetworkFileCache {
 
-	// Default file timeout
-
-	public static final long DefaultFileTimeout = 5000L; // 5 seconds
-	public static final long ClosedFileTimeout = 30000L; // 30 seconds
-
-	// Network file cache, key is the file id
-
+	//	Default file timeout
+	
+	public static final long DefaultFileTimeout	= 5000L;		//	5 seconds
+  public static final long ClosedFileTimeout  = 30000L;   //  30 seconds
+		
+	//	Network file cache, key is the file id
+	
 	private Hashtable<Integer, FileEntry> m_fileCache;
 
-	// File expiry thread
-
+	//	File expiry thread
+	
 	private FileExpiry m_expiryThread;
-
-	// File timeouts
-
-	private long m_fileIOTmo = DefaultFileTimeout;
-	private long m_fileCloseTmo = ClosedFileTimeout;
-
-	// Debug enable flag
-
+		
+	//	File timeouts
+	
+	private long m_fileIOTmo    = DefaultFileTimeout;
+  private long m_fileCloseTmo = ClosedFileTimeout;
+	
+	//	Debug enable flag
+	
 	private boolean m_debug = false;
-
+	
 	/**
 	 * File Entry Class
 	 */
 	protected class FileEntry {
-
-		// Network file and closed flag
-
+		
+		//	Network file and closed flag
+		
 		private NetworkFile m_file;
 		private boolean m_closed;
-
-		// Disk share connection
-
+    
+		//	Disk share connection
+		
 		private TreeConnection m_conn;
-
-		// File timeout
-
+		
+		//	File timeout
+		
 		private long m_timeout;
-
-		// Session that last accessed the file
-
-		private SrvSession m_sess;
+		
+    // Session that last accessed the file
+    
+    private SrvSession m_sess;
 
 		/**
 		 * Class constructor
 		 * 
 		 * @param file NetworkFile
 		 * @param conn TreeConnection
-		 * @param sess SrvSession
+     * @param sess SrvSession
 		 */
-		public FileEntry(
-			NetworkFile file, TreeConnection conn, SrvSession sess) {
-			
+		public FileEntry ( NetworkFile file, TreeConnection conn, SrvSession sess) {
 			m_file = file;
 			m_conn = conn;
-			m_sess = sess;
-
+      m_sess = sess;
+      
 			updateTimeout();
 		}
-
+		
 		/**
 		 * Return the file timeout
 		 * 
@@ -112,7 +112,7 @@ public class NetworkFileCache {
 		public final long getTimeout() {
 			return m_timeout;
 		}
-
+		
 		/**
 		 * Return the network file
 		 * 
@@ -130,16 +130,16 @@ public class NetworkFileCache {
 		public final TreeConnection getConnection() {
 			return m_conn;
 		}
-
-		/**
-		 * Get the session that last accessed the file
-		 * 
-		 * @return SrvSession
-		 */
-		public final SrvSession getSession() {
-			return m_sess;
-		}
-
+		
+    /**
+     * Get the session that last accessed the file
+     * 
+     * @return SrvSession
+     */
+    public final SrvSession getSession() {
+      return m_sess;
+    }
+    
 		/**
 		 * Update the file timeout
 		 */
@@ -155,256 +155,235 @@ public class NetworkFileCache {
 		public final void updateTimeout(long tmo) {
 			m_timeout = tmo;
 		}
-
-		/**
-		 * Set the session that last accessed the file
-		 * 
-		 * @param sess SrvSession
-		 */
-		public final void setSession(SrvSession sess) {
-			m_sess = sess;
-		}
-
-		/**
-		 * Check if the network file has been closed due to no I/O activity
-		 */
-		public final boolean isClosed() {
-			return m_closed;
-		}
-
-		/**
-		 * Close the file
-		 */
-		public final void closeFile() {
-			if (m_file != null) {
-				try {
-					m_file.closeFile();
-					m_closed = true;
-				}
-				catch (IOException ex) {
-				}
-			}
-		}
-
-		/**
-		 * Open the network file
-		 */
-		public final void openFile() {
-			if (m_file != null) {
-				try {
-					m_file.openFile(false);
-					m_closed = false;
-				}
-				catch (IOException ex) {
-				}
-			}
-		}
+    
+    /**
+     * Set the session that last accessed the file
+     * 
+     * @param sess SrvSession
+     */
+    public final void setSession( SrvSession sess) {
+      m_sess = sess;
+    }
+    
+    /**
+     * Check if the network file has been closed due to no I/O activity
+     */
+    public final boolean isClosed() {
+      return m_closed;
+    }
+    
+    /**
+     * Close the file
+     */
+    public final void closeFile() {
+      if ( m_file != null) {
+        try {
+          m_file.closeFile();
+          m_closed = true;
+        }
+        catch ( IOException ex) {
+        }
+      }
+    }
+    
+    /**
+     * Open the network file
+     */
+    public final void openFile() {
+      if ( m_file != null) {
+        try {
+          m_file.openFile( false);
+          m_closed = false;
+        }
+        catch ( IOException ex) {
+        }
+      }
+    }
 	};
-
+	
 	/**
 	 * File Expiry Thread Class
 	 */
 	protected class FileExpiry implements Runnable {
-
-		// Expiry thread
-
+		
+		//	Expiry thread
+		
 		private Thread m_thread;
-
-		// Shutdown flag
-
+		
+		//	Shutdown flag
+		
 		private boolean m_shutdown;
-
+		
 		/**
 		 * Class Constructor
 		 * 
 		 * @param name String
 		 */
-		public FileExpiry(String name) {
-
-			// Create and start the file expiry thread
-
+		public FileExpiry ( String name) {
+			
+			//	Create and start the file expiry thread
+			
 			m_thread = new Thread(this);
 			m_thread.setDaemon(true);
 			m_thread.setName("NFSFileExpiry_" + name);
 			m_thread.start();
 		}
-
+		
 		/**
 		 * Main thread method
 		 */
 		public void run() {
-
-			// Loop until shutdown
-
-			while (m_shutdown == false) {
-
-				// Sleep for a while
-
+			
+			//	Loop until shutdown
+			
+			while ( m_shutdown == false) {
+				
+				//	Sleep for a while
+				
 				try {
 					Thread.sleep(m_fileIOTmo / 2);
 				}
 				catch (InterruptedException ex) {
 				}
 
-				// Get the current system time
-
+				//	Get the current system time
+				
 				long timeNow = System.currentTimeMillis();
-
-				// Check for expired files
-
-				synchronized (m_fileCache) {
-
-					// Enumerate the cache entries
-
+								
+				//	Check for expired files
+				
+				synchronized ( m_fileCache) {
+					
+					//	Enumerate the cache entries
+					
 					Enumeration enm = m_fileCache.keys();
-
-					while (enm.hasMoreElements()) {
-
-						// Get the current key
-
+					
+					while ( enm.hasMoreElements()) {
+						
+						//	Get the current key
+						
 						Integer fileId = (Integer) enm.nextElement();
-
-						// Get the file entry and check if it has expired
-
+						
+						//	Get the file entry and check if it has expired
+						
 						FileEntry fentry = m_fileCache.get(fileId);
+						
+						if ( fentry != null && fentry.getTimeout() < timeNow) {
 
-						if (fentry != null && fentry.getTimeout() < timeNow) {
-
-							// Get the network file
-
+							//	Get the network file
+							
 							NetworkFile netFile = fentry.getFile();
-
-							// Check if the file has an I/O request pending, if
-							// so then reset the file expiry time
-							// for the file
-
-							if (netFile.hasIOPending()) {
-
-								// Update the expiry time for the file entry
-
+														
+							//	Check if the file has an I/O request pending, if so then reset the file expiry time
+							//	for the file
+							
+							if ( netFile.hasIOPending()) {
+								
+								//	Update the expiry time for the file entry
+								
 								fentry.updateTimeout();
 
-								// DEBUG
-
-								if (Debug.EnableInfo && hasDebug())
-									Debug.println(
-										"NFSFileExpiry: I/O pending file=" +
-										fentry.getFile().getFullName() +
-										", fid=" + fileId);
+								//	DEBUG
+								
+								if ( Debug.EnableInfo && hasDebug())
+									Debug.println("NFSFileExpiry: I/O pending file=" + fentry.getFile().getFullName() + ", fid=" + fileId);
 							}
 							else {
 
-								// Check if the network file is closed, if not
-								// then close the file to release the file
-								// handle
-								// but keep the file entry in the file cache for
-								// a while as the file may be re-opened
+                //  Check if the network file is closed, if not then close the file to release the file handle
+                //  but keep the file entry in the file cache for a while as the file may be re-opened
+                
+                if ( fentry.isClosed() == false) {
+                  
+                  // Close the network file
+                  
+                  fentry.closeFile();
+                  
+                  // Update the file entry timeout to keep the file in the cache for a while
+                  
+                  fentry.updateTimeout( System.currentTimeMillis() + m_fileCloseTmo);
+                  
+                  // DEBUG
+                  
+                  if ( Debug.EnableInfo && hasDebug())
+                    Debug.println("NFSFileExpiry: Closed file=" + fentry.getFile().getFullName() + ", fid=" + fileId + " (cached)");
+                }
+                else {
 
-								if (fentry.isClosed() == false) {
-
-									// Close the network file
-
-									fentry.closeFile();
-
-									// Update the file entry timeout to keep the
-									// file in the cache for a while
-
-									fentry.updateTimeout(System
-										.currentTimeMillis() +
-										m_fileCloseTmo);
-
-									// DEBUG
-
-									if (Debug.EnableInfo && hasDebug())
-										Debug.println(
-											"NFSFileExpiry: Closed file=" +
-											fentry.getFile().getFullName() +
-											", fid=" + fileId + " (cached)");
-								}
-								else {
-
-									// File entry has expired, remove it from
-									// the cache
-
-									m_fileCache.remove(fileId);
-
-									// Close the file via the disk interface
-
-									try {
-
-										// Get the disk interface
-
-										DiskInterface disk =
-											(DiskInterface) fentry
-											.getConnection().getInterface();
-
-										// Close the file
-
-										disk.closeFile(
-											fentry.getSession(),
-											fentry.getConnection(), netFile);
-									}
-									catch (IOException ex) {
-									}
-
-									// DEBUG
-
-									if (Debug.EnableInfo && hasDebug())
-										Debug.println(
-											"NFSFileExpiry: Closed file=" +
-											fentry.getFile().getFullName() +
-											", fid=" + fileId + " (removed)");
-								}
-							}
+  								//	File entry has expired, remove it from the cache
+  								
+  								m_fileCache.remove(fileId);
+  								
+  								//	Close the file via the disk interface
+  	
+  								try {
+  									
+  									//	Get the disk interface
+  									
+  									DiskInterface disk = (DiskInterface) fentry.getConnection().getInterface();
+  									
+  									//	Close the file
+  									
+  									disk.closeFile( fentry.getSession(), fentry.getConnection(), netFile);
+  								}
+  								catch (IOException ex) {
+  								}
+  								
+  								//	DEBUG
+  								
+  								if ( Debug.EnableInfo && hasDebug())
+  									Debug.println("NFSFileExpiry: Closed file=" + fentry.getFile().getFullName() + ", fid=" + fileId + " (removed)");
+  							}
+              }
 						}
 					}
 				}
 			}
 		}
-
+		
 		/**
 		 * Request the file expiry thread to shutdown
 		 */
 		public final void requestShutdown() {
-
-			// Set the shutdown flag
-
+			
+			//	Set the shutdown flag
+			
 			m_shutdown = true;
-
-			// Wakeup the thread
-
+			
+			//	Wakeup the thread
+			
 			try {
 				m_thread.interrupt();
 			}
 			catch (Exception ex) {
 			}
-
-			// Wait for the expiry thread to complete
-
+			
+			//	Wait for the expiry thread to complete
+			
 			try {
-				m_thread.join(m_fileIOTmo);
+				m_thread.join( m_fileIOTmo);
 			}
 			catch (Exception ex) {
 			}
 		}
 	};
-
+	
 	/**
 	 * Class constructor
 	 * 
 	 * @param name String
 	 */
 	public NetworkFileCache(String name) {
-
-		// Create the file cache
-
+		
+		//	Create the file cache
+		
 		m_fileCache = new Hashtable<Integer, FileEntry>();
-
-		// Start the file expiry thread
-
-		m_expiryThread = new FileExpiry(name);
+		
+		//	Start the file expiry thread
+		
+		m_expiryThread = new FileExpiry( name);
 	}
-
+	
 	/**
 	 * Determine if debug output is enabled
 	 * 
@@ -413,79 +392,77 @@ public class NetworkFileCache {
 	public final boolean hasDebug() {
 		return m_debug;
 	}
-
+		
 	/**
 	 * Add a file to the cache
 	 * 
 	 * @param file NetworkFile
 	 * @param conn TreeConnection
-	 * @param sess SrvSession
+   * @param sess SrvSession
 	 */
-	public synchronized final void addFile(
-		NetworkFile file, TreeConnection conn, SrvSession sess) {
-		synchronized (m_fileCache) {
-			m_fileCache.put(
-				new Integer(file.getFileId()), new FileEntry(file, conn, sess));
+	public synchronized final void addFile(NetworkFile file, TreeConnection conn, SrvSession sess) {
+		synchronized ( m_fileCache) {
+			m_fileCache.put(new Integer(file.getFileId()), new FileEntry(file, conn, sess));
 		}
 	}
-
+	
 	/**
 	 * Remove a file from the cache
 	 * 
 	 * @param id
 	 */
 	public synchronized final void removeFile(int id) {
-
-		// Create the search key
-
+		
+		//	Create the search key
+		
 		Integer fileId = new Integer(id);
-
-		synchronized (m_fileCache) {
+		
+		synchronized ( m_fileCache) {
 			m_fileCache.remove(fileId);
 		}
 	}
-
+	
 	/**
 	 * Find a file via the file id
 	 * 
 	 * @param id int
-	 * @param sess SrvSession
+   * @param sess SrvSession
 	 * @return NetworkFile
 	 */
 	public synchronized final NetworkFile findFile(int id, SrvSession sess) {
-
-		// Create the search key
-
+		
+		//	Create the search key
+		
 		Integer fileId = new Integer(id);
 		FileEntry fentry = null;
-
-		synchronized (m_fileCache) {
+		
+		synchronized ( m_fileCache) {
 			fentry = m_fileCache.get(fileId);
 		}
+		
+		//	Return the file, or null if not found
 
-		// Return the file, or null if not found
-
-		if (fentry != null) {
-
-			// Update the file timeout
-
+		if ( fentry != null) {
+			
+			//	Update the file timeout
+			
 			fentry.updateTimeout();
-
-			// Check if the file is open
-
-			if (fentry.isClosed())
-				fentry.openFile();
-
-			// Return the file
-
-			return fentry.getFile();
+      
+      // Check if the file is open
+      
+      if ( fentry.isClosed())
+        fentry.openFile();
+      
+      // Return the file
+      
+			return fentry.getFile();		
 		}
-
-		// Invalid file id
-
+		
+		//	Invalid file id
+		
 		return null;
 	}
-
+	
 	/**
 	 * Return the count of entries in the cache
 	 * 
@@ -496,83 +473,81 @@ public class NetworkFileCache {
 	}
 
 	/**
-	 * Close the expiry cache, close and remove all files from the cache and
-	 * stop the expiry thread.
+	 * Close the expiry cache, close and remove all files from the cache and stop the expiry thread.
 	 */
-	public final void closeAllFiles() {
+	public final void closeAllFiles() {	
 
-		// Enumerate the cache entries
-
+		//	Enumerate the cache entries
+		
 		Enumeration keys = m_fileCache.keys();
-
-		while (keys.hasMoreElements()) {
-
-			// Get the current key and lookup the matching value
-
+		
+		while ( keys.hasMoreElements()) {
+			
+			//	Get the current key and lookup the matching value
+			
 			Integer key = (Integer) keys.nextElement();
 			FileEntry entry = m_fileCache.get(key);
 
-			// Expire the file entry
-
+			//	Expire the file entry
+			
 			entry.updateTimeout(0L);
 		}
-
-		// Shutdown the expiry thread, this should close the files
-
+		
+		//	Shutdown the expiry thread, this should close the files
+		
 		m_expiryThread.requestShutdown();
 	}
+	
+  /**
+   * Enable/disable debug output
+   * 
+   * @param ena boolean
+   */
+  public final void setDebug( boolean ena) {
+    m_debug = ena;
+  }
 
-	/**
-	 * Enable/disable debug output
-	 * 
-	 * @param ena boolean
-	 */
-	public final void setDebug(boolean ena) {
-		m_debug = ena;
-	}
-
-	/**
-	 * Set the I/O cache timer value
-	 * 
-	 * @param ioTimer long
-	 */
-	public final void setIOTimer(long ioTimer) {
-		m_fileIOTmo = ioTimer;
-	}
-
-	/**
-	 * Set the close file cache timer value
-	 * 
-	 * @param closeTimer long
-	 */
-	public final void setCloseTimer(long closeTimer) {
-		m_fileCloseTmo = closeTimer;
-	}
-
+  /**
+   * Set the I/O cache timer value
+   * 
+   * @param ioTimer long
+   */
+  public final void setIOTimer(long ioTimer) {
+    m_fileIOTmo = ioTimer;
+  }
+  
+  /**
+   * Set the close file cache timer value
+   * 
+   * @param closeTimer long
+   */
+  public final void setCloseTimer(long closeTimer) {
+    m_fileCloseTmo = closeTimer;
+  }
+  
 	/**
 	 * Dump the cache entries to the debug device
 	 */
 	public final void dumpCache() {
-
-		// Dump the count of entries in the cache
-
+		
+		//	Dump the count of entries in the cache
+		
 		Debug.println("NetworkFileCache entries=" + numberOfEntries());
-
-		// Enumerate the cache entries
-
+		
+		//	Enumerate the cache entries
+		
 		Enumeration keys = m_fileCache.keys();
-
-		while (keys.hasMoreElements()) {
-
-			// Get the current key and lookup the matching value
-
+		
+		while ( keys.hasMoreElements()) {
+			
+			//	Get the current key and lookup the matching value
+			
 			Integer key = (Integer) keys.nextElement();
 			FileEntry entry = m_fileCache.get(key);
-
-			// Dump the entry details
-
+			
+			//	Dump the entry details
+			
 			Debug.println("fid=" + key + ": " + entry);
 		}
 	}
-
 }

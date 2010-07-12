@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -35,8 +35,10 @@ import org.alfresco.jlan.server.core.SharedDeviceList;
 import org.alfresco.jlan.server.filesys.TransactionalFilesystemInterface;
 
 /**
- * Server Session Base Class <p> Base class for server session implementations
- * for different protocols.
+ * Server Session Base Class
+ * 
+ * <p>
+ * Base class for server session implementations for different protocols.
  * 
  * @author gkspencer
  */
@@ -91,16 +93,15 @@ public abstract class SrvSession {
 
 	private String m_remoteName;
 
-	// Transaction object, for filesystems that implement the
-	// TransactionalFilesystemInterface
+	// Transaction object, for filesystems that implement the TransactionalFilesystemInterface
 
 	private ThreadLocal<Object> m_tx;
 	private ThreadLocal<TransactionalFilesystemInterface> m_txInterface;
 
 	// Time of last I/O on this session
-
+	
 	private long m_lastIO;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -109,17 +110,15 @@ public abstract class SrvSession {
 	 * @param proto String
 	 * @param remName String
 	 */
-	public SrvSession(
-		int sessId, NetworkServer srv, String proto, String remName) {
-		
+	public SrvSession(int sessId, NetworkServer srv, String proto, String remName) {
 		m_sessId = sessId;
 		m_server = srv;
 
 		setProtocolName(proto);
 		setRemoteName(remName);
-
+		
 		// Allocate the client information thread local
-
+		
 		m_clientInfo = new ThreadLocal<ClientInfo>();
 	}
 
@@ -178,7 +177,7 @@ public abstract class SrvSession {
 
 		// Check if the dynamic share list must be allocated
 
-		if (m_dynamicShares == null)
+		if ( m_dynamicShares == null)
 			m_dynamicShares = new SharedDeviceList();
 
 		// Add the new share to the list
@@ -326,7 +325,7 @@ public abstract class SrvSession {
 	 * @return boolean
 	 */
 	public final boolean hasDebug(int dbgFlag) {
-		if ((m_debug & dbgFlag) != 0)
+		if ( (m_debug & dbgFlag) != 0)
 			return true;
 		return false;
 	}
@@ -339,10 +338,9 @@ public abstract class SrvSession {
 	public final long getLastIOTime() {
 		return m_lastIO;
 	}
-
+	
 	/**
-	 * Set the authentication context, used during the initial session setup
-	 * phase
+	 * Set the authentication context, used during the initial session setup phase
 	 * 
 	 * @param ctx AuthContext
 	 */
@@ -439,7 +437,7 @@ public abstract class SrvSession {
 	public final void setLastIOTime(long ioTime) {
 		m_lastIO = ioTime;
 	}
-
+	
 	/**
 	 * Set the shutdown flag
 	 * 
@@ -456,7 +454,7 @@ public abstract class SrvSession {
 
 		// Release any dynamic shares owned by this session
 
-		if (hasDynamicShares()) {
+		if ( hasDynamicShares()) {
 
 			// Close the dynamic shares
 
@@ -468,9 +466,9 @@ public abstract class SrvSession {
 	 * Initialize the thread local transaction objects
 	 */
 	public final void initializeTransactionObject() {
-		if (m_tx == null)
+		if ( m_tx == null)
 			m_tx = new ThreadLocal<Object>();
-		if (m_txInterface == null)
+		if ( m_txInterface == null)
 			m_txInterface = new ThreadLocal<TransactionalFilesystemInterface>();
 	}
 
@@ -489,10 +487,9 @@ public abstract class SrvSession {
 	 * @param tx Object
 	 * @param txIface TransactionalFilesystemInterface
 	 */
-	public final void setTransaction(
-		Object tx, TransactionalFilesystemInterface txIface) {
-		m_tx.set(tx);
-		m_txInterface.set(txIface);
+	public final void setTransaction(Object tx, TransactionalFilesystemInterface txIface) {
+		m_tx.set( tx);
+		m_txInterface.set( txIface);
 	}
 
 	/**
@@ -501,15 +498,15 @@ public abstract class SrvSession {
 	 * @param txIface TransactionalFilesystemInterface
 	 */
 	public final void setTransaction(TransactionalFilesystemInterface txIface) {
-		m_txInterface.set(txIface);
+		m_txInterface.set( txIface);
 	}
 
 	/**
 	 * Clear the stored transaction
 	 */
 	public final void clearTransaction() {
-		m_tx.set(null);
-		m_txInterface.set(null);
+		m_tx.set( null);
+		m_txInterface.set( null);
 	}
 
 	/**
@@ -519,24 +516,22 @@ public abstract class SrvSession {
 
 		// Check if there is an active transaction
 
-		if (m_txInterface != null && m_txInterface.get() != null &&
-			m_tx != null) {
+		if ( m_txInterface != null && m_txInterface.get() != null && m_tx != null) {
 
 			// Use the transaction interface to end the transaction
 
 			m_txInterface.get().endTransaction(this, m_tx.get());
 		}
 	}
-
+	
 	/**
 	 * Check if there is an active transaction
 	 * 
 	 * @return boolean
 	 */
 	public final boolean hasTransaction() {
-		if (m_tx == null)
+		if ( m_tx == null)
 			return false;
 		return m_tx.get() != null ? true : false;
 	}
-
 }

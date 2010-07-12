@@ -1,32 +1,35 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
 package org.alfresco.jlan.util;
 
 /**
- * Data Buffer Class <p> Dynamic buffer for getting/setting data blocks.
+ * Data Buffer Class
+ * 
+ * <p>
+ * Dynamic buffer for getting/setting data blocks.
  * 
  * @author gkspencer
  */
@@ -44,9 +47,9 @@ public class DataBuffer {
 	private int m_offset;
 
 	// Flag to indicate this is an external buffer, and cannot be extended
-
+	
 	private boolean m_external;
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -79,9 +82,9 @@ public class DataBuffer {
 		m_offset = off;
 		m_pos = off;
 		m_endpos = off + len;
-
+		
 		// Indicate that this is an external buffer, do not try and extend it
-
+		
 		m_external = true;
 	}
 
@@ -100,7 +103,7 @@ public class DataBuffer {
 	 * @return int
 	 */
 	public final int getLength() {
-		if (m_endpos != 0)
+		if ( m_endpos != 0)
 			return m_endpos - m_offset;
 		return m_pos - m_offset;
 	}
@@ -120,14 +123,13 @@ public class DataBuffer {
 	 * @return int
 	 */
 	public final int getAvailableLength() {
-		if (m_endpos == 0)
+		if ( m_endpos == 0)
 			return -1;
 		return m_endpos - m_pos;
 	}
 
 	/**
-	 * Return the displacement from the start of the buffer to the current
-	 * buffer position
+	 * Return the displacement from the start of the buffer to the current buffer position
 	 * 
 	 * @return int
 	 */
@@ -153,7 +155,7 @@ public class DataBuffer {
 
 		// Check if there is enough data in the buffer
 
-		if (m_data.length - m_pos < 1)
+		if ( m_data.length - m_pos < 1)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Unpack the byte value
@@ -172,7 +174,7 @@ public class DataBuffer {
 
 		// Check if there is enough data in the buffer
 
-		if (m_data.length - m_pos < 2)
+		if ( m_data.length - m_pos < 2)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Unpack the integer value
@@ -191,7 +193,7 @@ public class DataBuffer {
 
 		// Check if there is enough data in the buffer
 
-		if (m_data.length - m_pos < 4)
+		if ( m_data.length - m_pos < 4)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Unpack the integer value
@@ -210,7 +212,7 @@ public class DataBuffer {
 
 		// Check if there is enough data in the buffer
 
-		if (m_data.length - m_pos < 8)
+		if ( m_data.length - m_pos < 8)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Unpack the long value
@@ -244,18 +246,17 @@ public class DataBuffer {
 		String ret = null;
 		int availLen = -1;
 
-		if (uni) {
+		if ( uni) {
 
-			// Word align the current buffer position, calculate the available
-			// length
+			// Word align the current buffer position, calculate the available length
 
 			m_pos = DataPacker.wordAlign(m_pos);
 			availLen = (m_endpos - m_pos) / 2;
-			if (availLen < maxlen)
+			if ( availLen < maxlen)
 				maxlen = availLen;
 
 			ret = DataPacker.getUnicodeString(m_data, m_pos, maxlen);
-			if (ret != null)
+			if ( ret != null)
 				m_pos += (ret.length() * 2) + 2;
 		}
 		else {
@@ -263,13 +264,13 @@ public class DataBuffer {
 			// Calculate the available length
 
 			availLen = m_endpos - m_pos;
-			if (availLen < maxlen)
+			if ( availLen < maxlen)
 				maxlen = availLen;
 
 			// Unpack the ASCII string
 
 			ret = DataPacker.getString(m_data, m_pos, maxlen);
-			if (ret != null)
+			if ( ret != null)
 				m_pos += ret.length() + 1;
 		}
 
@@ -286,22 +287,21 @@ public class DataBuffer {
 	 * @return String
 	 */
 	public final String getFixedString(int len, boolean uni) {
-
+		
 		// Check for Unicode or ASCII
 
 		String ret = null;
 		int availLen = -1;
 
-		if (uni) {
+		if ( uni) {
 
-			// Word align the current buffer position, calculate the available
-			// length
+			// Word align the current buffer position, calculate the available length
 
 			m_pos = DataPacker.wordAlign(m_pos);
 			availLen = (m_endpos - m_pos) / 2;
-			if (availLen >= len) {
+			if ( availLen >= len) {
 				ret = DataPacker.getUnicodeString(m_data, m_pos, len);
-				if (ret != null)
+				if ( ret != null)
 					m_pos += len * 2;
 			}
 		}
@@ -310,9 +310,9 @@ public class DataBuffer {
 			// Calculate the available length
 
 			availLen = m_endpos - m_pos;
-			if (availLen >= len) {
+			if ( availLen >= len) {
 				ret = DataPacker.getString(m_data, m_pos, len);
-				if (ret != null)
+				if ( ret != null)
 					m_pos += len;
 			}
 		}
@@ -321,7 +321,7 @@ public class DataBuffer {
 
 		return ret != null ? ret : "";
 	}
-
+	
 	/**
 	 * Get a short from the buffer at the specified index
 	 * 
@@ -333,7 +333,7 @@ public class DataBuffer {
 		// Check if there is enough data in the buffer
 
 		int pos = m_offset + (idx * 2);
-		if (m_data.length - pos < 2)
+		if ( m_data.length - pos < 2)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Unpack the integer value
@@ -353,7 +353,7 @@ public class DataBuffer {
 		// Check if there is enough data in the buffer
 
 		int pos = m_offset + (idx * 2);
-		if (m_data.length - pos < 4)
+		if ( m_data.length - pos < 4)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Unpack the integer value
@@ -373,7 +373,7 @@ public class DataBuffer {
 		// Check if there is enough data in the buffer
 
 		int pos = m_offset + (idx * 2);
-		if (m_data.length - pos < 8)
+		if ( m_data.length - pos < 8)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Unpack the long value
@@ -391,7 +391,7 @@ public class DataBuffer {
 
 		// Check if there is enough data in the buffer
 
-		if (m_data.length - m_pos < cnt)
+		if ( m_data.length - m_pos < cnt)
 			throw new ArrayIndexOutOfBoundsException("End of data buffer");
 
 		// Skip bytes
@@ -418,8 +418,7 @@ public class DataBuffer {
 	}
 
 	/**
-	 * Set the end of buffer position, and reset the read position to the
-	 * beginning of the buffer
+	 * Set the end of buffer position, and reset the read position to the beginning of the buffer
 	 */
 	public final void setEndOfBuffer() {
 		m_endpos = m_pos;
@@ -444,7 +443,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - m_pos < 1)
+		if ( m_data.length - m_pos < 1)
 			extendBuffer();
 
 		// Pack the byte value
@@ -461,7 +460,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - m_pos < 2)
+		if ( m_data.length - m_pos < 2)
 			extendBuffer();
 
 		// Pack the short value
@@ -479,7 +478,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - m_pos < 4)
+		if ( m_data.length - m_pos < 4)
 			extendBuffer();
 
 		// Pack the integer value
@@ -497,7 +496,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - m_pos < 8)
+		if ( m_data.length - m_pos < 8)
 			extendBuffer();
 
 		// Pack the long value
@@ -517,7 +516,7 @@ public class DataBuffer {
 		// Check if there is enough space in the buffer
 
 		int pos = m_offset + (idx * 2);
-		if (m_data.length - pos < 2)
+		if ( m_data.length - pos < 2)
 			extendBuffer();
 
 		// Pack the short value
@@ -536,7 +535,7 @@ public class DataBuffer {
 		// Check if there is enough space in the buffer
 
 		int pos = m_offset = (idx * 2);
-		if (m_data.length - pos < 4)
+		if ( m_data.length - pos < 4)
 			extendBuffer();
 
 		// Pack the integer value
@@ -555,7 +554,7 @@ public class DataBuffer {
 		// Check if there is enough space in the buffer
 
 		int pos = m_offset = (idx * 2);
-		if (m_data.length - pos < 8)
+		if ( m_data.length - pos < 8)
 			extendBuffer();
 
 		// Pack the long value
@@ -584,12 +583,12 @@ public class DataBuffer {
 
 		// Check for Unicode or ASCII
 
-		if (uni) {
+		if ( uni) {
 
 			// Check if there is enough space in the buffer
 
 			int bytLen = str.length() * 2;
-			if (m_data.length - m_pos < bytLen)
+			if ( m_data.length - m_pos < bytLen)
 				extendBuffer(bytLen + 4);
 
 			// Word align the buffer position, pack the Unicode string
@@ -597,21 +596,21 @@ public class DataBuffer {
 			m_pos = DataPacker.wordAlign(m_pos);
 			DataPacker.putUnicodeString(str, m_data, m_pos, nulTerm);
 			m_pos += (str.length() * 2);
-			if (nulTerm)
+			if ( nulTerm)
 				m_pos += 2;
 		}
 		else {
 
 			// Check if there is enough space in the buffer
 
-			if (m_data.length - m_pos < str.length())
+			if ( m_data.length - m_pos < str.length())
 				extendBuffer(str.length() + 2);
 
 			// Pack the ASCII string
 
 			DataPacker.putString(str, m_data, m_pos, nulTerm);
 			m_pos += str.length();
-			if (nulTerm)
+			if ( nulTerm)
 				m_pos++;
 		}
 	}
@@ -626,7 +625,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - m_pos < str.length())
+		if ( m_data.length - m_pos < str.length())
 			extendBuffer(str.length() + 2);
 
 		// Pack the ASCII string
@@ -644,19 +643,18 @@ public class DataBuffer {
 	 * @param nulTerm boolean
 	 * @return int
 	 */
-	public final int putStringAt(
-		String str, int pos, boolean uni, boolean nulTerm) {
+	public final int putStringAt(String str, int pos, boolean uni, boolean nulTerm) {
 
 		// Check for Unicode or ASCII
 
 		int retPos = -1;
 
-		if (uni) {
+		if ( uni) {
 
 			// Check if there is enough space in the buffer
 
 			int bytLen = str.length() * 2;
-			if (m_data.length - pos < bytLen)
+			if ( m_data.length - pos < bytLen)
 				extendBuffer(bytLen + 4);
 
 			// Word align the buffer position, pack the Unicode string
@@ -668,7 +666,7 @@ public class DataBuffer {
 
 			// Check if there is enough space in the buffer
 
-			if (m_data.length - pos < str.length())
+			if ( m_data.length - pos < str.length())
 				extendBuffer(str.length() + 2);
 
 			// Pack the ASCII string
@@ -693,7 +691,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - pos < str.length())
+		if ( m_data.length - pos < str.length())
 			extendBuffer(str.length() + 2);
 
 		// Pack the ASCII string
@@ -708,8 +706,7 @@ public class DataBuffer {
 	 */
 	public final void putStringPointer(int off) {
 
-		// Calculate the offset from the start of the data buffer to the string
-		// position
+		// Calculate the offset from the start of the data buffer to the string position
 
 		DataPacker.putIntelInt(off - m_offset, m_data, m_pos);
 		m_pos += 4;
@@ -724,7 +721,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - m_pos < cnt)
+		if ( m_data.length - m_pos < cnt)
 			extendBuffer(cnt);
 
 		// Pack the zero bytes
@@ -758,7 +755,7 @@ public class DataBuffer {
 
 		// Check if there is enough space in the buffer
 
-		if (m_data.length - m_pos < len)
+		if ( m_data.length - m_pos < len)
 			extendBuffer(len);
 
 		// Copy the data to the buffer and update the current write position
@@ -768,8 +765,7 @@ public class DataBuffer {
 	}
 
 	/**
-	 * Copy all data from the data buffer to the user buffer, and update the
-	 * read position
+	 * Copy all data from the data buffer to the user buffer, and update the read position
 	 * 
 	 * @param buf byte[]
 	 * @param off int
@@ -780,8 +776,7 @@ public class DataBuffer {
 	}
 
 	/**
-	 * Copy data from the data buffer to the user buffer, and update the current
-	 * read position.
+	 * Copy data from the data buffer to the user buffer, and update the current read position.
 	 * 
 	 * @param buf byte[]
 	 * @param off int
@@ -792,14 +787,14 @@ public class DataBuffer {
 
 		// Check if there is any more data to copy
 
-		if (m_pos == m_endpos)
+		if ( m_pos == m_endpos)
 			return 0;
 
 		// Calculate the amount of data to copy
 
 		int siz = m_endpos - m_pos;
-
-		if (siz > cnt)
+		
+		if ( siz > cnt)
 			siz = cnt;
 
 		// Copy the data to the user buffer and update the current read position
@@ -820,12 +815,10 @@ public class DataBuffer {
 	private final void extendBuffer(int ext) {
 
 		// Do not extend an externally allocated buffer
-
-		if (isExternalBuffer())
-			throw new RuntimeException(
-				"Attempt to extend externally allocated buffer, from " +
-					m_data.length + " to " + m_data.length + ext);
-
+		
+		if ( isExternalBuffer())
+			throw new RuntimeException( "Attempt to extend externally allocated buffer, from " + m_data.length + " to " + m_data.length + ext);
+		
 		// Create a new buffer of the required size
 
 		byte[] newBuf = new byte[m_data.length + ext];
@@ -854,7 +847,7 @@ public class DataBuffer {
 	protected final boolean isExternalBuffer() {
 		return m_external;
 	}
-
+	
 	/**
 	 * Return the data buffer details as a string
 	 * 
@@ -875,5 +868,4 @@ public class DataBuffer {
 
 		return str.toString();
 	}
-
 }

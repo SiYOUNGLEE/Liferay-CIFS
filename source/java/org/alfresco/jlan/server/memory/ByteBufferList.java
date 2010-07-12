@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -28,34 +28,36 @@ package org.alfresco.jlan.server.memory;
 import java.util.Vector;
 
 /**
- * Byte Buffer List Class <p>Contains a list of byte buffers of the same size.
- * The list has an initial and maximum size.
+ * Byte Buffer List Class
+ * 
+ * <p>Contains a list of byte buffers of the same size. The list has an initial and maximum
+ * size.
  * 
  * @author gkspencer
  */
 public class ByteBufferList {
 
 	// Buffer size, initial allocation and maximum allocation
-
+	
 	private int m_bufSize;
-
+	
 	private int m_initAlloc;
 	private int m_maxAlloc;
-
+	
 	// Byte buffers
-
+	
 	private Vector<byte[]> m_bufList;
-
+	
 	// Count of buffers currently allocated out
-
+	
 	private int m_allocCount;
-
+	
 	// Statistics
-
+	
 	private long m_statAllocs;
 	private long m_statWaits;
 	private long m_statWaitExpired;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -65,23 +67,20 @@ public class ByteBufferList {
 	 */
 	public ByteBufferList(int bufSize, int initAlloc, int maxAlloc) {
 		m_bufSize = bufSize;
-
+		
 		m_initAlloc = initAlloc;
-		m_maxAlloc = maxAlloc;
-
+		m_maxAlloc  = maxAlloc;
+		
 		// Validate the settings
-
-		if (m_bufSize <= 0 || m_initAlloc < 0 || m_maxAlloc <= 0 ||
-			(m_initAlloc > m_maxAlloc))
-			throw new RuntimeException(
-				"Invalid ByteBufferList parameters, size=" + m_bufSize +
-					", alloc=" + m_initAlloc + "/" + m_maxAlloc);
-
+		
+		if ( m_bufSize <= 0 || m_initAlloc < 0 || m_maxAlloc <= 0 || (m_initAlloc > m_maxAlloc))
+			throw new RuntimeException("Invalid ByteBufferList parameters, size=" + m_bufSize + ", alloc=" + m_initAlloc + "/" + m_maxAlloc);
+		
 		// Allocate the initial buffer
-
+		
 		allocateInitialBuffers();
 	}
-
+	
 	/**
 	 * Return the buffer size
 	 * 
@@ -90,7 +89,7 @@ public class ByteBufferList {
 	public final int getBufferSize() {
 		return m_bufSize;
 	}
-
+	
 	/**
 	 * Return the initial allocation size
 	 * 
@@ -99,7 +98,7 @@ public class ByteBufferList {
 	public final int getInitialAllocation() {
 		return m_initAlloc;
 	}
-
+	
 	/**
 	 * Return the maximum allocation size
 	 * 
@@ -108,7 +107,7 @@ public class ByteBufferList {
 	public final int getMaximumAllocation() {
 		return m_maxAlloc;
 	}
-
+	
 	/**
 	 * Return the count of available buffers
 	 * 
@@ -126,7 +125,7 @@ public class ByteBufferList {
 	public final int getAllocatedCount() {
 		return m_allocCount;
 	}
-
+	
 	/**
 	 * Return the allocations statistic
 	 * 
@@ -135,7 +134,7 @@ public class ByteBufferList {
 	public final long getStatAllocationCounter() {
 		return m_statAllocs;
 	}
-
+	
 	/**
 	 * Return the allocation wait statistic
 	 * 
@@ -144,7 +143,7 @@ public class ByteBufferList {
 	public final long getStatAllocationWaits() {
 		return m_statWaits;
 	}
-
+	
 	/**
 	 * Return the allocation wait expired statistic
 	 * 
@@ -153,189 +152,186 @@ public class ByteBufferList {
 	public final long getStatAllocationWaitsExpired() {
 		return m_statWaitExpired;
 	}
-
+	
 	/**
 	 * Allocate a buffer
 	 * 
 	 * @param long waitTime
 	 * @return byte[]
 	 */
-	public final byte[] allocateBuffer(long waitTime) {
+	public final byte[] allocateBuffer( long waitTime) {
 
 		// Use the buffer list as the lock
-
+		
 		byte[] buf = null;
-
+		
 		synchronized (m_bufList) {
-
+		
 			// Check if there is a buffer available
-
-			if (m_bufList.size() > 0) {
-
+			
+			if ( m_bufList.size() > 0) {
+				
 				// Remove a buffer from the available list
-
-				buf = m_bufList.remove(0);
+				
+				buf = m_bufList.remove( 0);
 				m_allocCount++;
-
+				
 				// Update the stats
-
+				
 				m_statAllocs++;
 			}
-			else if (m_allocCount < m_maxAlloc) {
-
+			else if ( m_allocCount < m_maxAlloc) {
+				
 				// Allocate a new buffer for this request
-
-				buf = new byte[m_bufSize];
+				
+				buf = new byte[ m_bufSize];
 				m_allocCount++;
-
+				
 				// Update the stats
-
+				
 				m_statAllocs++;
 			}
-			else if (waitTime > 0) {
-
+			else if ( waitTime > 0) {
+				
 				try {
 
 					// Update the stats
-
+					
 					m_statWaits++;
-
+					
 					// Wait for a buffer to be released
 
-					m_bufList.wait(waitTime);
-
+					m_bufList.wait( waitTime);
+					
 					// Check if there is a buffer
-
-					if (m_bufList.size() > 0) {
-
-						buf = m_bufList.remove(0);
+					
+					if ( m_bufList.size() > 0) {
+						
+						buf = m_bufList.remove( 0);
 						m_allocCount++;
 					}
 					else {
-
+						
 						// Update the stats
-
+						
 						m_statWaitExpired++;
 					}
 				}
-				catch (InterruptedException ex) {
+				catch ( InterruptedException ex) {
 				}
 			}
 		}
-
-		// Return the allocated buffer, or null if there are no buffers
-		// available
-
+		
+		// Return the allocated buffer, or null if there are no buffers available
+		
 		return buf;
 	}
-
+	
 	/**
 	 * Release a buffer back to the pool
 	 * 
 	 * @param buf byte[]
 	 */
-	public final void releaseBuffer(byte[] buf) {
+	public final void releaseBuffer( byte[] buf) {
 
 		// Make sure it is one of our buffers
-
-		if (buf == null || buf.length != m_bufSize)
+		
+		if ( buf == null || buf.length != m_bufSize)
 			return;
-
+		
 		// Use the buffer list as the lock
-
+		
 		synchronized (m_bufList) {
 
 			// If the list is empty then signal that a buffer is available
-
-			if (m_bufList.size() == 0)
+			
+			if ( m_bufList.size() == 0)
 				m_bufList.notify();
-
+			
 			// Release the buffer back to the available list
-
-			m_bufList.add(buf);
+			
+			m_bufList.add( buf);
 			m_allocCount--;
 		}
 	}
-
+	
 	/**
 	 * Shrink the buffer list back to the initial allocation size
 	 * 
 	 * @return Count of buffers released
 	 */
 	public final int shrinkList() {
-
-		// Check if the buffer list has more than the initial allocation of
-		// buffers
+		
+		// Check if the buffer list has more than the initial allocation of buffers
 
 		int removedCnt = 0;
-
-		if (m_bufList.size() > m_initAlloc) {
-
+		
+		if ( m_bufList.size() > m_initAlloc) {
+			
 			// Use the buffer list as the lock
-
-			synchronized (m_bufList) {
-
+			
+			synchronized ( m_bufList) {
+				
 				// Remove buffers from the available buffer list
-
-				while (m_bufList.size() > m_initAlloc) {
-					m_bufList.remove(0);
+				
+				while ( m_bufList.size() > m_initAlloc) {
+					m_bufList.remove( 0);
 					removedCnt++;
 				}
 			}
 		}
-
+		
 		// Return the count of buffers removed from the list
-
+		
 		return removedCnt;
 	}
-
+	
 	/**
 	 * Allocate the initial byte buffer list
 	 */
 	private final void allocateInitialBuffers() {
-
+		
 		// Allocate the buffer list
-
-		if (getInitialAllocation() > 0)
-			m_bufList = new Vector<byte[]>(getInitialAllocation());
+		
+		if ( getInitialAllocation() > 0)
+			m_bufList = new Vector<byte[]>( getInitialAllocation());
 		else
 			m_bufList = new Vector<byte[]>();
-
+		
 		// Allocte the byte buffers
 
-		if (getInitialAllocation() > 0) {
-			for (int i = 0; i < getInitialAllocation(); i++)
-				m_bufList.add(new byte[getBufferSize()]);
+		if ( getInitialAllocation() > 0) {
+			for ( int i = 0; i < getInitialAllocation(); i++)
+				m_bufList.add( new byte[ getBufferSize()]);
 		}
 	}
-
+	
 	/**
 	 * Return the buffer list as a string
 	 * 
-	 * @return String
+	 *  @return String
 	 */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
-
+		
 		str.append("[Bufsize=");
-		str.append(getBufferSize());
+		str.append( getBufferSize());
 		str.append(",Init=");
-		str.append(getInitialAllocation());
+		str.append( getInitialAllocation());
 		str.append(",Max=");
-		str.append(getMaximumAllocation());
+		str.append( getMaximumAllocation());
 		str.append(",Avail=");
-		str.append(getAvailableCount());
+		str.append( getAvailableCount());
 		str.append(",Alloc=");
-		str.append(getAllocatedCount());
+		str.append( getAllocatedCount());
 		str.append(",Stats=");
-		str.append(getStatAllocationCounter());
+		str.append( getStatAllocationCounter());
 		str.append("/");
-		str.append(getStatAllocationWaits());
+		str.append( getStatAllocationWaits());
 		str.append("/");
-		str.append(getStatAllocationWaitsExpired());
-		str.append("]");
-
+		str.append( getStatAllocationWaitsExpired());
+		str.append( "]");
+		
 		return str.toString();
 	}
-
 }

@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -30,8 +30,10 @@ import java.util.Vector;
 import org.alfresco.jlan.debug.Debug;
 
 /**
- * Rpc Packet Pool Class <p> Contains a pool of small and large RpcPacket
- * objects for use by multi-threaded RPC servers.
+ * Rpc Packet Pool Class
+ * 
+ * <p>
+ * Contains a pool of small and large RpcPacket objects for use by multi-threaded RPC servers.
  * 
  * @author gkspencer
  */
@@ -99,8 +101,7 @@ public class RpcPacketPool {
 	 * @param largeSize int
 	 * @param largeLimit int
 	 */
-	public RpcPacketPool(
-		int smallSize, int smallLimit, int largeSize, int largeLimit) {
+	public RpcPacketPool(int smallSize, int smallLimit, int largeSize, int largeLimit) {
 
 		// Create the small/large packet lists
 
@@ -222,7 +223,7 @@ public class RpcPacketPool {
 
 		RpcPacket pkt = null;
 
-		if (reqSize <= m_smallPktSize) {
+		if ( reqSize <= m_smallPktSize) {
 
 			// Allocate a packet from the small packet list
 
@@ -230,11 +231,9 @@ public class RpcPacketPool {
 
 			// DEBUG
 
-			if (m_debug)
-				Debug.println(
-					"RpcPacketPool Allocated (small) " +
-					pkt.getBuffer() + ", len=" + pkt.getBuffer().length +
-					", list=" + m_smallPackets.size() + "/" + m_smallPktLimit);
+			if ( m_debug)
+				Debug.println("RpcPacketPool Allocated (small) " + pkt.getBuffer() + ", len=" + pkt.getBuffer().length
+						+ ", list=" + m_smallPackets.size() + "/" + m_smallPktLimit);
 		}
 		else {
 
@@ -244,11 +243,9 @@ public class RpcPacketPool {
 
 			// DEBUG
 
-			if (m_debug)
-				Debug.println(
-					"RpcPacketPool Allocated (large) " +
-					pkt.getBuffer() + ", len=" + pkt.getBuffer().length +
-					", list=" + m_largePackets.size() + "/" + m_largePktLimit);
+			if ( m_debug)
+				Debug.println("RpcPacketPool Allocated (large) " + pkt.getBuffer() + ", len=" + pkt.getBuffer().length
+						+ ", list=" + m_largePackets.size() + "/" + m_largePktLimit);
 		}
 
 		// Return the allocated packet
@@ -265,7 +262,7 @@ public class RpcPacketPool {
 
 		// Check if the packet should be released to the small or large list
 
-		if (pkt.getBuffer().length >= m_largePktSize) {
+		if ( pkt.getBuffer().length >= m_largePktSize) {
 
 			// Release the packet to the large packet list
 
@@ -281,11 +278,9 @@ public class RpcPacketPool {
 
 				// DEBUG
 
-				if (m_debug)
-					Debug.println(
-						"RpcPacketPool Released (large) " +
-						pkt.getBuffer() + ", len=" + pkt.getBuffer().length +
-						", list=" + m_largePackets.size());
+				if ( m_debug)
+					Debug.println("RpcPacketPool Released (large) " + pkt.getBuffer() + ", len=" + pkt.getBuffer().length
+							+ ", list=" + m_largePackets.size());
 			}
 		}
 		else {
@@ -304,10 +299,8 @@ public class RpcPacketPool {
 
 				// DEBUG
 
-				if (m_debug)
-					Debug.println(
-						"RpcPacketPool Released (small) " +
-						pkt.getBuffer() + ", len=" + pkt.getBuffer().length);
+				if ( m_debug)
+					Debug.println("RpcPacketPool Released (small) " + pkt.getBuffer() + ", len=" + pkt.getBuffer().length);
 			}
 		}
 	}
@@ -325,14 +318,13 @@ public class RpcPacketPool {
 
 			// Check if there is a packet available from the small packet list
 
-			if (m_smallPackets.size() > 0) {
+			if ( m_smallPackets.size() > 0) {
 
 				// Remove a packet from the head of the free list
 
 				pkt = m_smallPackets.remove(0);
 			}
-			else if (m_smallPktLimit == -1 || 
-				m_smallPktCount < m_smallPktLimit) {
+			else if ( m_smallPktLimit == -1 || m_smallPktCount < m_smallPktLimit) {
 
 				// Allocate a new packet
 
@@ -351,7 +343,7 @@ public class RpcPacketPool {
 
 					// Try to get the packet from the small packet list again
 
-					if (m_smallPackets.size() > 0) {
+					if ( m_smallPackets.size() > 0) {
 
 						// Remove a packet from the head of the free list
 
@@ -381,14 +373,13 @@ public class RpcPacketPool {
 
 			// Check if there is a packet available from the large packet list
 
-			if (m_largePackets.size() > 0) {
+			if ( m_largePackets.size() > 0) {
 
 				// Remove a packet from the head of the free list
 
 				pkt = m_largePackets.remove(0);
 			}
-			else if (m_largePktLimit == -1 || 
-				m_largePktCount < m_largePktLimit) {
+			else if ( m_largePktLimit == -1 || m_largePktCount < m_largePktLimit) {
 
 				// Allocate a new packet
 
@@ -408,7 +399,7 @@ public class RpcPacketPool {
 
 					// Try to get the packet from the large packet list again
 
-					if (m_largePackets.size() > 0) {
+					if ( m_largePackets.size() > 0) {
 
 						// Remove a packet from the head of the free list
 
@@ -424,5 +415,4 @@ public class RpcPacketPool {
 
 		return pkt;
 	}
-
 }

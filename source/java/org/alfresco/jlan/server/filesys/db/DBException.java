@@ -47,7 +47,6 @@ public class DBException extends Exception {
    * @param msg String
    */
   public DBException(String msg) {
-		super(msg);
-	}
-
+    super(msg);
+  }
 }

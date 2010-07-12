@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -30,9 +30,11 @@ import org.alfresco.jlan.util.DataPacker;
 import org.alfresco.jlan.util.HexDump;
 
 /**
- * NetBIOS Packet Class <p> A NetBIOSPacket holds a single NetBIOS request or
- * response. Contains methods for building the main NetBIOS request types (add
- * name, delete name, name query, refresh and session setup).
+ * NetBIOS Packet Class
+ * 
+ * <p>
+ * A NetBIOSPacket holds a single NetBIOS request or response. Contains methods for building the
+ * main NetBIOS request types (add name, delete name, name query, refresh and session setup).
  * 
  * @author gkspencer
  */
@@ -44,41 +46,41 @@ public class NetBIOSPacket {
 
 	// NetBIOS opcodes
 
-	public static final int NAME_QUERY = 0x00;
-	public static final int NAME_REGISTER = 0x05;
-	public static final int NAME_RELEASE = 0x06;
-	public static final int WACK = 0x07;
-	public static final int REFRESH = 0x08;
+	public static final int NAME_QUERY 		= 0x00;
+	public static final int NAME_REGISTER 	= 0x05;
+	public static final int NAME_RELEASE 	= 0x06;
+	public static final int WACK 			= 0x07;
+	public static final int REFRESH 		= 0x08;
 	public static final int NAME_REGISTER_MULTI = 0x0F;
 
-	public static final int RESP_QUERY = 0x10;
-	public static final int RESP_REGISTER = 0x15;
-	public static final int RESP_RELEASE = 0x16;
+	public static final int RESP_QUERY 		= 0x10;
+	public static final int RESP_REGISTER 	= 0x15;
+	public static final int RESP_RELEASE 	= 0x16;
 
 	// NetBIOS opcode masks
 
-	public static final int MASK_OPCODE = 0xF800;
-	public static final int MASK_NMFLAGS = 0x07F0;
-	public static final int MASK_RCODE = 0x000F;
+	public static final int MASK_OPCODE 	= 0xF800;
+	public static final int MASK_NMFLAGS 	= 0x07F0;
+	public static final int MASK_RCODE 		= 0x000F;
 
-	public static final int MASK_NOOPCODE = 0x07FF;
-	public static final int MASK_NOFLAGS = 0xF80F;
-	public static final int MASK_NORCODE = 0xFFF0;
+	public static final int MASK_NOOPCODE 	= 0x07FF;
+	public static final int MASK_NOFLAGS 	= 0xF80F;
+	public static final int MASK_NORCODE 	= 0xFFF0;
 
-	public static final int MASK_RESPONSE = 0x0010;
+	public static final int MASK_RESPONSE 	= 0x0010;
 
 	// Flags bit values
 
-	public static final int FLG_BROADCAST = 0x0001;
-	public static final int FLG_RECURSION = 0x0008;
-	public static final int FLG_RECURSDES = 0x0010;
-	public static final int FLG_TRUNCATION = 0x0020;
-	public static final int FLG_AUTHANSWER = 0x0040;
+	public static final int FLG_BROADCAST 	= 0x0001;
+	public static final int FLG_RECURSION 	= 0x0008;
+	public static final int FLG_RECURSDES 	= 0x0010;
+	public static final int FLG_TRUNCATION 	= 0x0020;
+	public static final int FLG_AUTHANSWER 	= 0x0040;
 
 	// NetBIOS name lookup types
 
-	public static final int NAME_TYPE_NB = 0x0020;
-	public static final int NAME_TYPE_NBSTAT = 0x0021;
+	public static final int NAME_TYPE_NB 		= 0x0020;
+	public static final int NAME_TYPE_NBSTAT 	= 0x0021;
 
 	// RFC NetBIOS encoded name length
 
@@ -90,8 +92,8 @@ public class NetBIOSPacket {
 
 	// Bit shifts for opcode/flags values
 
-	private static final int SHIFT_FLAGS = 4;
-	private static final int SHIFT_OPCODE = 11;
+	private static final int SHIFT_FLAGS 	= 4;
+	private static final int SHIFT_OPCODE 	= 11;
 
 	// Default NetBIOS buffer size to allocate
 
@@ -99,30 +101,30 @@ public class NetBIOSPacket {
 
 	// NetBIOS packet offsets
 
-	private static final int NB_TRANSID = 0;
-	private static final int NB_OPCODE = 2;
-	private static final int NB_QDCOUNT = 4;
-	private static final int NB_ANCOUNT = 6;
-	private static final int NB_NSCOUNT = 8;
-	private static final int NB_ARCOUNT = 10;
-	private static final int NB_DATA = 12;
+	private static final int NB_TRANSID 	= 0;
+	private static final int NB_OPCODE 		= 2;
+	private static final int NB_QDCOUNT 	= 4;
+	private static final int NB_ANCOUNT 	= 6;
+	private static final int NB_NSCOUNT 	= 8;
+	private static final int NB_ARCOUNT 	= 10;
+	private static final int NB_DATA 		= 12;
 
 	// NetBIOS name registration error reponse codes (RCODE field)
 
-	public static final int FMT_ERR = 0x01;
-	public static final int SRV_ERR = 0x02;
-	public static final int IMP_ERR = 0x04;
-	public static final int RFS_ERR = 0x05;
-	public static final int ACT_ERR = 0x06;
-	public static final int CFT_ERR = 0x07;
+	public static final int FMT_ERR 	= 0x01;
+	public static final int SRV_ERR 	= 0x02;
+	public static final int IMP_ERR 	= 0x04;
+	public static final int RFS_ERR 	= 0x05;
+	public static final int ACT_ERR 	= 0x06;
+	public static final int CFT_ERR 	= 0x07;
 
 	// Name flags
 
-	public static final int NAME_PERM = 0x0200;
-	public static final int NAME_ACTIVE = 0x0400;
-	public static final int NAME_CONFLICT = 0x0800;
-	public static final int NAME_DEREG = 0x1000;
-	public static final int NAME_GROUP = 0x8000;
+	public static final int NAME_PERM 		= 0x0200;
+	public static final int NAME_ACTIVE 	= 0x0400;
+	public static final int NAME_CONFLICT 	= 0x0800;
+	public static final int NAME_DEREG 		= 0x1000;
+	public static final int NAME_GROUP 		= 0x8000;
 
 	public static final int NAME_TYPE_BNODE = 0x0000;
 	public static final int NAME_TYPE_PNODE = 0x2000;
@@ -131,8 +133,7 @@ public class NetBIOSPacket {
 
 	// Adapter status name in encoded format
 
-	private static final String AdapterStatusNBName =
-		"CKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String AdapterStatusNBName = "CKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 	// NetBIOS packet buffer
 
@@ -183,7 +184,7 @@ public class NetBIOSPacket {
 
 		// Detrmine the packet type
 
-		if (sessPkt == true) {
+		if ( sessPkt == true) {
 
 			switch (getPacketType()) {
 
@@ -193,9 +194,7 @@ public class NetBIOSPacket {
 				StringBuffer name = new StringBuffer();
 				for (int i = 0; i < 32; i++)
 					name.append((char) m_nbbuf[39 + i]);
-				Debug.println(
-					"Session request from " +
-					NetBIOSSession.DecodeName(name.toString()));
+				Debug.println("Session request from " + NetBIOSSession.DecodeName(name.toString()));
 				break;
 
 			// NetBIOS message
@@ -253,7 +252,7 @@ public class NetBIOSPacket {
 
 			// Dump the question name, if there is one
 
-			if (getQuestionCount() > 0) {
+			if ( getQuestionCount() > 0) {
 				Debug.print(" QName  : ");
 
 				// Get the encoded name string
@@ -265,9 +264,7 @@ public class NetBIOSPacket {
 				// Decode the name
 
 				String name = NetBIOSSession.DecodeName(encName.toString());
-				Debug.println(
-					name + " <" +
-					NetBIOSName.TypeAsString(name.charAt(15)) + ">");
+				Debug.println(name + " <" + NetBIOSName.TypeAsString(name.charAt(15)) + ">");
 			}
 		}
 
@@ -317,7 +314,7 @@ public class NetBIOSPacket {
 		// Check if there are any answer names
 
 		int cnt = getAnswerCount();
-		if (cnt == 0)
+		if ( cnt == 0)
 			return null;
 
 		NetBIOSNameList nameList = new NetBIOSNameList();
@@ -346,11 +343,10 @@ public class NetBIOSPacket {
 
 				int flags = DataPacker.getShort(m_nbbuf, pos);
 				pos += 2;
-				if ((flags & NAME_GROUP) != 0)
+				if ( (flags & NAME_GROUP) != 0)
 					name.setGroup(true);
 
-				// Get the IP address and add to the list of addresses for the
-				// current name
+				// Get the IP address and add to the list of addresses for the current name
 
 				byte[] ipaddr = new byte[4];
 				for (int i = 0; i < 4; i++)
@@ -387,7 +383,7 @@ public class NetBIOSPacket {
 		// Check if there are any answer names
 
 		int cnt = getAnswerCount();
-		if (cnt == 0)
+		if ( cnt == 0)
 			return null;
 
 		NetBIOSNameList nameList = new NetBIOSNameList();
@@ -411,9 +407,8 @@ public class NetBIOSPacket {
 
 			// Check that there is enough buffer space for the next name record
 
-			if ((pos + 18) > m_nbbuf.length)
-				throw new ArrayIndexOutOfBoundsException(
-					"NetBIOS packet length " + m_nbbuf.length);
+			if ( (pos + 18) > m_nbbuf.length)
+				throw new ArrayIndexOutOfBoundsException("NetBIOS packet length " + m_nbbuf.length);
 
 			// Get the NetBIOS name/type
 
@@ -425,7 +420,7 @@ public class NetBIOSPacket {
 			int typ = DataPacker.getShort(m_nbbuf, pos);
 			pos += 2;
 
-			if ((typ & NAME_GROUP) != 0)
+			if ( (typ & NAME_GROUP) != 0)
 				nbName.setGroup(true);
 
 			// Add the name to the list
@@ -454,7 +449,7 @@ public class NetBIOSPacket {
 	 * @param pos int
 	 */
 	private void setMACAddress(NetBIOSNameList nameList, int pos) {
-		if ((pos + 6) > m_nbbuf.length)
+		if ( (pos + 6) > m_nbbuf.length)
 			return;
 
 		byte[] mac = new byte[6];
@@ -568,6 +563,7 @@ public class NetBIOSPacket {
 
 	/**
 	 * Get the question name length.
+	 * 
 	 */
 	public final int getQuestionNameLength() {
 
@@ -601,7 +597,7 @@ public class NetBIOSPacket {
 	 * @return boolean
 	 */
 	public final boolean isResponse() {
-		if ((getOpcode() & MASK_RESPONSE) != 0)
+		if ( (getOpcode() & MASK_RESPONSE) != 0)
 			return true;
 		return false;
 	}
@@ -657,7 +653,7 @@ public class NetBIOSPacket {
 
 		// Set the packet length
 
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 		return pos;
 	}
@@ -717,7 +713,7 @@ public class NetBIOSPacket {
 		// Set the packet length
 
 		int pos = off + 4;
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 
 		// Return the new packet offset
@@ -751,7 +747,7 @@ public class NetBIOSPacket {
 		// Set the packet length
 
 		int pos = off + 4;
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 
 		// Return the new packet offset
@@ -818,7 +814,7 @@ public class NetBIOSPacket {
 
 		// Set the packet length
 
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 		return pos;
 	}
@@ -830,8 +826,7 @@ public class NetBIOSPacket {
 	 * @param qtyp int
 	 * @param qcls int
 	 */
-	public final int setQuestionName(
-		String name, char ntyp, int qtyp, int qcls) {
+	public final int setQuestionName(String name, char ntyp, int qtyp, int qcls) {
 
 		// RFC encode the NetBIOS name string
 
@@ -857,7 +852,7 @@ public class NetBIOSPacket {
 
 		// Set the packet length
 
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 		return pos;
 	}
@@ -885,7 +880,7 @@ public class NetBIOSPacket {
 
 		// Set the packet length
 
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 		return pos;
 	}
@@ -906,7 +901,7 @@ public class NetBIOSPacket {
 		// Set the packet length
 
 		int pos = off + 2;
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 
 		// Return the new packet offset
@@ -922,8 +917,7 @@ public class NetBIOSPacket {
 	 * @param qtyp int
 	 * @param qcls int
 	 */
-	public final int setResourceRecord(
-		int pktoff, int rroff, int qtyp, int qcls) {
+	public final int setResourceRecord(int pktoff, int rroff, int qtyp, int qcls) {
 
 		// Pack the resource record details
 
@@ -934,7 +928,7 @@ public class NetBIOSPacket {
 		// Set the packet length
 
 		int pos = pktoff + 6;
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 
 		// Return the new packet offset
@@ -967,7 +961,7 @@ public class NetBIOSPacket {
 		// Set the packet length
 
 		int pos = off + 4;
-		if (pos > m_datalen)
+		if ( pos > m_datalen)
 			setLength(pos);
 
 		// Return the new packet offset
@@ -1069,8 +1063,7 @@ public class NetBIOSPacket {
 	 * @param tranId int
 	 * @return int
 	 */
-	public final int buildAddNameRequest(
-		NetBIOSName name, int addrIdx, int tranId) {
+	public final int buildAddNameRequest(NetBIOSName name, int addrIdx, int tranId) {
 
 		// Initialize an add name NetBIOS packet
 
@@ -1086,13 +1079,13 @@ public class NetBIOSPacket {
 		int pos = setQuestionName(name.getName(), name.getType(), 0x20, 0x01);
 		pos = setResourceRecord(pos, 12, 0x20, 0x01);
 
-		if (name.getTimeToLive() == 0)
+		if ( name.getTimeToLive() == 0)
 			pos = setTTL(pos, NetBIOSName.DefaultTTL);
 		else
 			pos = setTTL(pos, name.getTimeToLive());
 
 		short flg = 0;
-		if (name.isGroupName())
+		if ( name.isGroupName())
 			flg = (short) 0x8000;
 		pos = setNameRegistrationFlags(pos, flg);
 		pos = setIPAddress(pos, name.getIPAddress(addrIdx));
@@ -1111,8 +1104,7 @@ public class NetBIOSPacket {
 	 * @param tranId int
 	 * @return int
 	 */
-	public final int buildRefreshNameRequest(
-		NetBIOSName name, int addrIdx, int tranId) {
+	public final int buildRefreshNameRequest(NetBIOSName name, int addrIdx, int tranId) {
 
 		// Initialize an add name NetBIOS packet
 
@@ -1128,13 +1120,13 @@ public class NetBIOSPacket {
 		int pos = setQuestionName(name.getName(), name.getType(), 0x20, 0x01);
 		pos = setResourceRecord(pos, 12, 0x20, 0x01);
 
-		if (name.getTimeToLive() == 0)
+		if ( name.getTimeToLive() == 0)
 			pos = setTTL(pos, NetBIOSName.DefaultTTL);
 		else
 			pos = setTTL(pos, name.getTimeToLive());
 
 		short flg = 0;
-		if (name.isGroupName())
+		if ( name.isGroupName())
 			flg = (short) 0x8000;
 		pos = setNameRegistrationFlags(pos, flg);
 		pos = setIPAddress(pos, name.getIPAddress(addrIdx));
@@ -1153,8 +1145,7 @@ public class NetBIOSPacket {
 	 * @param tranId int
 	 * @return int
 	 */
-	public final int buildDeleteNameRequest(
-		NetBIOSName name, int addrIdx, int tranId) {
+	public final int buildDeleteNameRequest(NetBIOSName name, int addrIdx, int tranId) {
 
 		// Initialize a delete name NetBIOS packet
 
@@ -1172,7 +1163,7 @@ public class NetBIOSPacket {
 		pos = setTTL(pos, 30000);
 
 		short flg = 0;
-		if (name.isGroupName())
+		if ( name.isGroupName())
 			flg = (short) 0x8000;
 		pos = setNameRegistrationFlags(pos, flg);
 		pos = setIPAddress(pos, name.getIPAddress(addrIdx));
@@ -1191,8 +1182,7 @@ public class NetBIOSPacket {
 	 * @param wins boolean
 	 * @return int
 	 */
-	public final int buildNameQueryRequest(
-		NetBIOSName name, int tranId, boolean wins) {
+	public final int buildNameQueryRequest(NetBIOSName name, int tranId, boolean wins) {
 
 		// Initialize a name query NetBIOS packet
 
@@ -1200,13 +1190,12 @@ public class NetBIOSPacket {
 		setOpcode(NetBIOSPacket.NAME_QUERY);
 
 		int flags = NetBIOSPacket.FLG_RECURSDES;
-		if (wins == false)
+		if ( wins == false)
 			flags += NetBIOSPacket.FLG_BROADCAST;
 
 		setFlags(flags);
 		setQuestionCount(1);
-		return setQuestionName(
-			name, NetBIOSPacket.NAME_TYPE_NB, NetBIOSPacket.NAME_CLASS_IN);
+		return setQuestionName(name, NetBIOSPacket.NAME_TYPE_NB, NetBIOSPacket.NAME_CLASS_IN);
 	}
 
 	/**
@@ -1216,8 +1205,7 @@ public class NetBIOSPacket {
 	 * @param toName NetBIOSName
 	 * @return int
 	 */
-	public final int buildSessionSetupRequest(
-		NetBIOSName fromName, NetBIOSName toName) {
+	public final int buildSessionSetupRequest(NetBIOSName fromName, NetBIOSName toName) {
 
 		// Initialize the session setup packet header
 
@@ -1243,8 +1231,7 @@ public class NetBIOSPacket {
 
 		// Set the length in the session request header
 
-		DataPacker.putShort(
-			(short) (pos - RFCNetBIOSProtocol.HEADER_LEN), m_nbbuf, 2);
+		DataPacker.putShort((short) (pos - RFCNetBIOSProtocol.HEADER_LEN), m_nbbuf, 2);
 
 		// Return the packet length
 
@@ -1258,8 +1245,7 @@ public class NetBIOSPacket {
 	 * @param nodeType int
 	 * @return int
 	 */
-	public final int buildAdapterStatusResponse(
-		NetBIOSNameList nameList, int nodeType) {
+	public final int buildAdapterStatusResponse(NetBIOSNameList nameList, int nodeType) {
 
 		// Fill in the header
 
@@ -1301,13 +1287,11 @@ public class NetBIOSPacket {
 
 			// Pack the NetBIOS name and flags
 
-			System.arraycopy(
-				nbName.getNetBIOSName(), 0, m_nbbuf, pos,
-				NetBIOSName.NameLength);
+			System.arraycopy(nbName.getNetBIOSName(), 0, m_nbbuf, pos, NetBIOSName.NameLength);
 			pos += NetBIOSName.NameLength;
 
 			int flags = nodeType + NAME_ACTIVE;
-			if (nbName.isGroupName())
+			if ( nbName.isGroupName())
 				flags += NAME_GROUP;
 
 			DataPacker.putShort((short) flags, m_nbbuf, pos);
@@ -1324,5 +1308,4 @@ public class NetBIOSPacket {
 		setLength(pos);
 		return getLength();
 	}
-	
 }

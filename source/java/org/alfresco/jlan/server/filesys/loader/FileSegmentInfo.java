@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -30,56 +30,54 @@ import java.io.IOException;
 
 import org.alfresco.jlan.debug.Debug;
 
+
 /**
- * File Segment Info Class <p>Contains the details of a file segment that may be
- * shared by many users/sessions.
+ * File Segment Info Class
  * 
+ * <p>Contains the details of a file segment that may be shared by many users/sessions.
+ *
  * @author gkspencer
  */
 public class FileSegmentInfo {
 
-	// Segment load/save status
+	//	Segment load/save status
+	
+	public final static int Initial			= 0;
+	public final static int LoadWait		= 1;
+	public final static int Loading			= 2;
+	public final static int Available		= 3;
+	public final static int SaveWait    = 4;
+	public final static int Saving			= 5;
+	public final static int Saved				= 6;
+	
+	public final static int Error				= 7;
+	
+	//	Flags
+	
+	private static final int Updated				=	0x0001;
+	private static final int RequestQueued	= 0x0002;
+	private static final int DeleteOnStore	= 0x0004;
+	
+	//	Segment status strings
+	
+	private static final String[] _statusStr = { "Initial", "LoadWait", "Loading", "Available", "SaveWait", "Saving", "Saved", "Error"};
 
-	public final static int Initial = 0;
-	public final static int LoadWait = 1;
-	public final static int Loading = 2;
-	public final static int Available = 3;
-	public final static int SaveWait = 4;
-	public final static int Saving = 5;
-	public final static int Saved = 6;
-
-	public final static int Error = 7;
-
-	// Flags
-
-	private static final int Updated = 0x0001;
-	private static final int RequestQueued = 0x0002;
-	private static final int DeleteOnStore = 0x0004;
-
-	// Segment status strings
-
-	private static final String[] _statusStr =
-		{
-			"Initial", "LoadWait", "Loading", "Available", "SaveWait",
-			"Saving", "Saved", "Error"
-		};
-
-	// Temporary file path
-
+	//	Temporary file path
+	
 	private String m_tempFile;
-
-	// Flags to indicate if this segment has been updated, queued
-
+	
+	//	Flags to indicate if this segment has been updated, queued
+	
 	private int m_flags;
-
-	// Segment status
-
+	
+	//	Segment status
+	
 	private int m_status = Initial;
 
-	// Amount of valid data in the file, used to allow reads during data loading
-
-	private long m_readable;
-
+  //  Amount of valid data in the file, used to allow reads during data loading
+  
+  private long m_readable;
+  
 	/**
 	 * Default constructor
 	 */
@@ -105,7 +103,7 @@ public class FileSegmentInfo {
 	public final String getTemporaryFile() {
 		return m_tempFile;
 	}
-
+	
 	/**
 	 * Check if the segment has been updated
 	 * 
@@ -130,22 +128,22 @@ public class FileSegmentInfo {
 	 * @return boolean
 	 */
 	public final boolean isDataAvailable() {
-		if (hasStatus() >= FileSegmentInfo.Available &&
-			hasStatus() < FileSegmentInfo.Error)
+		if ( hasStatus() >= FileSegmentInfo.Available &&
+				 hasStatus() < FileSegmentInfo.Error)
 			return true;
 		return false;
 	}
-
+	
 	/**
-	 * Check if the associated temporary file should be deleted once the data
-	 * store has completed successfully.
+	 * Check if the associated temporary file should be deleted once the data store
+	 * has completed successfully.
 	 * 
 	 * @return boolean
 	 */
 	public final boolean hasDeleteOnStore() {
 		return (m_flags & DeleteOnStore) != 0 ? true : false;
 	}
-
+			
 	/**
 	 * Delete the temporary file used by the file segment
 	 * 
@@ -153,31 +151,30 @@ public class FileSegmentInfo {
 	 */
 	public final void deleteTemporaryFile()
 		throws IOException {
-
-		// DEBUG
-
-		if (isQueued()) {
-			Debug.println("@@ Delete queued file segment, " + this);
-			Thread.dumpStack();
-		}
-
-		// Delete the temporary file used by the file segment
+			
+    // DEBUG
+    
+    if ( isQueued()) {
+      Debug.println("@@ Delete queued file segment, " + this);
+      Thread.dumpStack();
+    }
+    
+		//	Delete the temporary file used by the file segment
 
 		File tempFile = new File(getTemporaryFile());
+				
+		if ( tempFile.exists() && tempFile.delete() == false) {
 
-		if (tempFile.exists() && tempFile.delete() == false) {
-
-			// DEBUG
-
-			Debug.println("** Failed to delete " + toString() + " **");
-
-			// Throw an exception, delete failed
-
-			throw new IOException(
-				"Failed to delete file " + getTemporaryFile());
+		  //	DEBUG
+		  
+		  Debug.println("** Failed to delete " + toString() + " **");
+		  
+		  //	Throw an exception, delete failed
+		  
+			throw new IOException("Failed to delete file " + getTemporaryFile());
 		}
 	}
-
+		
 	/**
 	 * Return the segment status
 	 * 
@@ -186,7 +183,7 @@ public class FileSegmentInfo {
 	public final int hasStatus() {
 		return m_status;
 	}
-
+	
 	/**
 	 * Return the temporary file length
 	 * 
@@ -195,32 +192,32 @@ public class FileSegmentInfo {
 	 */
 	public final long getFileLength()
 		throws IOException {
-
-		// Get the file length
-
+		
+		//	Get the file length
+		
 		File tempFile = new File(getTemporaryFile());
 		return tempFile.length();
 	}
-
-	/**
-	 * Return the readable file data length
-	 * 
-	 * @return long
-	 */
-	public final long getReadableLength() {
-		return m_readable;
-	}
-
-	/**
-	 * Set the readable data length for the file, used during data loading to
-	 * allow the file to be read before the file load completes.
-	 * 
-	 * @param readable long
-	 */
-	public final void setReadableLength(long readable) {
-		m_readable = readable;
-	}
-
+	
+  /**
+   * Return the readable file data length
+   * 
+   * @return long
+   */
+  public final long getReadableLength() {
+    return m_readable;
+  }
+  
+  /**
+   * Set the readable data length for the file, used during data loading to allow the file to be read before
+   * the file load completes.
+   * 
+   * @param readable long
+   */
+  public final void setReadableLength(long readable) {
+    m_readable = readable;
+  }
+  
 	/**
 	 * Set the segment load/update status
 	 * 
@@ -232,15 +229,14 @@ public class FileSegmentInfo {
 	}
 
 	/**
-	 * Set the temporary file that is used to hold the local copy of the file
-	 * data
+	 * Set the temporary file that is used to hold the local copy of the file data
 	 * 
 	 * @param tempFile String
 	 */
 	public final void setTemporaryFile(String tempFile) {
 		m_tempFile = tempFile;
 	}
-
+		
 	/**
 	 * Set/clear the updated segment flag
 	 * 
@@ -260,11 +256,11 @@ public class FileSegmentInfo {
 	}
 
 	/**
-	 * Set the delete on store flag so that the temporary file is deleted as
-	 * soon as the data store has completed successfully.
+	 * Set the delete on store flag so that the temporary file is deleted as soon as the
+	 * data store has completed successfully.
 	 */
 	public final synchronized void setDeleteOnStore() {
-		if (hasDeleteOnStore() == false)
+		if ( hasDeleteOnStore() == false)
 			setFlag(DeleteOnStore, true);
 	}
 
@@ -276,9 +272,9 @@ public class FileSegmentInfo {
 	 */
 	protected final synchronized void setFlag(int flag, boolean sts) {
 		boolean state = (m_flags & flag) != 0 ? true : false;
-		if (state && sts == false)
+		if ( state && sts == false)
 			m_flags -= flag;
-		else if (state == false && sts == true)
+		else if ( state == false && sts == true)
 			m_flags += flag;
 	}
 
@@ -289,34 +285,34 @@ public class FileSegmentInfo {
 	 */
 	public final void waitForData(long tmo) {
 
-		// Check if the file data has been loaded, if not then wait
-
-		if (isDataAvailable() == false) {
-			synchronized (this) {
+		//	Check if the file data has been loaded, if not then wait
+		
+		if ( isDataAvailable() == false) {
+			synchronized ( this) {
 				try {
-
-					// Wait for file data
-
+					
+					//	Wait for file data
+					
 					wait(tmo);
 				}
-				catch (InterruptedException ex) {
+				catch ( InterruptedException ex) {
 				}
 			}
 		}
 	}
 
 	/**
-	 * Signal that the file data is available, any threads using the
-	 * waitForData() method will return so that the threads can access the file
-	 * data.
+	 * Signal that the file data is available, any threads using the waitForData() method
+	 * will return so that the threads can access the file data.
+	 * 
 	 */
 	public final synchronized void signalDataAvailable() {
 
-		// Notify any waiting threads that the file data ia available
-
+		//	Notify any waiting threads that the file data ia available
+			
 		notifyAll();
 	}
-
+	
 	/**
 	 * Return the file segment details as a string
 	 * 
@@ -324,21 +320,20 @@ public class FileSegmentInfo {
 	 */
 	public String toString() {
 		StringBuffer str = new StringBuffer();
-
+		
 		str.append("[");
 		str.append(getTemporaryFile());
 		str.append(":");
 		str.append(_statusStr[hasStatus()]);
 		str.append(",");
-
-		if (isUpdated())
+		
+		if ( isUpdated())
 			str.append(",Updated");
-		if (isQueued())
+		if ( isQueued())
 			str.append(",Queued");
 
 		str.append("]");
-
+		
 		return str.toString();
 	}
-
 }

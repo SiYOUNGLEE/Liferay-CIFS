@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -42,9 +42,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * XML File Server Configuration Class <p> XML implementation of the SMB server
- * configuration. Save/load the server configuration to an XML format file using
- * the DOM API.
+ * XML File Server Configuration Class
+ * 
+ * <p>
+ * XML implementation of the SMB server configuration. Save/load the server configuration to an XML
+ * format file using the DOM API.
  * 
  * @author gkspencer
  */
@@ -59,19 +61,13 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 	// FTP server debug type strings
 
-	private static final String m_ftpDebugStr[] =
-		{
-			"STATE", "RXDATA", "TXDATA", "DUMPDATA", "SEARCH", "INFO", "FILE",
-			"FILEIO", "ERROR", "PKTTYPE", "TIMING", "DATAPORT", "DIRECTORY"
-		};
+	private static final String m_ftpDebugStr[] = { "STATE", "RXDATA", "TXDATA", "DUMPDATA", "SEARCH", "INFO", "FILE", "FILEIO",
+			"ERROR", "PKTTYPE", "TIMING", "DATAPORT", "DIRECTORY" };
 
 	// NFS server debug type strings
 
-	private static final String m_nfsDebugStr[] =
-		{
-			"RXDATA", "TXDATA", "DUMPDATA", "SEARCH", "INFO", "FILE", "FILEIO",
-			"ERROR", "TIMING", "DIRECTORY", "SESSION"
-		};
+	private static final String m_nfsDebugStr[] = { "RXDATA", "TXDATA", "DUMPDATA", "SEARCH", "INFO", "FILE", "FILEIO", "ERROR",
+			"TIMING", "DIRECTORY", "SESSION" };
 
 	// Global server enable flags
 
@@ -104,8 +100,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 		try {
 
-			// Access the root of the XML document, get a list of the child
-			// nodes
+			// Access the root of the XML document, get a list of the child nodes
 
 			Element root = doc.getDocumentElement();
 			NodeList childNodes = root.getChildNodes();
@@ -119,9 +114,9 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 			procServersElement(findChildNode("servers", childNodes));
 
 			// Process the core server configuration settings
-
+			
 			procServerCoreElement(findChildNode("server-core", childNodes));
-
+			
 			// Process the global configuration settings
 
 			procGlobalElement(findChildNode("global", childNodes));
@@ -136,17 +131,17 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 			// Process the SMB server specific settings
 
-			if (isCIFSServerEnabled())
+			if ( isCIFSServerEnabled())
 				procSMBServerElement(findChildNode("SMB", childNodes));
 
 			// Process the FTP server configuration
 
-			if (isFTPServerEnabled())
+			if ( isFTPServerEnabled())
 				procFTPServerElement(findChildNode("FTP", childNodes));
 
 			// Process the NFS server configuration
 
-			if (isNFSServerEnabled())
+			if ( isNFSServerEnabled())
 				procNFSServerElement(findChildNode("NFS", childNodes));
 		}
 		catch (Exception ex) {
@@ -193,26 +188,24 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 	protected final void procServersElement(Element servers)
 		throws InvalidConfigurationException {
 
-		// Check if the servers element has been specified, if not then this is
-		// an old format
+		// Check if the servers element has been specified, if not then this is an old format
 		// configuration
 
-		if (servers != null) {
+		if ( servers != null) {
 
 			// Check if the SMB server is enabled
 
-			if (findChildNode("SMB", servers.getChildNodes()) != null ||
-				findChildNode("CIFS", servers.getChildNodes()) != null)
+			if ( findChildNode("SMB", servers.getChildNodes()) != null || findChildNode("CIFS", servers.getChildNodes()) != null)
 				m_cifsEnabled = true;
 
 			// Check if the FTP server is enabled
 
-			if (findChildNode("FTP", servers.getChildNodes()) != null)
+			if ( findChildNode("FTP", servers.getChildNodes()) != null)
 				m_ftpEnabled = true;
 
 			// Check if the NFS server is enabled
 
-			if (findChildNode("NFS", servers.getChildNodes()) != null)
+			if ( findChildNode("NFS", servers.getChildNodes()) != null)
 				m_nfsEnabled = true;
 		}
 	}
@@ -228,15 +221,13 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 		// Check if the FTP element is valid, if not then disable the FTP server
 
-		if (ftp == null) {
+		if ( ftp == null) {
 
-			// Check if the FTP server is enabled, if so then there must be an
-			// FTP configuration
+			// Check if the FTP server is enabled, if so then there must be an FTP configuration
 			// section
 
-			if (isFTPServerEnabled())
-				throw new InvalidConfigurationException(
-					"FTP server enabled, but not configured");
+			if ( isFTPServerEnabled())
+				throw new InvalidConfigurationException("FTP server enabled, but not configured");
 			return;
 		}
 
@@ -245,28 +236,27 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		FTPConfigSection ftpConfig = new FTPConfigSection(this);
 
 		// Check if IPv6 support is enabled
-
+		
 		Element elem = findChildNode("IPv6", ftp.getChildNodes());
-		if (elem != null) {
-
+		if ( elem != null) {
+			
 			// Enable IPv6 support
-
-			ftpConfig.setIPv6Enabled(true);
+			
+			ftpConfig.setIPv6Enabled( true);
 		}
-
+		
 		// Check for a bind address
 
 		elem = findChildNode("bindto", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check if the network adapter name has been specified
 
-			if (elem.hasAttribute("adapter")) {
+			if ( elem.hasAttribute("adapter")) {
 
 				// Get the IP address for the adapter
 
-				InetAddress bindAddr =
-					parseAdapterName(elem.getAttribute("adapter"));
+				InetAddress bindAddr = parseAdapterName(elem.getAttribute("adapter"));
 
 				// Set the bind address for the server
 
@@ -297,17 +287,14 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		// Check for an FTP server port
 
 		elem = findChildNode("port", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 			try {
 				ftpConfig.setFTPPort(Integer.parseInt(getText(elem)));
-				if (ftpConfig.getFTPPort() <= 0 ||
-					ftpConfig.getFTPPort() >= 65535)
-					throw new InvalidConfigurationException(
-						"FTP server port out of valid range");
+				if ( ftpConfig.getFTPPort() <= 0 || ftpConfig.getFTPPort() >= 65535)
+					throw new InvalidConfigurationException("FTP server port out of valid range");
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid FTP server port");
+				throw new InvalidConfigurationException("Invalid FTP server port");
 			}
 		}
 		else {
@@ -320,7 +307,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		// Check if anonymous login is allowed
 
 		elem = findChildNode("allowAnonymous", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Enable anonymous login to the FTP server
 
@@ -329,7 +316,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 			// Check if an anonymous account has been specified
 
 			String anonAcc = elem.getAttribute("user");
-			if (anonAcc != null && anonAcc.length() > 0) {
+			if ( anonAcc != null && anonAcc.length() > 0) {
 
 				// Set the anonymous account name
 
@@ -337,10 +324,8 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 				// Check if the anonymous account name is valid
 
-				if (ftpConfig.getAnonymousFTPAccount() == null ||
-					ftpConfig.getAnonymousFTPAccount().length() == 0)
-					throw new InvalidConfigurationException(
-						"Anonymous FTP account invalid");
+				if ( ftpConfig.getAnonymousFTPAccount() == null || ftpConfig.getAnonymousFTPAccount().length() == 0)
+					throw new InvalidConfigurationException("Anonymous FTP account invalid");
 			}
 			else {
 
@@ -359,7 +344,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		// Check if a root path has been specified
 
 		elem = findChildNode("rootDirectory", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Get the root path
 
@@ -378,15 +363,14 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 				ftpConfig.setFTPRootPath(rootPath);
 			}
 			catch (InvalidPathException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid FTP root directory, " + rootPath);
+				throw new InvalidConfigurationException("Invalid FTP root directory, " + rootPath);
 			}
 		}
 
 		// Check if a data port range has been specified
 
 		elem = findChildNode("dataPorts", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check for the from port range value
 
@@ -394,7 +378,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 			int rangeTo = -1;
 
 			String rangeStr = elem.getAttribute("rangeFrom");
-			if (rangeStr != null && rangeStr.length() > 0) {
+			if ( rangeStr != null && rangeStr.length() > 0) {
 
 				// Validate the range string
 
@@ -402,15 +386,14 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 					rangeFrom = Integer.parseInt(rangeStr);
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid FTP rangeFrom value, " + rangeStr);
+					throw new InvalidConfigurationException("Invalid FTP rangeFrom value, " + rangeStr);
 				}
 			}
 
 			// Check for the to port range value
 
 			rangeStr = elem.getAttribute("rangeTo");
-			if (rangeStr != null && rangeStr.length() > 0) {
+			if ( rangeStr != null && rangeStr.length() > 0) {
 
 				// Validate the range string
 
@@ -418,29 +401,23 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 					rangeTo = Integer.parseInt(rangeStr);
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid FTP rangeTo value, " + rangeStr);
+					throw new InvalidConfigurationException("Invalid FTP rangeTo value, " + rangeStr);
 				}
 			}
 
 			// Validate the data port range values
 
-			if (rangeFrom == -1 || rangeTo == -1)
-				throw new InvalidConfigurationException(
-					"FTP data port range from/to must be specified");
+			if ( rangeFrom == -1 || rangeTo == -1)
+				throw new InvalidConfigurationException("FTP data port range from/to must be specified");
 
-			if (rangeFrom < 1024 || rangeFrom > 65535)
-				throw new InvalidConfigurationException(
-					"Invalid FTP data port rangeFrom value, " + rangeFrom);
+			if ( rangeFrom < 1024 || rangeFrom > 65535)
+				throw new InvalidConfigurationException("Invalid FTP data port rangeFrom value, " + rangeFrom);
 
-			if (rangeTo < 1024 || rangeTo > 65535)
-				throw new InvalidConfigurationException(
-					"Invalid FTP data port rangeTo value, " + rangeTo);
+			if ( rangeTo < 1024 || rangeTo > 65535)
+				throw new InvalidConfigurationException("Invalid FTP data port rangeTo value, " + rangeTo);
 
-			if (rangeFrom >= rangeTo)
-				throw new InvalidConfigurationException(
-					"Invalid FTP data port range, " + 
-					rangeFrom + "-" + rangeTo);
+			if ( rangeFrom >= rangeTo)
+				throw new InvalidConfigurationException("Invalid FTP data port range, " + rangeFrom + "-" + rangeTo);
 
 			// Set the FTP data port range
 
@@ -451,14 +428,14 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		// Check if FTP debug is enabled
 
 		elem = findChildNode("debug", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check for FTP debug flags
 
 			String flags = elem.getAttribute("flags");
 			int ftpDbg = 0;
 
-			if (flags != null) {
+			if ( flags != null) {
 
 				// Parse the flags
 
@@ -475,13 +452,11 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 					int idx = 0;
 
-					while (idx < m_ftpDebugStr.length &&
-						m_ftpDebugStr[idx].equalsIgnoreCase(dbg) == false)
+					while (idx < m_ftpDebugStr.length && m_ftpDebugStr[idx].equalsIgnoreCase(dbg) == false)
 						idx++;
 
-					if (idx >= m_ftpDebugStr.length)
-						throw new InvalidConfigurationException(
-							"Invalid FTP debug flag, " + dbg);
+					if ( idx >= m_ftpDebugStr.length)
+						throw new InvalidConfigurationException("Invalid FTP debug flag, " + dbg);
 
 					// Set the debug flag
 
@@ -497,14 +472,13 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		// Check if a site interface has been specified
 
 		elem = findChildNode("siteInterface", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Get the site interface class name
 
 			Element classElem = findChildNode("class", elem.getChildNodes());
-			if (classElem == null)
-				throw new InvalidConfigurationException(
-					"Class not specified for FTP site interface");
+			if ( classElem == null)
+				throw new InvalidConfigurationException("Class not specified for FTP site interface");
 
 			String siteClass = getText(classElem);
 
@@ -515,13 +489,12 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 				// Load the driver class
 
 				Object siteObj = Class.forName(siteClass).newInstance();
-				if (siteObj instanceof FTPSiteInterface) {
+				if ( siteObj instanceof FTPSiteInterface) {
 
 					// Initialize the site interface
 
 					ConfigElement params = buildConfigElement(elem);
-					FTPSiteInterface ftpSiteInterface =
-						(FTPSiteInterface) siteObj;
+					FTPSiteInterface ftpSiteInterface = (FTPSiteInterface) siteObj;
 
 					ftpSiteInterface.initializeSiteInterface(this, params);
 
@@ -531,26 +504,23 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 				}
 			}
 			catch (ClassNotFoundException ex) {
-				throw new InvalidConfigurationException(
-					"FTP site interface class " + siteClass + " not found");
+				throw new InvalidConfigurationException("FTP site interface class " + siteClass + " not found");
 			}
 			catch (Exception ex) {
-				throw new InvalidConfigurationException(
-					"FTP site interface setup error, " + ex.toString());
+				throw new InvalidConfigurationException("FTP site interface setup error, " + ex.toString());
 			}
 		}
 
 		// Check if an authenticator has been specified
 
 		elem = findChildNode("authenticator", ftp.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Get the FTP authenticator class
 
 			Element classElem = findChildNode("class", elem.getChildNodes());
-			if (classElem == null)
-				throw new InvalidConfigurationException(
-					"FTP Authenticator class not specified");
+			if ( classElem == null)
+				throw new InvalidConfigurationException("FTP Authenticator class not specified");
 
 			// Get the parameters for the FTP authenticator class
 
@@ -571,7 +541,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 		// Check if the NFS element is valid
 
-		if (nfs == null)
+		if ( nfs == null)
 			return;
 
 		// Create the NFS server configuration section
@@ -580,20 +550,19 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 		// Check if the port mapper is enabled
 
-		if (findChildNode("enablePortMapper", nfs.getChildNodes()) != null)
+		if ( findChildNode("enablePortMapper", nfs.getChildNodes()) != null)
 			nfsConfig.setNFSPortMapper(true);
 
 		// Check for the thread pool size
 
 		Element elem = findChildNode("ThreadPool", nfs.getChildNodes());
 
-		// Check for the old TCPThreadPool value if the new value is not
-		// available
+		// Check for the old TCPThreadPool value if the new value is not available
 
-		if (elem == null)
+		if ( elem == null)
 			elem = findChildNode("TCPThreadPool", nfs.getChildNodes());
 
-		if (elem != null) {
+		if ( elem != null) {
 
 			try {
 
@@ -603,17 +572,15 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 				// Range check the pool size value
 
-				if (poolSize < 4)
-					throw new InvalidConfigurationException(
-						"NFS thread pool size is below minimum of 4");
+				if ( poolSize < 4)
+					throw new InvalidConfigurationException("NFS thread pool size is below minimum of 4");
 
 				// Set the thread pool size
 
 				nfsConfig.setNFSThreadPoolSize(poolSize);
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid NFS thread pool size setting, " + getText(elem));
+				throw new InvalidConfigurationException("Invalid NFS thread pool size setting, " + getText(elem));
 			}
 		}
 
@@ -621,7 +588,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 		elem = findChildNode("PacketPool", nfs.getChildNodes());
 
-		if (elem != null) {
+		if ( elem != null) {
 
 			try {
 
@@ -631,88 +598,73 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 				// Range check the pool size value
 
-				if (pktPoolSize < 10)
-					throw new InvalidConfigurationException(
-						"NFS packet pool size is below minimum of 10");
+				if ( pktPoolSize < 10)
+					throw new InvalidConfigurationException("NFS packet pool size is below minimum of 10");
 
-				if (pktPoolSize < nfsConfig.getNFSThreadPoolSize() + 1)
-					throw new InvalidConfigurationException(
-						"NFS packet pool must be at least thread pool size " +
-						"plus one");
+				if ( pktPoolSize < nfsConfig.getNFSThreadPoolSize() + 1)
+					throw new InvalidConfigurationException("NFS packet pool must be at least thread pool size plus one");
 
 				// Set the packet pool size
 
 				nfsConfig.setNFSPacketPoolSize(pktPoolSize);
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid NFS packet pool size setting, " + getText(elem));
+				throw new InvalidConfigurationException("Invalid NFS packet pool size setting, " + getText(elem));
 			}
 		}
 
 		// Check for a port mapper server port
 
 		elem = findChildNode("PortMapperPort", nfs.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 			try {
 				nfsConfig.setPortMapperPort(Integer.parseInt(getText(elem)));
-				if (nfsConfig.getPortMapperPort() <= 0 ||
-					nfsConfig.getPortMapperPort() >= 65535)
-					throw new InvalidConfigurationException(
-						"Port mapper server port out of valid range");
+				if ( nfsConfig.getPortMapperPort() <= 0 || nfsConfig.getPortMapperPort() >= 65535)
+					throw new InvalidConfigurationException("Port mapper server port out of valid range");
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid port mapper server port");
+				throw new InvalidConfigurationException("Invalid port mapper server port");
 			}
 		}
 
 		// Check for a mount server port
 
 		elem = findChildNode("MountServerPort", nfs.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 			try {
 				nfsConfig.setMountServerPort(Integer.parseInt(getText(elem)));
-				if (nfsConfig.getMountServerPort() <= 0 ||
-					nfsConfig.getMountServerPort() >= 65535)
-					throw new InvalidConfigurationException(
-						"Mount server port out of valid range");
+				if ( nfsConfig.getMountServerPort() <= 0 || nfsConfig.getMountServerPort() >= 65535)
+					throw new InvalidConfigurationException("Mount server port out of valid range");
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid mount server port");
+				throw new InvalidConfigurationException("Invalid mount server port");
 			}
 		}
 
 		// Check for an NFS server port
 
 		elem = findChildNode("NFSServerPort", nfs.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 			try {
 				nfsConfig.setNFSServerPort(Integer.parseInt(getText(elem)));
-				if (nfsConfig.getNFSServerPort() <= 0 ||
-					nfsConfig.getNFSServerPort() >= 65535)
-					
-					throw new InvalidConfigurationException(
-						"NFS server port out of valid range");
+				if ( nfsConfig.getNFSServerPort() <= 0 || nfsConfig.getNFSServerPort() >= 65535)
+					throw new InvalidConfigurationException("NFS server port out of valid range");
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid NFS server port");
+				throw new InvalidConfigurationException("Invalid NFS server port");
 			}
 		}
 
 		// Check if an RPC authenticator has been specified
 
 		elem = findChildNode("rpcAuthenticator", nfs.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Get the RPC authenticator class
 
 			Element classElem = findChildNode("class", elem.getChildNodes());
-			if (classElem == null)
-				throw new InvalidConfigurationException(
-					"RPC Authenticator class not specified");
+			if ( classElem == null)
+				throw new InvalidConfigurationException("RPC Authenticator class not specified");
 
 			// Get the parameters for the RPC authenticator class
 
@@ -720,25 +672,23 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 			nfsConfig.setRpcAuthenticator(getText(classElem), params);
 		}
 		else {
-
+			
 			// Use the null RPC authenticator as the default
-
-			nfsConfig.setRpcAuthenticator(
-				"org.alfresco.jlan.oncrpc.DefaultRpcAuthenticator",
-				new ConfigElement("", ""));
+			
+			nfsConfig.setRpcAuthenticator( "org.alfresco.jlan.oncrpc.DefaultRpcAuthenticator", new ConfigElement( "", ""));
 		}
 
 		// Check if NFS debug is enabled
 
 		elem = findChildNode("debug", nfs.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check for NFS debug flags
 
 			String flags = elem.getAttribute("flags");
 			int nfsDbg = 0;
 
-			if (flags != null) {
+			if ( flags != null) {
 
 				// Parse the flags
 
@@ -755,13 +705,11 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 					int idx = 0;
 
-					while (idx < m_nfsDebugStr.length &&
-						m_nfsDebugStr[idx].equalsIgnoreCase(dbg) == false)
+					while (idx < m_nfsDebugStr.length && m_nfsDebugStr[idx].equalsIgnoreCase(dbg) == false)
 						idx++;
 
-					if (idx >= m_nfsDebugStr.length)
-						throw new InvalidConfigurationException(
-							"Invalid NFS debug flag, " + dbg);
+					if ( idx >= m_nfsDebugStr.length)
+						throw new InvalidConfigurationException("Invalid NFS debug flag, " + dbg);
 
 					// Set the debug flag
 
@@ -777,20 +725,20 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		// Check if mount server debug output is enabled
 
 		elem = findChildNode("mountServerDebug", nfs.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			nfsConfig.setMountServerDebug(true);
 
 		// Check if port mapper debug output is enabled
 
 		elem = findChildNode("portMapperDebug", nfs.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			nfsConfig.setPortMapperDebug(true);
 
 		// Check if the file cache timers have been specified
 
 		elem = findChildNode("FileCache", nfs.getChildNodes());
 
-		if (elem != null) {
+		if ( elem != null) {
 			try {
 
 				// Check for a single value or I/O and close timer values
@@ -801,7 +749,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 				int pos = numVal.indexOf(':');
 
-				if (pos == -1) {
+				if ( pos == -1) {
 
 					// Only change the I/O timer
 
@@ -809,8 +757,7 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 				}
 				else {
 
-					// Split the string value into read and write values, and
-					// convert to integers
+					// Split the string value into read and write values, and convert to integers
 
 					String val = numVal.substring(0, pos);
 					cacheIOTimer = Integer.parseInt(val);
@@ -821,10 +768,8 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 				// Range check the I/O timer
 
-				if (cacheIOTimer < 0 || cacheIOTimer > 30)
-					throw new InvalidConfigurationException(
-						"Invalid NFS file cache I/O timer value, " +
-							cacheIOTimer);
+				if ( cacheIOTimer < 0 || cacheIOTimer > 30)
+					throw new InvalidConfigurationException("Invalid NFS file cache I/O timer value, " + cacheIOTimer);
 				else {
 
 					// Convert the timer to milliseconds
@@ -834,30 +779,25 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 
 				// Range check the close timer, if specified
 
-				if (cacheCloseTimer != -1) {
-					if (cacheCloseTimer < 0 || cacheCloseTimer > 120)
-						throw new InvalidConfigurationException(
-							"Invalid NFS file cache close timer value, " +
-								cacheCloseTimer);
+				if ( cacheCloseTimer != -1) {
+					if ( cacheCloseTimer < 0 || cacheCloseTimer > 120)
+						throw new InvalidConfigurationException("Invalid NFS file cache close timer value, " + cacheCloseTimer);
 					else {
 
 						// Convert the timer to milliseconds
 
-						nfsConfig.setNFSFileCacheCloseTimer(
-							cacheCloseTimer * 1000L);
+						nfsConfig.setNFSFileCacheCloseTimer(cacheCloseTimer * 1000L);
 					}
 				}
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid NFS file cache timer value, " + ex.toString());
+				throw new InvalidConfigurationException("Invalid NFS file cache timer value, " + ex.toString());
 			}
 		}
 
 		// Check if NFS file cache debug output is enabled
 
-		if (findChildNode("fileCacheDebug", nfs.getChildNodes()) != null)
+		if ( findChildNode("fileCacheDebug", nfs.getChildNodes()) != null)
 			nfsConfig.setNFSFileCacheDebug(true);
 	}
-	
 }

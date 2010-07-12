@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -124,9 +124,9 @@ public class JLANServer implements ServerListener {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && m_restart == true) {
+			if ( Debug.EnableInfo && m_restart == true) {
 				Debug.println("Restarting server ...");
-				Debug.println("----------------------------------------------");
+				Debug.println("--------------------------------------------------");
 			}
 		}
 	}
@@ -201,11 +201,10 @@ public class JLANServer implements ServerListener {
 			return;
 		}
 
-		// Check if the local IP address returns a valid value, '127.0.0.1'
-		// indicates a mis-configuration in the hosts
+		// Check if the local IP address returns a valid value, '127.0.0.1' indicates a mis-configuration in the hosts
 		// file
 
-		if (CheckLocalIPAddress) {
+		if ( CheckLocalIPAddress) {
 
 			try {
 
@@ -216,11 +215,8 @@ public class JLANServer implements ServerListener {
 				// Get the local address
 
 				String localAddr = InetAddress.getLocalHost().getHostAddress();
-				if (localAddr.equals("127.0.0.1")) {
-					out.println(
-						"%% Local IP address resolves to 127.0.0.1, " +
-							"this may be caused by a mis-configured " +
-							"hosts file");
+				if ( localAddr.equals("127.0.0.1")) {
+					out.println("%% Local IP address resolves to 127.0.0.1, this may be caused by a mis-configured hosts file");
 					return;
 				}
 			}
@@ -239,7 +235,7 @@ public class JLANServer implements ServerListener {
 
 			// Create the SMB server and NetBIOS name server, if enabled
 
-			if (m_srvConfig.hasConfigSection(CIFSConfigSection.SectionName)) {
+			if ( m_srvConfig.hasConfigSection(CIFSConfigSection.SectionName)) {
 
 				// Checkpoint - create SMB/CIFS server
 
@@ -247,23 +243,19 @@ public class JLANServer implements ServerListener {
 
 				// Get the CIFS server configuration
 
-				CIFSConfigSection cifsConfig =
-					(CIFSConfigSection) m_srvConfig.getConfigSection(
-						CIFSConfigSection.SectionName);
+				CIFSConfigSection cifsConfig = (CIFSConfigSection) m_srvConfig.getConfigSection(CIFSConfigSection.SectionName);
 
 				// Load the Win32 NetBIOS library
 				//
-				// For some strange reason the native code loadLibrary() call
-				// hangs if done later by the SMBServer.
-				// Forcing the Win32NetBIOS class to load here and run the
-				// static initializer fixes the problem.
+				// For some strange reason the native code loadLibrary() call hangs if done later by the SMBServer.
+				// Forcing the Win32NetBIOS class to load here and run the static initializer fixes the problem.
 
-				if (cifsConfig.hasWin32NetBIOS())
+				if ( cifsConfig.hasWin32NetBIOS())
 					Win32NetBIOS.LanaEnumerate();
 
 				// Create the NetBIOS name server if NetBIOS SMB is enabled
 
-				if (cifsConfig.hasNetBIOSSMB())
+				if ( cifsConfig.hasNetBIOSSMB())
 					m_srvConfig.addServer(createNetBIOSServer(m_srvConfig));
 
 				// Create the SMB server
@@ -273,7 +265,7 @@ public class JLANServer implements ServerListener {
 
 			// Create the FTP server, if enabled
 
-			if (m_srvConfig.hasConfigSection(FTPConfigSection.SectionName)) {
+			if ( m_srvConfig.hasConfigSection(FTPConfigSection.SectionName)) {
 
 				// Checkpoint - create FTP server
 
@@ -286,7 +278,7 @@ public class JLANServer implements ServerListener {
 
 			// Create the NFS server and mount server, if enabled
 
-			if (m_srvConfig.hasConfigSection(NFSConfigSection.SectionName)) {
+			if ( m_srvConfig.hasConfigSection(NFSConfigSection.SectionName)) {
 
 				// Checkpoint - create NFS server
 
@@ -294,13 +286,11 @@ public class JLANServer implements ServerListener {
 
 				// Get the NFS server configuration
 
-				NFSConfigSection nfsConfig =
-					(NFSConfigSection) m_srvConfig.getConfigSection(
-						NFSConfigSection.SectionName);
+				NFSConfigSection nfsConfig = (NFSConfigSection) m_srvConfig.getConfigSection(NFSConfigSection.SectionName);
 
 				// Check if the port mapper is enabled
 
-				if (nfsConfig.hasNFSPortMapper())
+				if ( nfsConfig.hasNFSPortMapper())
 					m_srvConfig.addServer(createNFSPortMapper(m_srvConfig));
 
 				// Create the mount server
@@ -318,9 +308,7 @@ public class JLANServer implements ServerListener {
 
 			// Get the debug configuration
 
-			DebugConfigSection dbgConfig =
-				(DebugConfigSection) m_srvConfig.getConfigSection(
-					DebugConfigSection.SectionName);
+			DebugConfigSection dbgConfig = (DebugConfigSection) m_srvConfig.getConfigSection(DebugConfigSection.SectionName);
 
 			// Start the configured servers
 
@@ -332,10 +320,8 @@ public class JLANServer implements ServerListener {
 
 				// DEBUG
 
-				if (Debug.EnableInfo && dbgConfig != null &&
-					dbgConfig.hasDebug())
-					Debug.println("Starting server " +
-						server.getProtocolName() + " ...");
+				if ( Debug.EnableInfo && dbgConfig != null && dbgConfig.hasDebug())
+					Debug.println("Starting server " + server.getProtocolName() + " ...");
 
 				// Start the server
 
@@ -350,35 +336,33 @@ public class JLANServer implements ServerListener {
 
 			boolean service = false;
 
-			if (ConsoleIO.isValid() == false)
+			if ( ConsoleIO.isValid() == false)
 				service = true;
 
 			// Checkpoint - servers running
 
 			checkPoint(out, CheckPointRunning);
 
-			// Wait while the server runs, user may stop or restart the server
-			// by typing a key
+			// Wait while the server runs, user may stop or restart the server by typing a key
 
 			m_shutdown = false;
 
 			while (m_shutdown == false && m_restart == false) {
 
-				// Check if the user has requested a shutdown, if running
-				// interactively
+				// Check if the user has requested a shutdown, if running interactively
 
-				if (service == false && m_allowShutViaConsole) {
+				if ( service == false && m_allowShutViaConsole) {
 
 					// Wait for the user to enter the shutdown key
 
 					int inChar = ConsoleIO.readCharacter();
 
-					if (inChar == 'x' || inChar == 'X')
+					if ( inChar == 'x' || inChar == 'X')
 						m_shutdown = true;
-					else if (inChar == 'r' || inChar == 'R')
+					else if ( inChar == 'r' || inChar == 'R')
 						m_restart = true;
-					else if (inChar == -1) {
-
+					else if ( inChar == -1) {
+						
 						// Sleep for a short while
 
 						try {
@@ -416,10 +400,8 @@ public class JLANServer implements ServerListener {
 
 				// DEBUG
 
-				if (Debug.EnableInfo && dbgConfig != null &&
-					dbgConfig.hasDebug())
-					Debug.println("Shutting server " +
-						server.getProtocolName() + " ...");
+				if ( Debug.EnableInfo && dbgConfig != null && dbgConfig.hasDebug())
+					Debug.println("Shutting server " + server.getProtocolName() + " ...");
 
 				// Stop the server
 
@@ -427,9 +409,9 @@ public class JLANServer implements ServerListener {
 			}
 
 			// Close the configuration
-
+			
 			m_srvConfig.closeConfiguration();
-
+			
 			// Checkpoint - servers stopped
 
 			checkPoint(out, CheckPointServersStopped);
@@ -448,7 +430,7 @@ public class JLANServer implements ServerListener {
 
 			while (idx >= 0) {
 				NetworkServer srv = m_srvConfig.getServer(idx--);
-				if (srv.isActive())
+				if ( srv.isActive())
 					srv.shutdownServer(true);
 			}
 		}
@@ -483,8 +465,8 @@ public class JLANServer implements ServerListener {
 
 		// Check if there are any drive mappings configured
 
-		if (Platform.isPlatformType() == Platform.Type.WINDOWS &&
-			config.hasConfigSection(DriveMappingsConfigSection.SectionName))
+		if ( Platform.isPlatformType() == Platform.Type.WINDOWS
+				&& config.hasConfigSection(DriveMappingsConfigSection.SectionName))
 			smbServer.addServerListener(this);
 
 		// Return the SMB server
@@ -499,8 +481,7 @@ public class JLANServer implements ServerListener {
 	 * @return NetworkServer
 	 * @exception Exception
 	 */
-	protected final NetworkServer createNetBIOSServer(
-		ServerConfiguration config)
+	protected final NetworkServer createNetBIOSServer(ServerConfiguration config)
 		throws Exception {
 
 		// Create a NetBIOS name server
@@ -545,14 +526,12 @@ public class JLANServer implements ServerListener {
 	 * @return NetworkServer
 	 * @exception Exception
 	 */
-	protected final NetworkServer createNFSMountServer(
-		ServerConfiguration config)
+	protected final NetworkServer createNFSMountServer(ServerConfiguration config)
 		throws Exception {
 
 		// Create the mount server instance
 
-		return createServer(
-			"org.alfresco.jlan.oncrpc.mount.MountServer", config);
+		return createServer("org.alfresco.jlan.oncrpc.mount.MountServer", config);
 	}
 
 	/**
@@ -561,14 +540,12 @@ public class JLANServer implements ServerListener {
 	 * @param config ServerConfiguration
 	 * @return NetworkServer
 	 */
-	protected final NetworkServer createNFSPortMapper(
-		ServerConfiguration config)
+	protected final NetworkServer createNFSPortMapper(ServerConfiguration config)
 		throws Exception {
 
 		// Create the port mapper server instance
 
-		return createServer(
-			"org.alfresco.jlan.oncrpc.portmap.PortMapperServer", config);
+		return createServer("org.alfresco.jlan.oncrpc.portmap.PortMapperServer", config);
 	}
 
 	/**
@@ -579,8 +556,7 @@ public class JLANServer implements ServerListener {
 	 * @return NetworkServer
 	 * @exception Exception
 	 */
-	protected final NetworkServer createServer(
-		String className, ServerConfiguration config)
+	protected final NetworkServer createServer(String className, ServerConfiguration config)
 		throws Exception {
 
 		// Create the server instance using reflection
@@ -591,8 +567,7 @@ public class JLANServer implements ServerListener {
 
 		Class<?>[] classes = new Class[1];
 		classes[0] = ServerConfiguration.class;
-		Constructor<?> srvConstructor =
-			Class.forName(className).getConstructor(classes);
+		Constructor<?> srvConstructor = Class.forName(className).getConstructor(classes);
 
 		// Create the network server
 
@@ -606,28 +581,23 @@ public class JLANServer implements ServerListener {
 	}
 
 	/**
-	 * Load the server configuration, default is to load using an XML
-	 * configuration file.
+	 * Load the server configuration, default is to load using an XML configuration file.
 	 * 
 	 * @param out PrintStream
 	 * @param cmdLineArgs String[]
 	 * @return ServerConfiguration
 	 * @exception Exception
 	 */
-	protected ServerConfiguration loadConfiguration(
-		PrintStream out, String[] cmdLineArgs)
+	protected ServerConfiguration loadConfiguration(PrintStream out, String[] cmdLineArgs)
 		throws Exception {
 
 		String fileName = null;
 
-		if (cmdLineArgs.length < 1) {
+		if ( cmdLineArgs.length < 1) {
 
-			// Search for a default configuration file in the users home
-			// directory
+			// Search for a default configuration file in the users home directory
 
-			fileName =
-				System.getProperty("user.home") + File.separator +
-					DEFAULT_CONFIGFILENAME;
+			fileName = System.getProperty("user.home") + File.separator + DEFAULT_CONFIGFILENAME;
 		}
 		else
 			fileName = cmdLineArgs[0];
@@ -656,8 +626,7 @@ public class JLANServer implements ServerListener {
 	}
 
 	/**
-	 * Checkpoint method, called at various points of the server startup and
-	 * shutdown
+	 * Checkpoint method, called at various points of the server startup and shutdown
 	 * 
 	 * @param out PrintStream
 	 * @param check int
@@ -666,8 +635,7 @@ public class JLANServer implements ServerListener {
 	}
 
 	/**
-	 * Checkpoint error method, called if an error occurs during server
-	 * startup/shutdown
+	 * Checkpoint error method, called if an error occurs during server startup/shutdown
 	 * 
 	 * @param out PrintStream
 	 * @param check int
@@ -681,29 +649,29 @@ public class JLANServer implements ServerListener {
 
 		switch (check) {
 
-		// Configuration load error
+			// Configuration load error
 
-		case CheckPointConfigLoading:
-			msg = "%% Failed to load server configuration";
-			break;
+			case CheckPointConfigLoading:
+				msg = "%% Failed to load server configuration";
+				break;
 
-		// Checking local network address error
+			// Checking local network address error
 
-		case CheckPointCheckIPAddress:
-			msg = "%% Failed to get local IP address details";
-			break;
+			case CheckPointCheckIPAddress:
+				msg = "%% Failed to get local IP address details";
+				break;
 
-		//
+			//
 
-		case CheckPointServersStarted:
-			msg = "%% Server error";
-			break;
+			case CheckPointServersStarted:
+				msg = "%% Server error";
+				break;
 		}
 
 		// Output the error message and a stack trace
 
 		out.println(msg);
-		if (m_dumpStackOnError)
+		if ( m_dumpStackOnError)
 			ex.printStackTrace(out);
 	}
 
@@ -717,20 +685,18 @@ public class JLANServer implements ServerListener {
 
 		// Check for an SMB server event
 
-		if (server instanceof SMBServer) {
+		if ( server instanceof SMBServer) {
 
 			// Get the drive mappings configuration
 
-			DriveMappingsConfigSection mapConfig =
-				(DriveMappingsConfigSection) m_srvConfig.getConfigSection(
-					DriveMappingsConfigSection.SectionName);
-			if (mapConfig == null)
+			DriveMappingsConfigSection mapConfig = (DriveMappingsConfigSection) m_srvConfig
+					.getConfigSection(DriveMappingsConfigSection.SectionName);
+			if ( mapConfig == null)
 				return;
 
-			// Check for a server startup event, add drive mappings now that the
-			// server is running
+			// Check for a server startup event, add drive mappings now that the server is running
 
-			if (event == ServerListener.ServerStartup) {
+			if ( event == ServerListener.ServerStartup) {
 
 				// Get the mapped drives list
 
@@ -746,29 +712,22 @@ public class JLANServer implements ServerListener {
 
 					// DEBUG
 
-					if (Debug.EnableInfo && mapConfig.hasDebug())
-						Debug.println("Mapping drive " +
-							driveMap.getLocalDrive() + " to " +
-							driveMap.getRemotePath() + " ...");
+					if ( Debug.EnableInfo && mapConfig.hasDebug())
+						Debug.println("Mapping drive " + driveMap.getLocalDrive() + " to " + driveMap.getRemotePath() + " ...");
 
 					// Create a local mapped drive to the JLAN Server
 
-					int sts =
-						Win32Utils.MapNetworkDrive(
-							driveMap.getRemotePath(), driveMap.getLocalDrive(),
-							driveMap.getUserName(), driveMap.getPassword(),
-							driveMap.hasInteractive(), driveMap.hasPrompt());
+					int sts = Win32Utils.MapNetworkDrive(driveMap.getRemotePath(), driveMap.getLocalDrive(), driveMap
+							.getUserName(), driveMap.getPassword(), driveMap.hasInteractive(), driveMap.hasPrompt());
 
 					// Check if the drive was mapped successfully
 
-					if (sts != 0)
-						Debug.println("Failed to map drive " +
-							driveMap.getLocalDrive() + " to " +
-							driveMap.getRemotePath() + ", status = " +
-							SMBErrorText.ErrorString(SMBStatus.Win32Err, sts));
+					if ( sts != 0)
+						Debug.println("Failed to map drive " + driveMap.getLocalDrive() + " to " + driveMap.getRemotePath()
+								+ ", status = " + SMBErrorText.ErrorString(SMBStatus.Win32Err, sts));
 				}
 			}
-			else if (event == ServerListener.ServerShutdown) {
+			else if ( event == ServerListener.ServerShutdown) {
 
 				// Get the mapped drives list
 
@@ -784,27 +743,21 @@ public class JLANServer implements ServerListener {
 
 					// DEBUG
 
-					if (Debug.EnableInfo && mapConfig.hasDebug())
-						Debug.println("Removing mapped drive " +
-							driveMap.getLocalDrive() + " to " +
-							driveMap.getRemotePath() + " ...");
+					if ( Debug.EnableInfo && mapConfig.hasDebug())
+						Debug.println("Removing mapped drive " + driveMap.getLocalDrive() + " to " + driveMap.getRemotePath()
+								+ " ...");
 
 					// Remove a mapped drive
 
-					int sts =
-						Win32Utils.DeleteNetworkDrive(
-							driveMap.getLocalDrive(), false, true);
+					int sts = Win32Utils.DeleteNetworkDrive(driveMap.getLocalDrive(), false, true);
 
 					// Check if the drive was unmapped successfully
 
-					if (sts != 0)
-						Debug.println("Failed to delete mapped drive " +
-							driveMap.getLocalDrive() + " from " +
-							driveMap.getRemotePath() + ", status = " +
-							SMBErrorText.ErrorString(SMBStatus.Win32Err, sts));
+					if ( sts != 0)
+						Debug.println("Failed to delete mapped drive " + driveMap.getLocalDrive() + " from "
+								+ driveMap.getRemotePath() + ", status = " + SMBErrorText.ErrorString(SMBStatus.Win32Err, sts));
 				}
 			}
 		}
 	}
-	
 }

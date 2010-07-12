@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -70,23 +70,23 @@ import org.alfresco.jlan.util.DataPacker;
 import org.alfresco.jlan.util.HexDump;
 
 /**
- * Passthru Authenticator Class <p> Authenticate users accessing the CIFS server
- * by validating the user against a domain controller or other server on the
- * network.
+ * Passthru Authenticator Class
+ * <p>
+ * Authenticate users accessing the CIFS server by validating the user against a domain controller
+ * or other server on the network.
  * 
  * @author GKSpencer
  */
-public class PassthruAuthenticator extends CifsAuthenticator
-	implements SessionListener {
+public class PassthruAuthenticator extends CifsAuthenticator implements SessionListener {
 
 	// Constants
 
-	public final static int DefaultSessionTmo = 5000; // 5 seconds
-	public final static int MinSessionTmo = 2000; // 2 seconds
-	public final static int MaxSessionTmo = 30000; // 30 seconds
+	public final static int DefaultSessionTmo 	= 5000; // 5 seconds
+	public final static int MinSessionTmo 		= 2000; // 2 seconds
+	public final static int MaxSessionTmo 		= 30000; // 30 seconds
 
-	public final static int MinCheckInterval = 10; // 10 seconds
-	public final static int MaxCheckInterval = 15 * 60; // 15 minutes
+	public final static int MinCheckInterval 	= 10; // 10 seconds
+	public final static int MaxCheckInterval 	= 15 * 60; // 15 minutes
 
 	// Passthru keep alive interval
 
@@ -94,9 +94,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 	// NTLM flags mask, used to mask out features that are not supported
 
-	private static final int NTLM_FLAGS =
-		NTLM.Flag56Bit + NTLM.Flag128Bit + NTLM.FlagLanManKey +
-			NTLM.FlagNegotiateNTLM + NTLM.FlagNegotiateUnicode;
+	private static final int NTLM_FLAGS = NTLM.Flag56Bit + NTLM.Flag128Bit + NTLM.FlagLanManKey + NTLM.FlagNegotiateNTLM
+			+ NTLM.FlagNegotiateUnicode;
 
 	// Passthru servers used to authenticate users
 
@@ -111,8 +110,9 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	private Hashtable m_sessions;
 
 	/**
-	 * Default Constructor <p>Default to user mode security with encrypted
-	 * password support.
+	 * Default Constructor
+	 * 
+	 * <p>Default to user mode security with encrypted password support.
 	 */
 	public PassthruAuthenticator() {
 
@@ -126,8 +126,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	}
 
 	/**
-	 * Authenticate the connection to a particular share, called when the SMB
-	 * server is in share security mode
+	 * Authenticate the connection to a particular share, called when the SMB server is in share
+	 * security mode
 	 * 
 	 * @param client ClientInfo
 	 * @param share SharedDevice
@@ -135,41 +135,37 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 * @param sess SrvSession
 	 * @return int
 	 */
-	public int authenticateShareConnect(
-		ClientInfo client, SharedDevice share, String sharePwd, 
-		SrvSession sess) {
+	public int authenticateShareConnect(ClientInfo client, SharedDevice share, String sharePwd, SrvSession sess) {
 
 		// If the server is in share mode security allow the user access
 
-		if (this.getAccessMode() == SHARE_MODE)
+		if ( this.getAccessMode() == SHARE_MODE)
 			return Writeable;
 
 		// Check if the IPC$ share is being accessed
 
-		if (share.getType() == ShareType.ADMINPIPE)
+		if ( share.getType() == ShareType.ADMINPIPE)
 			return Writeable;
 
 		// Check if the user is allowed to access the specified shared device
 		//
-		// If a user does not have access to the requested share the connection
-		// will still be
+		// If a user does not have access to the requested share the connection will still be
 		// allowed
-		// but any attempts to access files or search directories will result in
-		// a 'no access
+		// but any attempts to access files or search directories will result in a 'no access
 		// rights'
 		// error being returned to the client.
 
 		UserAccount user = null;
-		if (client != null)
+		if ( client != null)
 			user = getUserDetails(client.getUserName());
 
-		if (user == null) {
+		if ( user == null) {
 
 			// Check if the guest account is enabled
 
 			return allowGuest() ? Writeable : NoAccess;
 		}
-		else if (user.hasShare(share.getName()) == false)
+		else if ( user.hasShare(share.getName()) == false)
 			return NoAccess;
 
 		// Allow user to access this share
@@ -187,14 +183,12 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 */
 	public int authenticateUser(ClientInfo client, SrvSession sess, int alg) {
 
-		// The null session will only be allowed to connect to the IPC$ named
-		// pipe share.
+		// The null session will only be allowed to connect to the IPC$ named pipe share.
 
-		if (client.isNullSession()) {
-
+		if ( client.isNullSession()) {
 			// Debug
 
-			if (hasDebug())
+			if ( hasDebug())
 				Debug.println("Null CIFS logon allowed");
 
 			return ICifsAuthenticator.AUTH_ALLOW;
@@ -204,12 +198,10 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		int authSts = AUTH_DISALLOW;
 
-		if (client.isGuest() ||
-			client.getUserName().equalsIgnoreCase(getGuestUserName())) {
-
+		if ( client.isGuest() || client.getUserName().equalsIgnoreCase(getGuestUserName())) {
 			// Check if guest logons are allowed
 
-			if (allowGuest() == false)
+			if ( allowGuest() == false)
 				return AUTH_DISALLOW;
 
 			// Get a guest authentication token
@@ -222,9 +214,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 			// DEBUG
 
-			if (hasDebug())
-				Debug.println("Authenticated user " + client.getUserName() +
-					" sts=" + getStatusAsString(authSts));
+			if ( hasDebug())
+				Debug.println("Authenticated user " + client.getUserName() + " sts=" + getStatusAsString(authSts));
 
 			// Return the guest status
 
@@ -233,30 +224,25 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		// Find the active authentication session details for the server session
 
-		PassthruDetails passDetails =
-			(PassthruDetails) m_sessions.get(sess.getUniqueId());
+		PassthruDetails passDetails = (PassthruDetails) m_sessions.get(sess.getUniqueId());
 
-		if (passDetails != null) {
+		if ( passDetails != null) {
 
 			try {
 
-				// Authenticate the user by passing the hashed password to the
-				// authentication server
+				// Authenticate the user by passing the hashed password to the authentication server
 				// using the session that has already been setup.
 
-				AuthenticateSession authSess =
-					passDetails.getAuthenticateSession();
-				authSess.doSessionSetup(
-					client.getUserName(), client.getANSIPassword(),
-					client.getPassword());
+				AuthenticateSession authSess = passDetails.getAuthenticateSession();
+				authSess.doSessionSetup(client.getUserName(), client.getANSIPassword(), client.getPassword());
 
 				// Check if the user has been logged on as a guest
 
-				if (authSess.isGuest()) {
+				if ( authSess.isGuest()) {
 
 					// Check if the local server allows guest access
 
-					if (allowGuest() == true) {
+					if ( allowGuest() == true) {
 						// Get a guest authentication token
 
 						doGuestLogon(client, sess);
@@ -267,24 +253,19 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 						// Debug
 
-						if (hasDebug())
-							Debug.println(
-								"Passthru authenticate user=" +
-								client.getUserName() + ", GUEST");
+						if ( hasDebug())
+							Debug.println("Passthru authenticate user=" + client.getUserName() + ", GUEST");
 					}
 				}
 				else {
-
 					// Allow the user full access to the server
 
 					authSts = ICifsAuthenticator.AUTH_ALLOW;
 
 					// Debug
 
-					if (hasDebug())
-						Debug.println(
-							"Passthru authenticate user=" +
-							client.getUserName() + ", FULL");
+					if ( hasDebug())
+						Debug.println("Passthru authenticate user=" + client.getUserName() + ", FULL");
 				}
 			}
 			catch (Exception ex) {
@@ -294,11 +275,10 @@ public class PassthruAuthenticator extends CifsAuthenticator
 				Debug.println(ex.getMessage());
 			}
 
-			// Keep the authentication session if the user session is an SMB
-			// session, else close the
+			// Keep the authentication session if the user session is an SMB session, else close the
 			// session now
 
-			if ((sess instanceof SMBSrvSession) == false) {
+			if ( (sess instanceof SMBSrvSession) == false) {
 
 				// Remove the passthru session from the active list
 
@@ -310,24 +290,19 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 					// Close the authentication session
 
-					AuthenticateSession authSess =
-						passDetails.getAuthenticateSession();
+					AuthenticateSession authSess = passDetails.getAuthenticateSession();
 					authSess.CloseSession();
 
 					// DEBUG
 
-					if (hasDebug())
-						Debug.println(
-							"Closed auth session, sessId=" +
-							authSess.getSessionId());
+					if ( hasDebug())
+						Debug.println("Closed auth session, sessId=" + authSess.getSessionId());
 				}
 				catch (Exception ex) {
 
 					// Debug
 
-					Debug.println(
-						"Passthru error closing session (auth user) " +
-						ex.getMessage());
+					Debug.println("Passthru error closing session (auth user) " + ex.getMessage());
 				}
 			}
 		}
@@ -335,7 +310,7 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 			// DEBUG
 
-			if (hasDebug())
+			if ( hasDebug())
 				Debug.println("  No PassthruDetails for " + sess.getUniqueId());
 		}
 
@@ -353,7 +328,7 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		// Make sure the SMB server listener is installed
 
-		if (m_server == null && sess instanceof SMBSrvSession) {
+		if ( m_server == null && sess instanceof SMBSrvSession) {
 			SMBSrvSession smbSess = (SMBSrvSession) sess;
 			m_server = smbSess.getSMBServer();
 
@@ -362,21 +337,18 @@ public class PassthruAuthenticator extends CifsAuthenticator
 			m_server.addSessionListener(this);
 		}
 
-		// Open a connection to the authentication server, use normal session
-		// setup
+		// Open a connection to the authentication server, use normal session setup
 
 		AuthContext authCtx = null;
 
 		try {
 
 			AuthenticateSession authSess = m_passthruServers.openSession();
-			if (authSess != null) {
+			if ( authSess != null) {
 
-				// Create an entry in the active sessions table for the new
-				// session
+				// Create an entry in the active sessions table for the new session
 
-				PassthruDetails passDetails =
-					new PassthruDetails(sess, authSess);
+				PassthruDetails passDetails = new PassthruDetails(sess, authSess);
 				m_sessions.put(sess.getUniqueId(), passDetails);
 
 				// Use the challenge key returned from the authentication server
@@ -386,10 +358,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 				// DEBUG
 
-				if (hasDebug())
-					Debug.println(
-						"Passthru sessId=" + authSess.getSessionId() +
-						", auth ctx=" + authCtx);
+				if ( hasDebug())
+					Debug.println("Passthru sessId=" + authSess.getSessionId() + ", auth ctx=" + authCtx);
 			}
 		}
 		catch (Exception ex) {
@@ -405,33 +375,30 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	}
 
 	/**
-	 * Generate the CIFS negotiate response packet, the authenticator should add
-	 * authentication specific fields to the response.
+	 * Generate the CIFS negotiate response packet, the authenticator should add authentication
+	 * specific fields to the response.
 	 * 
 	 * @param sess SMBSrvSession
 	 * @param respPkt SMBSrvPacket
 	 * @param extendedSecurity boolean
 	 * @exception AuthenticatorException
 	 */
-	public void generateNegotiateResponse(
-		SMBSrvSession sess, SMBSrvPacket respPkt, boolean extendedSecurity)
+	public void generateNegotiateResponse(SMBSrvSession sess, SMBSrvPacket respPkt, boolean extendedSecurity)
 		throws AuthenticatorException {
 
-		// If the client does not support extended security then return a
-		// standard negotiate
+		// If the client does not support extended security then return a standard negotiate
 		// response
 		// with an 8 byte challenge
 
-		if (extendedSecurity == false) {
+		if ( extendedSecurity == false) {
 			super.generateNegotiateResponse(sess, respPkt, extendedSecurity);
 			return;
 		}
 
 		// Make sure the extended security negotiation flag is set
 
-		if ((respPkt.getFlags2() & SMBSrvPacket.FLG2_EXTENDEDSECURITY) == 0)
-			respPkt.setFlags2(respPkt.getFlags2() +
-				SMBSrvPacket.FLG2_EXTENDEDSECURITY);
+		if ( (respPkt.getFlags2() & SMBSrvPacket.FLG2_EXTENDEDSECURITY) == 0)
+			respPkt.setFlags2(respPkt.getFlags2() + SMBSrvPacket.FLG2_EXTENDEDSECURITY);
 
 		// Get the negotiate response byte area position
 
@@ -451,8 +418,7 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	}
 
 	/**
-	 * Process the CIFS session setup request packet and build the session setup
-	 * response
+	 * Process the CIFS session setup request packet and build the session setup response
 	 * 
 	 * @param sess SMBSrvSession
 	 * @param reqPkt SMBSrvPacket
@@ -461,18 +427,14 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	public void processSessionSetup(SMBSrvSession sess, SMBSrvPacket reqPkt)
 		throws SMBSrvException {
 
-		// Check that the received packet looks like a valid NT session setup
-		// andX request
+		// Check that the received packet looks like a valid NT session setup andX request
 
-		if (reqPkt.checkPacketIsValid(12, 0) == false)
-			throw new SMBSrvException(
-				SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError,
-				SMBStatus.ErrSrv);
+		if ( reqPkt.checkPacketIsValid(12, 0) == false)
+			throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 
-		// Check if the request is using security blobs or the older hashed
-		// password format
+		// Check if the request is using security blobs or the older hashed password format
 
-		if (reqPkt.getParameterCount() == 13) {
+		if ( reqPkt.getParameterCount() == 13) {
 
 			// Process the standard password session setup
 
@@ -508,40 +470,34 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		String domain = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers domain name
 
 			domain = reqPkt.unpackString(isUni);
 
-			if (domain == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter,
-					SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+			if ( domain == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 		}
 
 		// Extract the clients native operating system
 
 		String clientOS = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers operating system name
 
 			clientOS = reqPkt.unpackString(isUni);
 
-			if (clientOS == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter,
-					SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+			if ( clientOS == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 		}
 
-		// Store the client maximum buffer size, maximum multiplexed requests
-		// count and client
+		// Store the client maximum buffer size, maximum multiplexed requests count and client
 		// capability flags
 
-		sess.setClientMaximumBufferSize(maxBufSize != 0
-			? maxBufSize : SMBSrvSession.DefaultBufferSize);
+		sess.setClientMaximumBufferSize(maxBufSize != 0 ? maxBufSize : SMBSrvSession.DefaultBufferSize);
 		sess.setClientMaximumMultiplex(maxMpx);
 		sess.setClientCapabilities(capabs);
 
@@ -555,7 +511,7 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		// Set the remote address, if available
 
-		if (sess.hasRemoteAddress())
+		if ( sess.hasRemoteAddress())
 			client.setClientAddress(sess.getRemoteAddress().getHostAddress());
 
 		// Set the process id for this client, for multi-stage logons
@@ -575,44 +531,36 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 			// Check if the blob has the NTLMSSP signature
 
-			if (secBlobLen >= NTLM.Signature.length) {
+			if ( secBlobLen >= NTLM.Signature.length) {
 
 				// Check for the NTLMSSP signature
 
 				int idx = 0;
-				while (idx < NTLM.Signature.length &&
-					buf[secBlobPos + idx] == NTLM.Signature[idx])
+				while (idx < NTLM.Signature.length && buf[secBlobPos + idx] == NTLM.Signature[idx])
 					idx++;
 
-				if (idx == NTLM.Signature.length)
+				if ( idx == NTLM.Signature.length)
 					isNTLMSSP = true;
 			}
 
 			// Process the security blob
 
-			if (isNTLMSSP == true) {
+			if ( isNTLMSSP == true) {
 
 				// DEBUG
 
-				if (hasDebug())
-					Debug.println(
-						"NT Session setup NTLMSSP, MID=" +
-						reqPkt.getMultiplexId() + ", UID=" +
-						reqPkt.getUserId() + ", PID=" + reqPkt.getProcessId());
+				if ( hasDebug())
+					Debug.println("NT Session setup NTLMSSP, MID=" + reqPkt.getMultiplexId() + ", UID=" + reqPkt.getUserId()
+							+ ", PID=" + reqPkt.getProcessId());
 
 				// Process an NTLMSSP security blob
 
-				respBlob =
-					doNtlmsspSessionSetup(
-						sess, client, buf, secBlobPos, secBlobLen, isUni);
+				respBlob = doNtlmsspSessionSetup(sess, client, buf, secBlobPos, secBlobLen, isUni);
 			}
 			else {
-		
 				// Process an SPNEGO security blob
 
-				respBlob =
-					doSpnegoSessionSetup(
-						sess, client, buf, secBlobPos, secBlobLen, isUni);
+				respBlob = doSpnegoSessionSetup(sess, client, buf, secBlobPos, secBlobLen, isUni);
 			}
 		}
 		catch (SMBSrvException ex) {
@@ -628,23 +576,17 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
-			if (respBlob == null)
-				Debug.println(
-					"[SMB] User " + client.getUserName() +
-					" logged on " +
-					(client != null ? " (type " + client.getLogonTypeString() +
-						")" : ""));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
+			if ( respBlob == null)
+				Debug.println("[SMB] User " + client.getUserName() + " logged on "
+						+ (client != null ? " (type " + client.getLogonTypeString() + ")" : ""));
 			else
-				Debug.println(
-					"[SMB] Two stage logon (" +
-					(isNTLMSSP ? "NTLMSSP" : "SPNEGO") + ")");
+				Debug.println("[SMB] Two stage logon (" + (isNTLMSSP ? "NTLMSSP" : "SPNEGO") + ")");
 		}
 
 		// Update the client information if not already set
 
-		if (sess.getClientInformation() == null ||
-			sess.getClientInformation().getUserName().length() == 0) {
+		if ( sess.getClientInformation() == null || sess.getClientInformation().getUserName().length() == 0) {
 
 			// Set the client details for the session
 
@@ -655,21 +597,18 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		int respLen = respBlob != null ? respBlob.length : 0;
 
-		// Check if there is/was a session setup object stored in the session,
-		// this indicates a
+		// Check if there is/was a session setup object stored in the session, this indicates a
 		// multi-stage session setup so set the status code accordingly
 
 		SMBSrvPacket respPkt = reqPkt;
 		boolean loggedOn = false;
 
-		if (isNTLMSSP == true || sess.hasSetupObject(client.getProcessId()) ||
-			setupObj != null) {
+		if ( isNTLMSSP == true || sess.hasSetupObject(client.getProcessId()) || setupObj != null) {
 
-			// NTLMSSP has two stages, if there is a stored setup object then
-			// indicate more
-			// processing required
+			// NTLMSSP has two stages, if there is a stored setup object then indicate more
+			// processing  required
 
-			if (sess.hasSetupObject(client.getProcessId()))
+			if ( sess.hasSetupObject(client.getProcessId()))
 				respPkt.setLongErrorCode(SMBStatus.NTMoreProcessingRequired);
 			else {
 				respPkt.setLongErrorCode(SMBStatus.NTSuccess);
@@ -679,47 +618,40 @@ public class PassthruAuthenticator extends CifsAuthenticator
 				loggedOn = true;
 			}
 
-			// Set the parameter count then check if the security blob will fit
-			// into the current
+			// Set the parameter count then check if the security blob will fit into the current
 			// packet buffer
 
 			respPkt.setParameterCount(4);
 			int reqLen = respLen + 100; // allow for strings
 
-			if (reqLen > respPkt.getAvailableLength()) {
+			if ( reqLen > respPkt.getAvailableLength()) {
 
 				try {
 
 					// Allocate a new buffer for the response
 
-					respPkt =
-						sess.getPacketPool().allocatePacket(
-							respPkt.getByteOffset() + reqLen, reqPkt);
+					respPkt = sess.getPacketPool().allocatePacket(respPkt.getByteOffset() + reqLen, reqPkt);
 				}
 				catch (NoPooledMemoryException ex) {
 
 					// DEBUG
 
-					if (Debug.EnableDbg && hasDebug())
-						Debug.println(
-							"Authenticator failed to allocate packet from " +
-							"pool, reqSiz=" +
-							(respPkt.getByteOffset() + respLen));
+					if ( Debug.EnableDbg && hasDebug())
+						Debug.println("Authenticator failed to allocate packet from pool, reqSiz="
+								+ (respPkt.getByteOffset() + respLen));
 
 					// Return a server error to the client
 
-					throw new SMBSrvException(
-						SMBStatus.NTInvalidParameter, SMBStatus.SRVNoBuffers,
-						SMBStatus.ErrSrv);
+					throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNoBuffers, SMBStatus.ErrSrv);
 				}
 			}
-
+			
 			// Fill in the rest of the packet header
+			
+			respPkt.setParameter(0, 0xFF); 	// No chained response
+			respPkt.setParameter(1, 0); 	// Offset to chained response
 
-			respPkt.setParameter(0, 0xFF); // No chained response
-			respPkt.setParameter(1, 0); // Offset to chained response
-
-			respPkt.setParameter(2, 0); // Action
+			respPkt.setParameter(2, 0); 	// Action
 			respPkt.setParameter(3, respLen);
 		}
 		else {
@@ -731,12 +663,12 @@ public class PassthruAuthenticator extends CifsAuthenticator
 			// Build the session setup response SMB
 
 			respPkt.setParameterCount(12);
-			respPkt.setParameter(0, 0xFF); // No chained response
-			respPkt.setParameter(1, 0); // Offset to chained response
+			respPkt.setParameter(0, 0xFF); 	// No chained response
+			respPkt.setParameter(1, 0); 	// Offset to chained response
 
 			respPkt.setParameter(2, SMBSrvSession.DefaultBufferSize);
 			respPkt.setParameter(3, SMBSrvSession.NTMaxMultiplexed);
-			respPkt.setParameter(4, 0); // virtual circuit number
+			respPkt.setParameter(4, 0); 	// virtual circuit number
 			respPkt.setParameterLong(5, 0); // session key
 			respPkt.setParameter(7, respLen); // security blob length
 			respPkt.setParameterLong(8, 0); // reserved
@@ -751,7 +683,7 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		int uid = 0;
 
-		if (loggedOn == true) {
+		if ( loggedOn == true) {
 
 			// Clear any stored session setup object for the logon
 
@@ -762,21 +694,18 @@ public class PassthruAuthenticator extends CifsAuthenticator
 			VirtualCircuit vc = new VirtualCircuit(vcNum, client);
 			uid = sess.addVirtualCircuit(vc);
 
-			if (uid == VirtualCircuit.InvalidUID) {
+			if ( uid == VirtualCircuit.InvalidUID) {
 
 				// DEBUG
 
-				if (hasDebug() && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
-					Debug.println(
-						"Failed to allocate UID for virtual circuit, " + vc);
+				if ( hasDebug() && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+					Debug.println("Failed to allocate UID for virtual circuit, " + vc);
 
 				// Failed to allocate a UID
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.DOSAccessDenied,
-					SMBStatus.ErrDos);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			}
-			else if (hasDebug() && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
+			else if ( hasDebug() && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
 
 				// DEBUG
 
@@ -798,11 +727,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 		flags &= ~SMBSrvPacket.FLG_CASELESS;
 		respPkt.setFlags(flags);
 
-		int flags2 =
-			SMBSrvPacket.FLG2_LONGFILENAMES +
-				SMBSrvPacket.FLG2_EXTENDEDSECURITY +
-				SMBSrvPacket.FLG2_LONGERRORCODE;
-		if (isUni)
+		int flags2 = SMBSrvPacket.FLG2_LONGFILENAMES + SMBSrvPacket.FLG2_EXTENDEDSECURITY + SMBSrvPacket.FLG2_LONGERRORCODE;
+		if ( isUni)
 			flags2 += SMBSrvPacket.FLG2_UNICODE;
 		respPkt.setFlags2(flags2);
 
@@ -811,24 +737,19 @@ public class PassthruAuthenticator extends CifsAuthenticator
 		int pos = respPkt.getByteOffset();
 		buf = respPkt.getBuffer();
 
-		if (respBlob != null) {
+		if ( respBlob != null) {
 			System.arraycopy(respBlob, 0, buf, pos, respBlob.length);
 			pos += respBlob.length;
 		}
 
 		// Pack the OS, dialect and domain name strings
 
-		if (isUni)
+		if ( isUni)
 			pos = DataPacker.wordAlign(pos);
 
 		pos = DataPacker.putString("Java", buf, pos, true, isUni);
-		pos =
-			DataPacker.putString("Alfresco CIFS Server " +
-				sess.getServer().isVersion(), buf, pos, true, isUni);
-		pos =
-			DataPacker.putString(
-				sess.getSMBServer().getCIFSConfiguration().getDomainName(),
-				buf, pos, true, isUni);
+		pos = DataPacker.putString("Alfresco CIFS Server " + sess.getServer().isVersion(), buf, pos, true, isUni);
+		pos = DataPacker.putString(sess.getSMBServer().getCIFSConfiguration().getDomainName(), buf, pos, true, isUni);
 
 		respPkt.setByteCount(pos - respPkt.getByteOffset());
 	}
@@ -844,9 +765,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 * @param unicode boolean
 	 * @exception SMBSrvException
 	 */
-	private final byte[] doNtlmsspSessionSetup(
-		SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos,
-		int seclen, boolean unicode)
+	private final byte[] doNtlmsspSessionSetup(SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos, int seclen,
+			boolean unicode)
 		throws SMBSrvException {
 
 		// Determine the NTLmSSP message type
@@ -854,51 +774,42 @@ public class PassthruAuthenticator extends CifsAuthenticator
 		int msgType = NTLMMessage.isNTLMType(secbuf, secpos);
 		byte[] respBlob = null;
 
-		if (msgType == -1) {
+		if ( msgType == -1) {
 
 			// DEBUG
 
-			if (hasDebug()) {
+			if ( hasDebug()) {
 				Debug.println("Invalid NTLMSSP token received");
-				Debug.println("  Token=" +
-					HexDump.hexString(secbuf, secpos, seclen, " "));
+				Debug.println("  Token=" + HexDump.hexString(secbuf, secpos, seclen, " "));
 			}
 
 			// Return a logon failure status
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Check for a type 1 NTLMSSP message
 
-		else if (msgType == NTLM.Type1) {
+		else if ( msgType == NTLM.Type1) {
 
 			// Create the type 1 NTLM message from the token
 
-			Type1NTLMMessage type1Msg =
-				new Type1NTLMMessage(secbuf, secpos, seclen);
+			Type1NTLMMessage type1Msg = new Type1NTLMMessage(secbuf, secpos, seclen);
 
 			// Build the type 2 NTLM response message
 			//
-			// Get the flags from the client request and mask out unsupported
-			// features
+			// Get the flags from the client request and mask out unsupported features
 
 			int ntlmFlags = type1Msg.getFlags() & NTLM_FLAGS;
 
 			// Generate a challenge for the response
 
-			NTLanManAuthContext ntlmCtx =
-				(NTLanManAuthContext) getAuthContext(sess);
+			NTLanManAuthContext ntlmCtx = (NTLanManAuthContext) getAuthContext(sess);
 
-			if (ntlmCtx == null)
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+			if ( ntlmCtx == null)
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 
-			// Build a type2 message to send back to the client, containing the
-			// challenge
+			// Build a type2 message to send back to the client, containing the challenge
 
 			String domain = sess.getSMBServer().getServerName();
 
@@ -909,20 +820,16 @@ public class PassthruAuthenticator extends CifsAuthenticator
 			tList.add(new TargetInfo(NTLM.TargetDNSDomain, domain));
 			tList.add(new TargetInfo(NTLM.TargetFullDNS, domain));
 
-			ntlmFlags =
-				NTLM.FlagChallengeAccept + NTLM.FlagRequestTarget +
-					NTLM.FlagNegotiateNTLM + NTLM.FlagNegotiateUnicode +
-					NTLM.FlagKeyExchange + NTLM.FlagTargetInfo + NTLM.Flag56Bit;
+			ntlmFlags = NTLM.FlagChallengeAccept + NTLM.FlagRequestTarget + NTLM.FlagNegotiateNTLM + NTLM.FlagNegotiateUnicode
+					+ NTLM.FlagKeyExchange + NTLM.FlagTargetInfo + NTLM.Flag56Bit;
 
 			// NTLM.FlagAlwaysSign + NTLM.FlagNegotiateSign +
 
 			Type2NTLMMessage type2Msg = new Type2NTLMMessage();
 
-			type2Msg.buildType2(
-				ntlmFlags, domain, ntlmCtx.getChallenge(), null, tList);
+			type2Msg.buildType2(ntlmFlags, domain, ntlmCtx.getChallenge(), null, tList);
 
-			// Store the type 2 message in the session until the session setup
-			// is complete
+			// Store the type 2 message in the session until the session setup is complete
 
 			sess.setSetupObject(client.getProcessId(), type2Msg);
 
@@ -930,19 +837,16 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 			respBlob = type2Msg.getBytes();
 		}
-		else if (msgType == NTLM.Type3) {
+		else if ( msgType == NTLM.Type3) {
 
 			// Create the type 3 NTLM message from the token
 
-			Type3NTLMMessage type3Msg =
-				new Type3NTLMMessage(secbuf, secpos, seclen, unicode);
+			Type3NTLMMessage type3Msg = new Type3NTLMMessage(secbuf, secpos, seclen, unicode);
 
-			// Make sure a type 2 message was stored in the first stage of the
-			// session setup
+			// Make sure a type 2 message was stored in the first stage of the session setup
 
-			if (sess.hasSetupObject(client.getProcessId()) == false ||
-				sess.getSetupObject(client.getProcessId()) instanceof 
-				Type2NTLMMessage == false) {
+			if ( sess.hasSetupObject(client.getProcessId()) == false
+					|| sess.getSetupObject(client.getProcessId()) instanceof Type2NTLMMessage == false) {
 
 				// Clear the setup object
 
@@ -950,26 +854,21 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 				// Return a logon failure
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
 			// Determine if the client sent us NTLMv1 or NTLMv2
 
-			if (type3Msg.hasFlag(NTLM.Flag128Bit) &&
-				type3Msg.hasFlag(NTLM.FlagNTLM2Key)) {
+			if ( type3Msg.hasFlag(NTLM.Flag128Bit) && type3Msg.hasFlag(NTLM.FlagNTLM2Key)) {
 
 				// Debug
 
-				if (hasDebug())
+				if ( hasDebug())
 					Debug.println("Received NTLMSSP/NTLMv2, not supported");
 
 				// Return a logon failure
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 			else {
 
@@ -979,7 +878,7 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 				// Debug
 
-				if (hasDebug())
+				if ( hasDebug())
 					Debug.println("Logged on using NTLMSSP/NTLMv1");
 			}
 		}
@@ -997,14 +896,12 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 * @param type3Msg Type3NTLMMessage
 	 * @exception SMBSrvException
 	 */
-	private final void doNTLMv1Logon(
-		SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
+	private final void doNTLMv1Logon(SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
 		throws SMBSrvException {
 
 		// Get the type 2 message that contains the challenge sent to the client
 
-		Type2NTLMMessage type2Msg =
-			(Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
+		Type2NTLMMessage type2Msg = (Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
 		sess.removeSetupObject(client.getProcessId());
 
 		// Get the NTLM logon details
@@ -1013,11 +910,11 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		// Check for a null logon
 
-		if (userName.length() == 0) {
+		if ( userName.length() == 0) {
 
 			// DEBUG
 
-			if (hasDebug())
+			if ( hasDebug())
 				Debug.println("Null logon");
 
 			// Indicate a null logon in the client information
@@ -1028,29 +925,25 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		// Find the active authentication session details for the server session
 
-		PassthruDetails passDetails =
-			(PassthruDetails) m_sessions.get(sess.getUniqueId());
+		PassthruDetails passDetails = (PassthruDetails) m_sessions.get(sess.getUniqueId());
 
-		if (passDetails != null) {
+		if ( passDetails != null) {
 
 			try {
 
-				// Authenticate the user by passing the hashed password to the
-				// authentication server
+				// Authenticate the user by passing the hashed password to the authentication server
 				// using the session that has already been setup.
 
-				AuthenticateSession authSess =
-					passDetails.getAuthenticateSession();
-				authSess.doSessionSetup(
-					userName, type3Msg.getLMHash(), type3Msg.getNTLMHash());
+				AuthenticateSession authSess = passDetails.getAuthenticateSession();
+				authSess.doSessionSetup(userName, type3Msg.getLMHash(), type3Msg.getNTLMHash());
 
 				// Check if the user has been logged on as a guest
 
-				if (authSess.isGuest()) {
+				if ( authSess.isGuest()) {
 
 					// Check if the local server allows guest access
 
-					if (allowGuest() == true) {
+					if ( allowGuest() == true) {
 
 						// Get a guest authentication token
 
@@ -1058,10 +951,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 						// Debug
 
-						if (hasDebug())
-							Debug.println(
-								"Passthru authenticate user=" + userName + 
-								", GUEST");
+						if ( hasDebug())
+							Debug.println("Passthru authenticate user=" + userName + ", GUEST");
 					}
 				}
 				else {
@@ -1072,10 +963,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 					// Debug
 
-					if (hasDebug())
-						Debug.println(
-							"Passthru authenticate user=" + userName +
-							", FULL");
+					if ( hasDebug())
+						Debug.println("Passthru authenticate user=" + userName + ", FULL");
 				}
 
 				// Update the client details
@@ -1091,11 +980,9 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 				// Indicate logon failure
 
-				throw new SMBSrvException(
-					SMBStatus.NTErr, SMBStatus.NTLogonFailure);
+				throw new SMBSrvException(SMBStatus.NTErr, SMBStatus.NTLogonFailure);
 			}
 			finally {
-
 				// Remove the passthru session from the active list
 
 				m_sessions.remove(sess.getUniqueId());
@@ -1106,24 +993,19 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 					// Close the authentication session
 
-					AuthenticateSession authSess =
-						passDetails.getAuthenticateSession();
+					AuthenticateSession authSess = passDetails.getAuthenticateSession();
 					authSess.CloseSession();
 
 					// DEBUG
 
-					if (hasDebug())
-						Debug.println(
-							"Closed auth session, sessId=" +
-							authSess.getSessionId());
+					if ( hasDebug())
+						Debug.println("Closed auth session, sessId=" + authSess.getSessionId());
 				}
 				catch (Exception ex) {
 
 					// Debug
 
-					Debug.println(
-						"Passthru error closing session (auth user) " +
-						ex.getMessage());
+					Debug.println("Passthru error closing session (auth user) " + ex.getMessage());
 				}
 			}
 		}
@@ -1131,13 +1013,12 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 			// DEBUG
 
-			if (hasDebug())
+			if ( hasDebug())
 				Debug.println("  No PassthruDetails for " + sess.getUniqueId());
 
 			// Indicate logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTErr, SMBStatus.NTLogonFailure);
+			throw new SMBSrvException(SMBStatus.NTErr, SMBStatus.NTLogonFailure);
 		}
 	}
 
@@ -1152,13 +1033,10 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 * @param unicode boolean
 	 * @exception SMBSrvException
 	 */
-	private final byte[] doSpnegoSessionSetup(
-		SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos,
-		int seclen, boolean unicode)
+	private final byte[] doSpnegoSessionSetup(SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos, int seclen,
+			boolean unicode)
 		throws SMBSrvException {
-
-		// Check the received token type, if it is a target token and there is a
-		// stored session
+		// Check the received token type, if it is a target token and there is a stored session
 		// setup object, this is the second
 		// stage of an NTLMSSP session setup that is wrapped with SPNEGO
 
@@ -1174,35 +1052,26 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		NegTokenTarg negTarg = null;
 
-		if (tokType == SPNEGO.NegTokenTarg &&
-			sess.hasSetupObject(client.getProcessId()) &&
-			sess.getSetupObject(client.getProcessId()) instanceof 
-			Type2NTLMMessage) {
-		
+		if ( tokType == SPNEGO.NegTokenTarg && sess.hasSetupObject(client.getProcessId())
+				&& sess.getSetupObject(client.getProcessId()) instanceof Type2NTLMMessage) {
 			// Get the NTLMSSP blob from the NegTokenTarg blob
 
 			NegTokenTarg negToken = new NegTokenTarg();
 
 			try {
-
 				// Decode the security blob
 
 				negToken.decode(secbuf, secpos, seclen);
 			}
 			catch (IOException ex) {
-				
 				// Log the error
 
-				if (hasDebug())
-					Debug.println(
-						"Passthru error on session startup: " +
-						ex.getMessage());
+				if ( hasDebug())
+					Debug.println("Passthru error on session startup: " + ex.getMessage());
 
 				// Return a logon failure status
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
 			// Get the second stage NTLMSSP blob
@@ -1211,111 +1080,89 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 			// Perform an NTLMSSP session setup
 
-			byte[] ntlmsspRespBlob =
-				doNtlmsspSessionSetup(
-					sess, client, ntlmsspBlob, 0, ntlmsspBlob.length, unicode);
+			byte[] ntlmsspRespBlob = doNtlmsspSessionSetup(sess, client, ntlmsspBlob, 0, ntlmsspBlob.length, unicode);
 
 			// NTLMSSP is a two stage process, set the SPNEGO status
 
 			int spnegoSts = SPNEGO.AcceptCompleted;
 
-			if (sess.hasSetupObject(client.getProcessId()))
+			if ( sess.hasSetupObject(client.getProcessId()))
 				spnegoSts = SPNEGO.AcceptIncomplete;
 
 			// Package the NTLMSSP response in an SPNEGO response
 
 			negTarg = new NegTokenTarg(spnegoSts, null, ntlmsspRespBlob);
 		}
-		else if (tokType == SPNEGO.NegTokenInit) {
-
+		else if ( tokType == SPNEGO.NegTokenInit) {
 			// Parse the SPNEGO security blob to get the Kerberos ticket
 
 			NegTokenInit negToken = new NegTokenInit();
 
 			try {
-
 				// Decode the security blob
 
 				negToken.decode(secbuf, secpos, seclen);
 			}
 			catch (IOException ex) {
-
 				// Log the error
 
-				if (hasDebug())
-					Debug.println(
-						"Passthru error on session startup: " +
-						ex.getMessage());
+				if ( hasDebug())
+					Debug.println("Passthru error on session startup: " + ex.getMessage());
 
 				// Return a logon failure status
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
-			// Determine the authentication mechanism the client is using and
-			// logon
+			// Determine the authentication mechanism the client is using and logon
 
 			String oidStr = null;
-			if (negToken.numberOfOids() > 0)
+			if ( negToken.numberOfOids() > 0)
 				oidStr = negToken.getOidAt(0).toString();
 
-			if (oidStr != null && oidStr.equals(OID.ID_NTLMSSP)) {
-
-				// NTLMSSP logon, get the NTLMSSP security blob that is inside
-				// the SPNEGO blob
+			if ( oidStr != null && oidStr.equals(OID.ID_NTLMSSP)) {
+				// NTLMSSP logon, get the NTLMSSP security blob that is inside the SPNEGO blob
 
 				byte[] ntlmsspBlob = negToken.getMechtoken();
 
 				// Perform an NTLMSSP session setup
 
-				byte[] ntlmsspRespBlob =
-					doNtlmsspSessionSetup(
-						sess, client, ntlmsspBlob, 0, ntlmsspBlob.length,
-						unicode);
+				byte[] ntlmsspRespBlob = doNtlmsspSessionSetup(sess, client, ntlmsspBlob, 0, ntlmsspBlob.length, unicode);
 
 				// NTLMSSP is a two stage process, set the SPNEGO status
 
 				int spnegoSts = SPNEGO.AcceptCompleted;
 
-				if (sess.hasSetupObject(client.getProcessId()))
+				if ( sess.hasSetupObject(client.getProcessId()))
 					spnegoSts = SPNEGO.AcceptIncomplete;
 
 				// Package the NTLMSSP response in an SPNEGO response
 
-				negTarg =
-					new NegTokenTarg(spnegoSts, OID.NTLMSSP, ntlmsspRespBlob);
+				negTarg = new NegTokenTarg(spnegoSts, OID.NTLMSSP, ntlmsspRespBlob);
 			}
 			else {
-
 				// Debug
 
-				if (hasDebug()) {
+				if ( hasDebug()) {
 					Debug.println("No matching authentication OID found");
 					Debug.println("  " + negToken.toString());
 				}
 
 				// No valid authentication mechanism
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 		}
 		else {
-
 			// Unknown SPNEGO token type
 
-			if (hasDebug()) {
+			if ( hasDebug()) {
 				Debug.println("Unknown SPNEGO token type");
 			}
 
 			// Return a logon failure status
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Generate the NegTokenTarg blob
@@ -1323,25 +1170,20 @@ public class PassthruAuthenticator extends CifsAuthenticator
 		byte[] respBlob = null;
 
 		try {
-
 			// Generate the response blob
 
 			respBlob = negTarg.encode();
 		}
 		catch (IOException ex) {
-
 			// Debug
 
-			if (hasDebug()) {
-				Debug.println(
-					"Failed to encode NegTokenTarg: " + ex.getMessage());
+			if ( hasDebug()) {
+				Debug.println("Failed to encode NegTokenTarg: " + ex.getMessage());
 			}
 
 			// Failed to build response blob
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Return the SPNEGO response blob
@@ -1366,54 +1208,46 @@ public class PassthruAuthenticator extends CifsAuthenticator
 		// Check if the passthru session protocol order has been specified
 
 		ConfigElement protoOrder = params.getChild("protocolOrder");
-		if (protoOrder != null) {
+		if ( protoOrder != null) {
 
 			// Parse the protocol order list
 
-			StringTokenizer tokens =
-				new StringTokenizer(protoOrder.getValue(), ",");
+			StringTokenizer tokens = new StringTokenizer(protoOrder.getValue(), ",");
 			int primaryProto = Protocol.None;
 			int secondaryProto = Protocol.None;
 
 			// There should only be one or two tokens
 
-			if (tokens.countTokens() > 2)
-				throw new InvalidConfigurationException(
-					"Invalid protocol order list, " + protoOrder.getValue());
+			if ( tokens.countTokens() > 2)
+				throw new InvalidConfigurationException("Invalid protocol order list, " + protoOrder.getValue());
 
 			// Get the primary protocol
 
-			if (tokens.hasMoreTokens()) {
-
+			if ( tokens.hasMoreTokens()) {
 				// Parse the primary protocol
 
 				String primaryStr = tokens.nextToken();
 
-				if (primaryStr.equalsIgnoreCase("TCPIP"))
+				if ( primaryStr.equalsIgnoreCase("TCPIP"))
 					primaryProto = Protocol.NativeSMB;
-				else if (primaryStr.equalsIgnoreCase("NetBIOS"))
+				else if ( primaryStr.equalsIgnoreCase("NetBIOS"))
 					primaryProto = Protocol.TCPNetBIOS;
 				else
-					throw new InvalidConfigurationException(
-						"Invalid protocol type, " + primaryStr);
+					throw new InvalidConfigurationException("Invalid protocol type, " + primaryStr);
 
 				// Check if there is a secondary protocol, and validate
 
-				if (tokens.hasMoreTokens()) {
-
+				if ( tokens.hasMoreTokens()) {
 					// Parse the secondary protocol
 
 					String secondaryStr = tokens.nextToken();
 
-					if (secondaryStr.equalsIgnoreCase("TCPIP") &&
-						primaryProto != Protocol.NativeSMB)
+					if ( secondaryStr.equalsIgnoreCase("TCPIP") && primaryProto != Protocol.NativeSMB)
 						secondaryProto = Protocol.NativeSMB;
-					else if (secondaryStr.equalsIgnoreCase("NetBIOS") &&
-						primaryProto != Protocol.TCPNetBIOS)
+					else if ( secondaryStr.equalsIgnoreCase("NetBIOS") && primaryProto != Protocol.TCPNetBIOS)
 						secondaryProto = Protocol.TCPNetBIOS;
 					else
-						throw new InvalidConfigurationException(
-							"Invalid secondary protocol, " + secondaryStr);
+						throw new InvalidConfigurationException("Invalid secondary protocol, " + secondaryStr);
 				}
 			}
 
@@ -1423,29 +1257,25 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 			// DEBUG
 
-			if (hasDebug())
-				Debug.println("Protocol order primary=" +
-					Protocol.asString(primaryProto) + ", secondary=" +
-					Protocol.asString(secondaryProto));
+			if ( hasDebug())
+				Debug.println("Protocol order primary=" + Protocol.asString(primaryProto) + ", secondary="
+						+ Protocol.asString(secondaryProto));
 		}
 
 		// Check if the offline check interval has been specified
 
 		ConfigElement checkInterval = params.getChild("offlineCheckInterval");
-		if (checkInterval != null) {
+		if ( checkInterval != null) {
 			try {
-
 				// Validate the check interval value
 
 				int offlineCheck = Integer.parseInt(checkInterval.getValue());
 
 				// Range check the value
 
-				if (offlineCheck < MinCheckInterval ||
-					offlineCheck > MaxCheckInterval)
-					throw new InvalidConfigurationException(
-						"Invalid offline check interval, valid range is " +
-							MinCheckInterval + " to " + MaxCheckInterval);
+				if ( offlineCheck < MinCheckInterval || offlineCheck > MaxCheckInterval)
+					throw new InvalidConfigurationException("Invalid offline check interval, valid range is " + MinCheckInterval
+							+ " to " + MaxCheckInterval);
 
 				// Set the offline check interval for offline passthru servers
 
@@ -1453,32 +1283,28 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 				// DEBUG
 
-				if (hasDebug())
-					Debug.println("Using offline check interval of " +
-						offlineCheck + " seconds");
+				if ( hasDebug())
+					Debug.println("Using offline check interval of " + offlineCheck + " seconds");
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid offline check interval specified");
+				throw new InvalidConfigurationException("Invalid offline check interval specified");
 			}
 		}
 		else {
-
-			// Create the passthru server list with the default offline check
-			// interval
+			// Create the passthru server list with the default offline check interval
 
 			m_passthruServers = new PassthruServers();
 		}
 
 		// Enable passthru servers debugging, if enabled for the authenticator
 
-		if (hasDebug())
+		if ( hasDebug())
 			m_passthruServers.setDebug(true);
 
 		// Check if the session timeout has been specified
 
 		ConfigElement sessTmoElem = params.getChild("Timeout");
-		if (sessTmoElem != null) {
+		if ( sessTmoElem != null) {
 
 			try {
 
@@ -1488,19 +1314,16 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 				// Range check the timeout
 
-				if (sessTmo < MinSessionTmo || sessTmo > MaxSessionTmo)
-					throw new InvalidConfigurationException(
-						"Invalid session timeout, valid range is " +
-							MinSessionTmo + " to " + MaxSessionTmo);
+				if ( sessTmo < MinSessionTmo || sessTmo > MaxSessionTmo)
+					throw new InvalidConfigurationException("Invalid session timeout, valid range is " + MinSessionTmo + " to "
+							+ MaxSessionTmo);
 
-				// Set the session timeout for connecting to an authentication
-				// server
+				// Set the session timeout for connecting to an authentication server
 
 				m_passthruServers.setConnectionTimeout(sessTmo);
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid timeout value specified");
+				throw new InvalidConfigurationException("Invalid timeout value specified");
 			}
 		}
 
@@ -1509,23 +1332,21 @@ public class PassthruAuthenticator extends CifsAuthenticator
 		String srvList = null;
 		ConfigElement srvNamesElem = params.getChild("Server");
 
-		if (srvNamesElem != null && srvNamesElem.getValue().length() > 0) {
+		if ( srvNamesElem != null && srvNamesElem.getValue().length() > 0) {
 
 			// Check if the server name was already set
 
-			if (srvList != null)
-				throw new InvalidConfigurationException(
-					"Set passthru server via local server or specify name");
+			if ( srvList != null)
+				throw new InvalidConfigurationException("Set passthru server via local server or specify name");
 
 			// Get the passthru authenticator server name
 
 			srvList = srvNamesElem.getValue();
 		}
 
-		// If the passthru server name has been set initialize the passthru
-		// connection
+		// If the passthru server name has been set initialize the passthru connection
 
-		if (srvList != null) {
+		if ( srvList != null) {
 
 			// Initialize using a list of server names/addresses
 
@@ -1538,24 +1359,20 @@ public class PassthruAuthenticator extends CifsAuthenticator
 			String domainName = null;
 			ConfigElement domNameElem = params.getChild("Domain");
 
-			if (domNameElem != null && domNameElem.getValue().length() > 0) {
+			if ( domNameElem != null && domNameElem.getValue().length() > 0) {
 
-				// Check if the authentication server has already been set, ie.
-				// server name was also
+				// Check if the authentication server has already been set, ie. server name was also
 				// specified
 
-				if (srvList != null)
-					throw new InvalidConfigurationException(
-						"Specify server or domain name for passthru " +
-						"authentication");
+				if ( srvList != null)
+					throw new InvalidConfigurationException("Specify server or domain name for passthru authentication");
 
 				domainName = domNameElem.getValue();
 			}
 
-			// If the domain name has been set initialize the passthru
-			// connection
+			// If the domain name has been set initialize the passthru connection
 
-			if (domainName != null) {
+			if ( domainName != null) {
 
 				// Initialize using the domain
 
@@ -1563,24 +1380,21 @@ public class PassthruAuthenticator extends CifsAuthenticator
 					m_passthruServers.setDomain(domainName);
 				}
 				catch (IOException ex) {
-					throw new InvalidConfigurationException(
-						"Failed to set domain, " + ex.getMessage());
+					throw new InvalidConfigurationException("Failed to set domain, " + ex.getMessage());
 				}
 			}
 		}
 
 		// Check if we have an authentication server
 
-		if (m_passthruServers.getTotalServerCount() == 0)
-			throw new InvalidConfigurationException(
-				"No valid authentication servers found for passthru");
+		if ( m_passthruServers.getTotalServerCount() == 0)
+			throw new InvalidConfigurationException("No valid authentication servers found for passthru");
 
-		// Install the SMB server listener so we receive callbacks when sessions
-		// are
+		// Install the SMB server listener so we receive callbacks when sessions are
 		// opened/closed on the SMB server
 
 		SMBServer smbServer = (SMBServer) config.findServer("SMB");
-		if (smbServer != null)
+		if ( smbServer != null)
 			smbServer.addSessionListener(this);
 	}
 
@@ -1591,10 +1405,8 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 */
 	public int getServerCapabilities() {
 
-		return Capability.Unicode + Capability.RemoteAPIs + Capability.NTSMBs +
-			Capability.NTFind + Capability.NTStatus + Capability.LargeFiles +
-			Capability.LargeRead + Capability.LargeWrite +
-			Capability.ExtendedSecurity;
+		return Capability.Unicode + Capability.RemoteAPIs + Capability.NTSMBs + Capability.NTFind + Capability.NTStatus
+				+ Capability.LargeFiles + Capability.LargeRead + Capability.LargeWrite + Capability.ExtendedSecurity;
 	}
 
 	/**
@@ -1604,7 +1416,7 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 		// Close the passthru authentication server list
 
-		if (m_passthruServers != null)
+		if ( m_passthruServers != null)
 			m_passthruServers.shutdown();
 	}
 
@@ -1615,14 +1427,12 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 */
 	public void sessionClosed(SrvSession sess) {
 
-		// Check if there is an active session to the authentication server for
-		// this local
+		// Check if there is an active session to the authentication server for this local
 		// session
 
-		PassthruDetails passDetails =
-			(PassthruDetails) m_sessions.get(sess.getUniqueId());
+		PassthruDetails passDetails = (PassthruDetails) m_sessions.get(sess.getUniqueId());
 
-		if (passDetails != null) {
+		if ( passDetails != null) {
 
 			// Remove the passthru session from the active list
 
@@ -1634,23 +1444,20 @@ public class PassthruAuthenticator extends CifsAuthenticator
 
 				// Close the authentication session
 
-				AuthenticateSession authSess =
-					passDetails.getAuthenticateSession();
+				AuthenticateSession authSess = passDetails.getAuthenticateSession();
 				authSess.CloseSession();
 
 				// DEBUG
 
-				if (hasDebug())
-					Debug.println("Closed auth session, sessId=" +
-						authSess.getSessionId());
+				if ( hasDebug())
+					Debug.println("Closed auth session, sessId=" + authSess.getSessionId());
 			}
 			catch (Exception ex) {
 
 				// Debug
 
-				if (hasDebug())
-					Debug.println("Passthru error closing session (closed) " +
-						ex.getMessage());
+				if ( hasDebug())
+					Debug.println("Passthru error closing session (closed) " + ex.getMessage());
 			}
 		}
 	}
@@ -1671,15 +1478,12 @@ public class PassthruAuthenticator extends CifsAuthenticator
 	 */
 	public void sessionLoggedOn(SrvSession sess) {
 
-		// Check if there is an active session to the authentication server for
-		// this local
+		// Check if there is an active session to the authentication server for this local
 		// session
 
-		PassthruDetails passDetails =
-			(PassthruDetails) m_sessions.get(sess.getUniqueId());
+		PassthruDetails passDetails = (PassthruDetails) m_sessions.get(sess.getUniqueId());
 
-		if (passDetails != null) {
-
+		if ( passDetails != null) {
 			// Remove the passthru session from the active list
 
 			m_sessions.remove(sess.getUniqueId());
@@ -1687,30 +1491,23 @@ public class PassthruAuthenticator extends CifsAuthenticator
 			// Close the passthru authentication session
 
 			try {
-			
 				// Close the authentication session
 
-				AuthenticateSession authSess =
-					passDetails.getAuthenticateSession();
+				AuthenticateSession authSess = passDetails.getAuthenticateSession();
 				authSess.CloseSession();
 
 				// DEBUG
 
-				if (hasDebug())
-					Debug.println(
-						"Closed auth session, sessId=" +
-						authSess.getSessionId());
+				if ( hasDebug())
+					Debug.println("Closed auth session, sessId=" + authSess.getSessionId());
 			}
 			catch (Exception ex) {
 
 				// Debug
 
-				if (hasDebug())
-					Debug.println(
-						"Passthru error closing session (logon) " +
-						ex.getMessage());
+				if ( hasDebug())
+					Debug.println("Passthru error closing session (logon) " + ex.getMessage());
 			}
 		}
 	}
-
 }

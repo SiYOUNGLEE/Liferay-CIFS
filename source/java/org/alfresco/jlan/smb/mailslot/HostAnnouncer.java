@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -32,9 +32,9 @@ import org.alfresco.jlan.smb.TransactionNames;
 import org.alfresco.jlan.util.StringList;
 
 /**
- * <p> The host announcer class periodically broadcasts a host announcement
- * datagram to inform other Windows networking hosts of the local hosts
- * existence and capabilities.
+ * <p>
+ * The host announcer class periodically broadcasts a host announcement datagram to inform other
+ * Windows networking hosts of the local hosts existence and capabilities.
  * 
  * @author gkspencer
  */
@@ -45,8 +45,7 @@ public abstract class HostAnnouncer extends Thread {
 	public static final int SHUTDOWN_WAIT = 2000; // 2 seconds
 	public static final int SHUTDOWN_COUNT = 3;
 
-	// Starting announcement interval, doubles until it reaches the configured
-	// interval
+	// Starting announcement interval, doubles until it reaches the configured interval
 
 	public static final long STARTING_INTERVAL = 5000; // 5 seconds
 
@@ -78,8 +77,7 @@ public abstract class HostAnnouncer extends Thread {
 
 	private byte m_updateCount;
 
-	// Shutdown flag, host announcer should remove the announced name as it
-	// shuts down
+	// Shutdown flag, host announcer should remove the announced name as it shuts down
 
 	private boolean m_shutdown = false;
 
@@ -209,21 +207,17 @@ public abstract class HostAnnouncer extends Thread {
 
 		// Allocate the transact SMB
 
-		if (m_smbPkt == null)
+		if ( m_smbPkt == null)
 			m_smbPkt = new SMBMailslotPacket();
 
 		// Create the host announcement structure
 
 		byte[] data = new byte[256];
-		int pos =
-			MailSlot.createHostAnnouncement(
-				data, 0, name, m_comment, m_srvtype, m_interval,
-				m_updateCount++);
+		int pos = MailSlot.createHostAnnouncement(data, 0, name, m_comment, m_srvtype, m_interval, m_updateCount++);
 
 		// Create the mailslot SMB
 
-		m_smbPkt.initializeMailslotSMB(
-			TransactionNames.MailslotBrowse, data, pos);
+		m_smbPkt.initializeMailslotSMB(TransactionNames.MailslotBrowse, data, pos);
 	}
 
 	/**
@@ -240,7 +234,7 @@ public abstract class HostAnnouncer extends Thread {
 			initialize();
 		}
 		catch (Exception ex) {
-			if (Debug.EnableError && hasDebug())
+			if ( Debug.EnableError && hasDebug())
 				Debug.println("HostAnnouncer: " + ex.toString());
 			return;
 		}
@@ -270,7 +264,7 @@ public abstract class HostAnnouncer extends Thread {
 
 				// Check if the network connection is valid
 
-				if (isNetworkEnabled()) {
+				if ( isNetworkEnabled()) {
 
 					// Loop through the host names to be announced
 
@@ -283,21 +277,17 @@ public abstract class HostAnnouncer extends Thread {
 
 						// Send the host announce datagram
 
-						sendAnnouncement(
-							hostName, m_smbPkt.getBuffer(), 0,
-							m_smbPkt.getLength());
+						sendAnnouncement(hostName, m_smbPkt.getBuffer(), 0, m_smbPkt.getLength());
 
 						// DEBUG
 
-						if (Debug.EnableError && hasDebug())
-							Debug.println("HostAnnouncer: Announced host " +
-								hostName);
+						if ( Debug.EnableError && hasDebug())
+							Debug.println("HostAnnouncer: Announced host " + hostName);
 					}
 				}
 				else {
 
-					// Reset the sleep interval to the starting interval as the
-					// network connection
+					// Reset the sleep interval to the starting interval as the network connection
 					// is not available
 
 					sleepTime = STARTING_INTERVAL;
@@ -307,42 +297,37 @@ public abstract class HostAnnouncer extends Thread {
 
 				sleep(sleepTime);
 
-				// Update the sleep interval, if the network connection is
-				// enabled
+				// Update the sleep interval, if the network connection is enabled
 
-				if (isNetworkEnabled() && sleepTime < sleepNormal) {
+				if ( isNetworkEnabled() && sleepTime < sleepNormal) {
 
-					// Double the sleep interval until it exceeds the configured
-					// announcement
+					// Double the sleep interval until it exceeds the configured announcement
 					// interval.
-					// This is to send out more broadcasts when the server first
-					// starts.
+					// This is to send out more broadcasts when the server first starts.
 
 					sleepTime *= 2;
-					if (sleepTime > sleepNormal)
+					if ( sleepTime > sleepNormal)
 						sleepTime = sleepNormal;
 				}
 			}
 			catch (Exception ex) {
-				if (Debug.EnableError && m_shutdown == false && hasDebug())
+				if ( Debug.EnableError && m_shutdown == false && hasDebug())
 					Debug.println("HostAnnouncer: " + ex.toString());
 				m_shutdown = true;
 			}
 		}
 
-		// Set the announcement interval to zero to indicate that the host is
-		// leaving Network
+		// Set the announcement interval to zero to indicate that the host is leaving Network
 		// Neighborhood
 
 		setInterval(0);
 
 		// Clear the server flag in the announced host type
 
-		if ((m_srvtype & ServerType.Server) != 0)
+		if ( (m_srvtype & ServerType.Server) != 0)
 			m_srvtype -= ServerType.Server;
 
-		// Send out a number of host announcement to remove the host name(s)
-		// from Network
+		// Send out a number of host announcement to remove the host name(s) from Network
 		// Neighborhood
 
 		for (int j = 0; j < SHUTDOWN_COUNT; j++) {
@@ -362,8 +347,7 @@ public abstract class HostAnnouncer extends Thread {
 
 					// Send the host announcement
 
-					sendAnnouncement(
-						hostName, m_smbPkt.getBuffer(), 0, m_smbPkt.getLength());
+					sendAnnouncement(hostName, m_smbPkt.getBuffer(), 0, m_smbPkt.getLength());
 				}
 				catch (Exception ex) {
 				}
@@ -388,8 +372,7 @@ public abstract class HostAnnouncer extends Thread {
 		throws Exception;
 
 	/**
-	 * Determine if the network connection used for the host announcement is
-	 * valid
+	 * Determine if the network connection used for the host announcement is valid
 	 * 
 	 * @return boolean
 	 */
@@ -403,8 +386,7 @@ public abstract class HostAnnouncer extends Thread {
 	 * @param offset Offset to the start of the host announcement message.
 	 * @param len Host announcement message length.
 	 */
-	protected abstract void sendAnnouncement(
-		String hostName, byte[] buf, int offset, int len)
+	protected abstract void sendAnnouncement(String hostName, byte[] buf, int offset, int len)
 		throws Exception;
 
 	/**
@@ -414,7 +396,7 @@ public abstract class HostAnnouncer extends Thread {
 	 */
 	public final void setComment(String comment) {
 		m_comment = comment;
-		if (m_comment != null && m_comment.length() > 80)
+		if ( m_comment != null && m_comment.length() > 80)
 			m_comment = m_comment.substring(0, 80);
 	}
 
@@ -451,10 +433,9 @@ public abstract class HostAnnouncer extends Thread {
 
 			String name = names.getStringAt(i);
 
-			// Check if the name exists in the announcement list, if not then
-			// add to the list
+			// Check if the name exists in the announcement list, if not then add to the list
 
-			if (m_names.containsString(name) == false)
+			if ( m_names.containsString(name) == false)
 				m_names.addString(name);
 		}
 	}
@@ -478,8 +459,7 @@ public abstract class HostAnnouncer extends Thread {
 	}
 
 	/**
-	 * Shutdown the host announcer and remove the announced name from Network
-	 * Neighborhood.
+	 * Shutdown the host announcer and remove the announced name from Network Neighborhood.
 	 */
 	public final synchronized void shutdownAnnouncer() {
 
@@ -494,5 +474,4 @@ public abstract class HostAnnouncer extends Thread {
 		catch (InterruptedException ex) {
 		}
 	}
-
 }

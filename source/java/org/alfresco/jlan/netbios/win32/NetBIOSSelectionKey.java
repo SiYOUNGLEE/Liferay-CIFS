@@ -1,33 +1,34 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
 package org.alfresco.jlan.netbios.win32;
 
 /**
- * NetBIOs Selection Key Class <p>SelectionKey type class for NetBIOSSocket
- * connections.
+ * NetBIOs Selection Key Class
+ * 
+ * <p>SelectionKey type class for NetBIOSSocket connections.
  * 
  * @author gkspencer
  */
@@ -36,36 +37,36 @@ public class NetBIOSSelectionKey {
 	// Constants
 	//
 	// Operations that are to be monitored for this socket
-
-	public static final int OP_ACCEPT = 0x0001;
+	
+	public static final int OP_ACCEPT  = 0x0001;
 	public static final int OP_CONNECT = 0x0002;
-	public static final int OP_READ = 0x0004;
-	public static final int OP_WRITE = 0x0008;
-
+	public static final int OP_READ    = 0x0004;
+	public static final int OP_WRITE   = 0x0008;
+	
 	// Key valid state
-
+	
 	private boolean m_valid;
 
 	// Operations that should be monitored for events for this socket
-
+	
 	private int m_interestOps;
 
 	// Operations that have triggered
-
+	
 	private int m_triggerOps;
-
+	
 	// Selector that this key belongs to
-
+	
 	private NetBIOSSelector m_selector;
-
+	
 	// NetBIOS socket
-
+	
 	private NetBIOSSocket m_socket;
-
+	
 	// Attached object associated with this key
-
+	
 	private Object m_attachment;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -74,23 +75,20 @@ public class NetBIOSSelectionKey {
 	 * @param ops int
 	 * @param attachment Object
 	 */
-	protected NetBIOSSelectionKey(
-		NetBIOSSelector selector, NetBIOSSocket socket, int ops,
-		Object attachment) {
-		
-		m_selector = selector;
-		m_socket = socket;
+	protected NetBIOSSelectionKey( NetBIOSSelector selector, NetBIOSSocket socket, int ops, Object attachment) {
+		m_selector   = selector;
+		m_socket     = socket;
 		m_attachment = attachment;
 
 		// Set the operations to be monitored
-
+		
 		m_interestOps = ops;
-
+		
 		// Indicate that the key/socket is valid
-
+		
 		m_valid = true;
 	}
-
+	
 	/**
 	 * Attach an object to this selection key
 	 * 
@@ -99,7 +97,7 @@ public class NetBIOSSelectionKey {
 	public final void attach(Object obj) {
 		m_attachment = obj;
 	}
-
+	
 	/**
 	 * Return the associated attached object
 	 * 
@@ -117,7 +115,7 @@ public class NetBIOSSelectionKey {
 	public final boolean isAcceptable() {
 		return hasTrigger(OP_ACCEPT);
 	}
-
+	
 	/**
 	 * Check if the socket is readable
 	 * 
@@ -153,7 +151,7 @@ public class NetBIOSSelectionKey {
 	public final int interestOps() {
 		return m_interestOps;
 	}
-
+	
 	/**
 	 * Set the list of interested operations for this socket
 	 * 
@@ -162,7 +160,7 @@ public class NetBIOSSelectionKey {
 	public final void interestOps(int ops) {
 		m_interestOps = ops;
 	}
-
+	
 	/**
 	 * Return the list of troggered operations for this socket
 	 * 
@@ -171,7 +169,7 @@ public class NetBIOSSelectionKey {
 	public final int readyOps() {
 		return m_triggerOps;
 	}
-
+	
 	/**
 	 * Check if the socket is valid
 	 * 
@@ -180,7 +178,7 @@ public class NetBIOSSelectionKey {
 	public final boolean isValid() {
 		return m_valid;
 	}
-
+	
 	/**
 	 * Check if the specified operation trigger is set
 	 * 
@@ -188,18 +186,17 @@ public class NetBIOSSelectionKey {
 	 * @return boolean
 	 */
 	private final boolean hasTrigger(int flag) {
-		return (m_triggerOps & flag) != 0 ? true : false;
+		return ( m_triggerOps & flag) != 0 ? true : false;
 	}
-
 	/**
 	 * Set the triggerd ops for the socket
 	 * 
 	 * @param ops int
 	 */
-	protected final void setTriggers(int ops) {
+	protected final void setTriggers( int ops) {
 		m_triggerOps = ops;
 	}
-
+	
 	/**
 	 * Return the selector that this key belongs to
 	 * 
@@ -208,7 +205,7 @@ public class NetBIOSSelectionKey {
 	public final NetBIOSSelector selector() {
 		return m_selector;
 	}
-
+	
 	/**
 	 * Set or clear the valid status for this socket
 	 * 
@@ -217,7 +214,7 @@ public class NetBIOSSelectionKey {
 	protected final void setValid(boolean valid) {
 		m_valid = valid;
 	}
-
+	
 	/**
 	 * Return the NetBIOS socket
 	 * 
@@ -226,7 +223,7 @@ public class NetBIOSSelectionKey {
 	public final NetBIOSSocket socket() {
 		return m_socket;
 	}
-
+	
 	/**
 	 * Return a hash code for the selection key
 	 * 
@@ -235,7 +232,7 @@ public class NetBIOSSelectionKey {
 	public int hashcode() {
 		return m_socket.getSocket();
 	}
-
+	
 	/**
 	 * Return the selection key as a string
 	 * 
@@ -243,24 +240,23 @@ public class NetBIOSSelectionKey {
 	 */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
-
+		
 		str.append("[Socket=");
-		str.append(socket());
+		str.append( socket());
 
 		str.append(",Ops=0x");
 		str.append(Integer.toHexString(interestOps()));
 		str.append("/0x");
 		str.append(Integer.toHexString(readyOps()));
-
+		
 		str.append(",Attachment=");
-		str.append(attachment());
+		str.append( attachment());
 
-		if (isValid() == false)
+		if ( isValid() == false)
 			str.append(",Invalid");
-
+		
 		str.append("]");
-
+		
 		return str.toString();
 	}
-
 }

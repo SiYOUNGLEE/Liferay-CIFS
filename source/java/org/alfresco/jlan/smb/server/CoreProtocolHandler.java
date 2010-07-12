@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -74,9 +74,9 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 	// Special resume ids for '.' and '..' pseudo directories
 
-	private static final int RESUME_START = 0x00008003;
-	private static final int RESUME_DOT = 0x00008002;
-	private static final int RESUME_DOTDOT = 0x00008001;
+	private static final int RESUME_START 	= 0x00008003;
+	private static final int RESUME_DOT 	= 0x00008002;
+	private static final int RESUME_DOTDOT 	= 0x00008001;
 
 	// Maximum value that can be stored in a parameter word
 
@@ -87,14 +87,14 @@ class CoreProtocolHandler extends ProtocolHandler {
 	protected static final int StandardAttributes = 0x3F;
 
 	// Search information per file length
-
-	protected static final int SearchInfoLen = 43;
-
-	// Invalid file name characters
-
-	private static final String InvalidFileNameChars = "\"/:|<>*?";
-	private static final String InvalidFileNameCharsSearch = "\"/:|<>";
-
+	
+	protected static final int SearchInfoLen	= 43;
+	
+    // Invalid file name characters
+    
+    private static final String InvalidFileNameChars 		= "\"/:|<>*?";
+    private static final String InvalidFileNameCharsSearch	= "\"/:|<>";
+    
 	/**
 	 * Create a new core SMB protocol handler.
 	 */
@@ -120,8 +120,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 	}
 
 	/**
-	 * Map a Java exception class to an SMB error code, and return an error
-	 * response to the caller.
+	 * Map a Java exception class to an SMB error code, and return an error response to the caller.
 	 * 
 	 * @param ex java.lang.Exception
 	 */
@@ -129,47 +128,46 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 	}
 
-	/**
-	 * Check if a path contains any illegal characters, for file/create
-	 * open/create/rename/get info
-	 * 
-	 * @param path String
-	 * @return boolean
-	 */
-	protected boolean isValidPath(String path) {
-
-		// Scan the path for invalid path characters
-
-		for (int i = 0; i < InvalidFileNameChars.length(); i++) {
-			if (path.indexOf(InvalidFileNameChars.charAt(i)) != -1)
-				return false;
-		}
-
-		// Path looks valid
-
-		return true;
-	}
-
-	/**
-	 * Check if a path contains any illegal characters, for a folder search
-	 * 
-	 * @param path String
-	 * @return boolean
-	 */
-	protected boolean isValidSearchPath(String path) {
-
-		// Scan the path for invalid path characters
-
-		for (int i = 0; i < InvalidFileNameCharsSearch.length(); i++) {
-			if (path.indexOf(InvalidFileNameCharsSearch.charAt(i)) != -1)
-				return false;
-		}
-
-		// Path looks valid
-
-		return true;
-	}
-
+    /**
+     * Check if a path contains any illegal characters, for file/create open/create/rename/get info
+     * 
+     * @param path String
+     * @return boolean
+     */
+    protected boolean isValidPath(String path) {
+    	
+    	// Scan the path for invalid path characters
+    	
+    	for ( int i = 0; i < InvalidFileNameChars.length(); i++) {
+    		if ( path.indexOf( InvalidFileNameChars.charAt( i)) != -1)
+    			return false;
+    	}
+    	
+    	// Path looks valid
+    	
+    	return true;
+    }
+    
+    /**
+     * Check if a path contains any illegal characters, for a folder search
+     * 
+     * @param path String
+     * @return boolean
+     */
+    protected boolean isValidSearchPath(String path) {
+    	
+    	// Scan the path for invalid path characters
+    	
+    	for ( int i = 0; i < InvalidFileNameCharsSearch.length(); i++) {
+    		if ( path.indexOf( InvalidFileNameCharsSearch.charAt( i)) != -1)
+    			return false;
+    	}
+    	
+    	// Path looks valid
+    	
+    	return true;
+    }
+    
 	/**
 	 * Pack file information for a search into the specified buffer.
 	 * 
@@ -181,14 +179,11 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * @param info File data to be packed.
 	 * @return int Next available buffer position.
 	 */
-	protected final int packSearchInfo(
-		byte[] buf, int bufPos, String searchStr, int resumeId, int searchId,
-		FileInfo info) {
+	protected final int packSearchInfo(byte[] buf, int bufPos, String searchStr, int resumeId, int searchId, FileInfo info) {
 
 		// Pack the resume key
 
-		CoreResumeKey.putResumeKey(buf, bufPos, searchStr, resumeId +
-			(searchId << 16));
+		CoreResumeKey.putResumeKey(buf, bufPos, searchStr, resumeId + (searchId << 16));
 		bufPos += CoreResumeKey.LENGTH;
 
 		// Pack the file information
@@ -196,7 +191,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 		buf[bufPos++] = (byte) (info.getFileAttributes() & StandardAttributes);
 
 		SMBDate dateTime = new SMBDate(info.getModifyDateTime());
-		if (dateTime != null) {
+		if ( dateTime != null) {
 			DataPacker.putIntelShort(dateTime.asSMBTime(), buf, bufPos);
 			DataPacker.putIntelShort(dateTime.asSMBDate(), buf, bufPos + 2);
 		}
@@ -216,10 +211,10 @@ class CoreProtocolHandler extends ProtocolHandler {
 		while (str.length() < 13)
 			str.append('\0');
 
-		if (str.length() > 12)
+		if ( str.length() > 12)
 			str.setLength(12);
 
-		DataPacker.putString(str.toString().toUpperCase(), buf, bufPos, true);
+		DataPacker.putString( str.toString().toUpperCase(), buf, bufPos, true);
 		bufPos += 13;
 
 		// Return the new buffer position
@@ -237,46 +232,39 @@ class CoreProtocolHandler extends ProtocolHandler {
 	protected void procCheckDirectory(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid check directory
-		// request
+		// Check that the received packet looks like a valid check directory request
 
-		if (smbPkt.checkPacketIsValid(0, 2) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(0, 2) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -284,42 +272,34 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the directory name
 
-		String dirName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
-		if (dirName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String dirName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		if ( dirName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Directory Check [" + treeId + "] name=" +
-				dirName);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Directory Check [" + treeId + "] name=" + dirName);
 
 		// Access the disk interface and check for the directory
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Check that the specified path exists, and it is a directory
 
-			if (disk.fileExists(m_sess, conn, dirName) == 
-				FileStatus.DirectoryExists) {
+			if ( disk.fileExists(m_sess, conn, dirName) == FileStatus.DirectoryExists) {
 
-				// The path exists and is a directory, build the valid path
-				// response.
+				// The path exists and is a directory, build the valid path response.
 
 				smbPkt.setParameterCount(0);
 				smbPkt.setByteCount(0);
@@ -332,28 +312,24 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 				// The path does not exist, or is not a directory.
 				//
-				// DOS clients depend on the 'Directory Invalid'
-				// (SMB_ERR_BAD_PATH) message being
+				// DOS clients depend on the 'Directory Invalid' (SMB_ERR_BAD_PATH) message being
 				// returned.
 
-				m_sess.sendErrorResponseSMB(
-					smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
+				m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
 			}
 		}
 		catch (InvalidDeviceInterfaceException ex) {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Failed to delete the directory
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
 			return;
 		}
 	}
@@ -363,88 +339,78 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procCloseFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid file close request
 
-		if (smbPkt.checkPacketIsValid(3, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(3, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the file id from the request
 
-		int fid = smbPkt.getParameter(0);
+		int fid   = smbPkt.getParameter(0);
 		int ftime = smbPkt.getParameter(1);
 		int fdate = smbPkt.getParameter(2);
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
 			m_sess.debugPrintln("File close [" + treeId + "] fid=" + fid);
 
 		// Close the file
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Close the file
 			//
 			// The disk interface may be null if the file is a named pipe file
 
-			if (disk != null)
+			if ( disk != null)
 				disk.closeFile(m_sess, conn, netFile);
 
 			// Indicate that the file has been closed
@@ -455,8 +421,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
@@ -481,52 +446,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procCreateDirectory(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid create directory
-		// request
+		// Check that the received packet looks like a valid create directory request
 
-		if (smbPkt.checkPacketIsValid(0, 2) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(0, 2) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -534,49 +491,39 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the directory name
 
-		String dirName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
-		if (dirName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String dirName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		if ( dirName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
-		// Check if the file name is valid
-
-		if (isValidPath(dirName) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTObjectNameInvalid,
-				SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
-			return;
-		}
-
+        // Check if the file name is valid
+        
+        if ( isValidPath( dirName) == false) {
+            m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNameInvalid, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+            return;
+        }
+        
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Directory Create [" + treeId + "] name=" +
-				dirName);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Directory Create [" + treeId + "] name=" + dirName);
 
 		// Access the disk interface and create the new directory
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Directory creation parameters
 
-			FileOpenParams params =
-				new FileOpenParams(
-					dirName, FileAction.CreateNotExist, AccessMode.ReadWrite,
+			FileOpenParams params = new FileOpenParams(dirName, FileAction.CreateNotExist, AccessMode.ReadWrite,
 					FileAttribute.NTDirectory, smbPkt.getProcessIdFull());
 
 			// Create the new directory
@@ -587,34 +534,28 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (FileExistsException ex) {
 
 			// Failed to create the directory
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTObjectNameCollision,
-				SMBStatus.DOSFileAlreadyExists, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNameCollision, SMBStatus.DOSFileAlreadyExists, SMBStatus.ErrDos);
 			return;
 		}
 		catch (AccessDeniedException ex) {
 
 			// Not allowed to create directory
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSInvalidDrive,
-				SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Failed to create the directory
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -633,51 +574,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procCreateFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid file create request
 
-		if (smbPkt.checkPacketIsValid(3, 2) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(3, 2) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -685,44 +619,35 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the file name
 
-		String fileName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
-		if (fileName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String fileName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		if ( fileName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
-		// Check if the file name is valid
-
-		if (isValidPath(fileName) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTObjectNameInvalid,
-				SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
-			return;
-		}
-
+        // Check if the file name is valid
+        
+        if ( isValidPath( fileName) == false) {
+            m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNameInvalid, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+            return;
+        }
+        
 		// Get the required file attributes for the new file
 
 		int attr = smbPkt.getParameter(0);
 
 		// Create the file parameters to be passed to the disk interface
 
-		FileOpenParams params =
-			new FileOpenParams(
-				fileName, FileAction.CreateNotExist, AccessMode.ReadWrite,
-				attr, smbPkt.getProcessIdFull());
+		FileOpenParams params = new FileOpenParams(fileName, FileAction.CreateNotExist, AccessMode.ReadWrite, attr, smbPkt.getProcessIdFull());
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln(
-				"File Create [" + treeId + "] params=" + params);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("File Create [" + treeId + "] params=" + params);
 
 		// Access the disk interface and create the new file
 
@@ -731,11 +656,9 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Create the new file
 
@@ -749,33 +672,28 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (TooManyFilesException ex) {
 
-			// Too many files are open on this connection, cannot open any more
-			// files.
+			// Too many files are open on this connection, cannot open any more files.
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSTooManyOpenFiles, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSTooManyOpenFiles, SMBStatus.ErrDos);
 			return;
 		}
 		catch (FileExistsException ex) {
 
 			// File with the requested name already exists
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSFileAlreadyExists, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileAlreadyExists, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Failed to open the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -795,8 +713,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception description.
 	 */
 	protected void procCreateTemporaryFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
@@ -808,52 +725,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procDeleteDirectory(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid delete directory
-		// request
+		// Check that the received packet looks like a valid delete directory request
 
-		if (smbPkt.checkPacketIsValid(0, 2) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(0, 2) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -861,44 +770,36 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the directory name
 
-		String dirName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		String dirName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
 
-		if (dirName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		if ( dirName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
-		// Check if the file name is valid
-
-		if (isValidPath(dirName) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTObjectNameInvalid,
-				SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
-			return;
-		}
-
+        // Check if the file name is valid
+        
+        if ( isValidPath( dirName) == false) {
+            m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNameInvalid, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+            return;
+        }
+        
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Directory Delete [" + treeId + "] name=" +
-				dirName);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Directory Delete [" + treeId + "] name=" + dirName);
 
 		// Access the disk interface and delete the directory
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Delete the directory
 
@@ -908,33 +809,28 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (AccessDeniedException ex) {
 
 			// Not allowed to delete the directory
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSAccessDenied,
-				SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 		catch (DirectoryNotEmptyException ex) {
 
 			// Directory not empty
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSDirectoryNotEmpty, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSDirectoryNotEmpty, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Failed to delete the directory
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSDirectoryInvalid, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -953,51 +849,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procDeleteFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid file delete request
 
-		if (smbPkt.checkPacketIsValid(1, 2) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(1, 2) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1005,31 +894,26 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the file name
 
-		String fileName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
-		if (fileName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String fileName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		if ( fileName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
-		// Check if the file name is valid
-
-		if (isValidPath(fileName) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTObjectNameInvalid,
-				SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
-			return;
-		}
-
+        // Check if the file name is valid
+        
+        if ( isValidPath( fileName) == false) {
+            m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNameInvalid, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+            return;
+        }
+        
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
 			m_sess.debugPrintln("File Delete [" + treeId + "] name=" + fileName);
 
 		// Access the disk interface and delete the file(s)
@@ -1039,11 +923,9 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Delete file(s)
 
@@ -1053,16 +935,14 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Failed to open the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1081,35 +961,31 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procDiskAttributes(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_INFO))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_INFO))
 			m_sess.debugPrintln("Get disk attributes");
 
 		// Parameter and byte count should be zero
 
-		if (smbPkt.getParameterCount() != 0 && smbPkt.getByteCount() != 0) {
+		if ( smbPkt.getParameterCount() != 0 && smbPkt.getByteCount() != 0) {
 
 			// Send an error response
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -1118,20 +994,18 @@ class CoreProtocolHandler extends ProtocolHandler {
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1148,26 +1022,21 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
-		// Create a disk information object and ask the disk interface to fill
-		// in the details
+		// Create a disk information object and ask the disk interface to fill in the details
 
 		SrvDiskInfo diskInfo = getDiskInformation(disk, diskCtx);
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_INFO))
-			m_sess.debugPrintln("  Disk info - total=" +
-				diskInfo.getTotalUnits() + ", free=" + diskInfo.getFreeUnits() +
-				", blocksPerUnit=" + diskInfo.getBlocksPerAllocationUnit() +
-				", blockSize=" + diskInfo.getBlockSize());
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_INFO))
+			m_sess.debugPrintln("  Disk info - total=" + diskInfo.getTotalUnits() + ", free=" + diskInfo.getFreeUnits()
+					+ ", blocksPerUnit=" + diskInfo.getBlocksPerAllocationUnit() + ", blockSize=" + diskInfo.getBlockSize());
 
-		// Check if the disk size information needs scaling to fit into 16bit
-		// values
+		// Check if the disk size information needs scaling to fit into 16bit values
 
 		long totUnits = diskInfo.getTotalUnits();
 		long freeUnits = diskInfo.getFreeUnits();
@@ -1185,16 +1054,16 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Check if the total/free units fit into a 16bit value
 
-		if (totUnits > MaxWordValue || blocksUnit > MaxWordValue) {
+		if ( totUnits > MaxWordValue || blocksUnit > MaxWordValue) {
 
 			// Just use dummy values, cannot fit the disk size into 16bits
 
 			totUnits = MaxWordValue;
 
-			if (freeUnits > MaxWordValue)
+			if ( freeUnits > MaxWordValue)
 				freeUnits = MaxWordValue / 2;
 
-			if (blocksUnit > MaxWordValue)
+			if ( blocksUnit > MaxWordValue)
 				blocksUnit = MaxWordValue;
 		}
 
@@ -1220,17 +1089,15 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procEcho(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid echo request
 
-		if (smbPkt.checkPacketIsValid(1, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(1, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -1240,7 +1107,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_ECHO))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_ECHO))
 			m_sess.debugPrintln("Echo - Count = " + echoCnt);
 
 		// Loop until all echo packets have been sent
@@ -1260,7 +1127,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Debug
 
-			if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_ECHO))
+			if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_ECHO))
 				m_sess.debugPrintln("Echo Packet, Seq = " + echoSeq);
 		}
 	}
@@ -1270,51 +1137,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procFlushFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid file flush request
 
-		if (smbPkt.checkPacketIsValid(1, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(1, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1324,26 +1184,23 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
 			m_sess.debugPrintln("File Flush [" + netFile.getFileId() + "]");
 
 		// Flush the file
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Flush the file
 
@@ -1353,22 +1210,19 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Debug
 
-			if (Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-				m_sess.debugPrintln("File Flush Error [" + netFile.getFileId() +
-					"] : " + ex.toString());
+			if ( Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+				m_sess.debugPrintln("File Flush Error [" + netFile.getFileId() + "] : " + ex.toString());
 
 			// Failed to read the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.HRDWriteFault, SMBStatus.ErrHrd);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.HRDWriteFault, SMBStatus.ErrHrd);
 			return;
 		}
 
@@ -1385,52 +1239,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procGetFileAttributes(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid query file
-		// information request
+		// Check that the received packet looks like a valid query file information request
 
-		if (smbPkt.checkPacketIsValid(0, 2) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(0, 2) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1438,62 +1284,52 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the file name
 
-		String fileName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
-		if (fileName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String fileName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		if ( fileName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Get File Information [" + treeId + "] name=" +
-				fileName);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Get File Information [" + treeId + "] name=" + fileName);
 
 		// Access the disk interface and get the file information
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Get the file information for the specified file/directory
 
 			FileInfo finfo = disk.getFileInformation(m_sess, conn, fileName);
-			if (finfo != null) {
+			if ( finfo != null) {
 
 				// Mask the file attributes
 
-				finfo.setFileAttributes(finfo.getFileAttributes() &
-					StandardAttributes);
+				finfo.setFileAttributes(finfo.getFileAttributes() & StandardAttributes);
 
-				// Check if the share is read-only, if so then force the
-				// read-only flag for the file
+				// Check if the share is read-only, if so then force the read-only flag for the file
 
-				if (conn.getSharedDevice().isReadOnly() &&
-					finfo.isReadOnly() == false) {
+				if ( conn.getSharedDevice().isReadOnly() && finfo.isReadOnly() == false) {
 
 					// Make sure the read-only attribute is set
 
-					finfo.setFileAttributes(finfo.getFileAttributes() +
-						FileAttribute.ReadOnly);
+					finfo.setFileAttributes(finfo.getFileAttributes() + FileAttribute.ReadOnly);
 				}
 
 				// Return the file information
 
 				smbPkt.setParameterCount(10);
 				smbPkt.setParameter(0, finfo.getFileAttributes());
-				if (finfo.getModifyDateTime() != 0L) {
+				if ( finfo.getModifyDateTime() != 0L) {
 					SMBDate dateTime = new SMBDate(finfo.getModifyDateTime());
 					smbPkt.setParameter(1, dateTime.asSMBTime());
 					smbPkt.setParameter(2, dateTime.asSMBDate());
@@ -1503,8 +1339,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 					smbPkt.setParameter(2, 0);
 				}
 				smbPkt.setParameter(3, (int) finfo.getSize() & 0x0000FFFF);
-				smbPkt.setParameter(
-					4, (int) (finfo.getSize() & 0xFFFF0000) >> 16);
+				smbPkt.setParameter(4, (int) (finfo.getSize() & 0xFFFF0000) >> 16);
 
 				for (int i = 5; i < 10; i++)
 					smbPkt.setParameter(i, 0);
@@ -1521,8 +1356,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
@@ -1530,8 +1364,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Failed to get the file information
 
-		m_sess.sendErrorResponseSMB(
-			smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+		m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 	}
 
 	/**
@@ -1539,52 +1372,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procGetFileInformation(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid query file
-		// information2 request
+		// Check that the received packet looks like a valid query file information2 request
 
-		if (smbPkt.checkPacketIsValid(1, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(1, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1593,49 +1418,40 @@ class CoreProtocolHandler extends ProtocolHandler {
 		int fid = smbPkt.getParameter(0);
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Get File Information 2 [" +
-				netFile.getFileId() + "]");
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Get File Information 2 [" + netFile.getFileId() + "]");
 
 		// Access the disk interface and get the file information
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Get the file information for the specified file/directory
 
-			FileInfo finfo =
-				disk.getFileInformation(m_sess, conn, netFile.getFullName());
-			if (finfo != null) {
+			FileInfo finfo = disk.getFileInformation(m_sess, conn, netFile.getFullName());
+			if ( finfo != null) {
 
 				// Mask the file attributes
 
-				finfo.setFileAttributes(finfo.getFileAttributes() &
-					StandardAttributes);
+				finfo.setFileAttributes(finfo.getFileAttributes() & StandardAttributes);
 
-				// Check if the share is read-only, if so then force the
-				// read-only flag for the file
+				// Check if the share is read-only, if so then force the read-only flag for the file
 
-				if (conn.getSharedDevice().isReadOnly() &&
-					finfo.isReadOnly() == false) {
+				if ( conn.getSharedDevice().isReadOnly() && finfo.isReadOnly() == false) {
 
 					// Make sure the read-only attribute is set
 
-					finfo.setFileAttributes(finfo.getFileAttributes() +
-						FileAttribute.ReadOnly);
+					finfo.setFileAttributes(finfo.getFileAttributes() + FileAttribute.ReadOnly);
 				}
 
 				// Initialize the return packet, no data bytes
@@ -1649,7 +1465,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 				SMBDate dateTime = new SMBDate(0);
 
-				if (finfo.getCreationDateTime() != 0L) {
+				if ( finfo.getCreationDateTime() != 0L) {
 					dateTime.setTime(finfo.getCreationDateTime());
 					smbPkt.setParameter(0, dateTime.asSMBDate());
 					smbPkt.setParameter(1, dateTime.asSMBTime());
@@ -1661,7 +1477,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 				// Access date/time
 
-				if (finfo.getAccessDateTime() != 0L) {
+				if ( finfo.getAccessDateTime() != 0L) {
 					dateTime.setTime(finfo.getAccessDateTime());
 					smbPkt.setParameter(2, dateTime.asSMBDate());
 					smbPkt.setParameter(3, dateTime.asSMBTime());
@@ -1673,7 +1489,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 				// Modify date/time
 
-				if (finfo.getModifyDateTime() != 0L) {
+				if ( finfo.getModifyDateTime() != 0L) {
 					dateTime.setTime(finfo.getModifyDateTime());
 					smbPkt.setParameter(4, dateTime.asSMBDate());
 					smbPkt.setParameter(5, dateTime.asSMBTime());
@@ -1686,14 +1502,12 @@ class CoreProtocolHandler extends ProtocolHandler {
 				// File data size
 
 				smbPkt.setParameter(6, (int) finfo.getSize() & 0x0000FFFF);
-				smbPkt.setParameter(
-					7, (int) (finfo.getSize() & 0xFFFF0000) >> 16);
+				smbPkt.setParameter(7, (int) (finfo.getSize() & 0xFFFF0000) >> 16);
 
 				// File allocation size
 
 				smbPkt.setParameter(8, (int) finfo.getSize() & 0x0000FFFF);
-				smbPkt.setParameter(
-					9, (int) (finfo.getSize() & 0xFFFF0000) >> 16);
+				smbPkt.setParameter(9, (int) (finfo.getSize() & 0xFFFF0000) >> 16);
 
 				// File attributes
 
@@ -1709,8 +1523,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
@@ -1718,80 +1531,71 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Failed to get the file information
 
-		m_sess.sendErrorResponseSMB(
-			smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+		m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 	}
 
 	/**
+	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception description.
 	 */
 	protected void procLockFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid lock file request
 
-		if (smbPkt.checkPacketIsValid(5, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(5, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the file id from the request
 
-		int fid = smbPkt.getParameter(0);
+		int fid      = smbPkt.getParameter(0);
 		long lockcnt = smbPkt.getParameterLong(1);
 		long lockoff = smbPkt.getParameterLong(3);
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-			m_sess.debugPrintln("File Lock [" + netFile.getFileId() +
-				"] : Offset=" + lockoff + " ,Count=" + lockcnt);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+			m_sess.debugPrintln("File Lock [" + netFile.getFileId() + "] : Offset=" + lockoff + " ,Count=" + lockcnt);
 
 		// ***** Always return a success status, simulated locking ****
 		//
@@ -1810,51 +1614,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procOpenFile(SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid file open request
 
-		if (smbPkt.checkPacketIsValid(2, 2) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(2, 2) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1862,16 +1659,13 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the file name
 
-		String fileName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
-		if (fileName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String fileName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		if ( fileName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1882,13 +1676,10 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Create the file open parameters to be passed to the disk interface
 
-		FileOpenParams params =
-			new FileOpenParams(
-				fileName, mode, AccessMode.ReadWrite, attr,
-				smbPkt.getProcessIdFull());
+		FileOpenParams params = new FileOpenParams(fileName, mode, AccessMode.ReadWrite, attr, smbPkt.getProcessIdFull());
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
 			m_sess.debugPrintln("File Open [" + treeId + "] params=" + params);
 
 		// Access the disk interface and open the requested file
@@ -1898,11 +1689,9 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Open the requested file
 
@@ -1916,41 +1705,35 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (TooManyFilesException ex) {
 
-			// Too many files are open on this connection, cannot open any more
-			// files.
+			// Too many files are open on this connection, cannot open any more files.
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSTooManyOpenFiles, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSTooManyOpenFiles, SMBStatus.ErrDos);
 			return;
 		}
 		catch (AccessDeniedException ex) {
 
 			// File is not accessible, or file is actually a directory
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 		catch (FileSharingException ex) {
 
 			// Return a sharing violation error
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSFileSharingConflict, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileSharingConflict, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Failed to open the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -1961,7 +1744,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 		smbPkt.setParameter(0, fid);
 		smbPkt.setParameter(1, 0); // file attributes
 
-		if (netFile.hasModifyDate()) {
+		if ( netFile.hasModifyDate()) {
 			smbPkt.setParameterLong(2, (int) (netFile.getModifyDate() / 1000L));
 		}
 		else
@@ -1982,53 +1765,45 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception description.
 	 */
 	protected void procProcessExit(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid process exit
-		// request
+		// Check that the received packet looks like a valid process exit request
 
-		if (smbPkt.checkPacketIsValid(0, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(0, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Process Exit - Open files = " +
-				conn.openFileCount());
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Process Exit - Open files = " + conn.openFileCount());
 
 		// Close all open files
 
-		if (conn.openFileCount() > 0) {
+		if ( conn.openFileCount() > 0) {
 
 			// Close all files on the connection
 
@@ -2050,154 +1825,131 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procReadFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid file read request
 
-		if (smbPkt.checkPacketIsValid(5, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(5, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the file id from the request
 
-		int fid = smbPkt.getParameter(0);
+		int fid    = smbPkt.getParameter(0);
 		int reqcnt = smbPkt.getParameter(1);
 		int reqoff = smbPkt.getParameterLong(2);
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-			m_sess.debugPrintln("File Read [" + netFile.getFileId() +
-				"] : Size=" + reqcnt + " ,Pos=" + reqoff);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+			m_sess.debugPrintln("File Read [" + netFile.getFileId() + "] : Size=" + reqcnt + " ,Pos=" + reqoff);
 
 		// Read data from the file
 
 		SMBSrvPacket respPkt = smbPkt;
-
+		
 		byte[] buf = respPkt.getBuffer();
 		int rdlen = 0;
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Calculate the buffer size required for the response
-
+			
 			int dataOff = smbPkt.getByteOffset() + 3;
-
-			if (m_sess.hasClientCapability(Capability.LargeRead) == false) {
-
-				// Make sure the requested count is not larger than the client
-				// maximum buffer size
-
-				int maxClientCnt =
-					m_sess.getClientMaximumBufferSize() - dataOff;
-
-				if (reqcnt > maxClientCnt)
+			
+			if ( m_sess.hasClientCapability(Capability.LargeRead) == false) {
+				
+				// Make sure the requested count is not larger than the client maximum buffer size
+				
+				int maxClientCnt = m_sess.getClientMaximumBufferSize() - dataOff;
+				
+				if ( reqcnt > maxClientCnt)
 					reqcnt = maxClientCnt;
 
 				// Debug
 
-				if (Debug.EnableInfo &&
-					m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-					m_sess.debugPrintln("File Read [" + netFile.getFileId() +
-						"] Limited to " + reqcnt);
+				if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+					m_sess.debugPrintln("File Read [" + netFile.getFileId() + "] Limited to " + reqcnt);
 			}
-
+				
 			// Check if the requested data will fit into the current packet
-
-			if (reqcnt > (buf.length - dataOff)) {
+			
+			if ( reqcnt > ( buf.length - dataOff)) {
 
 				// Allocate a larger packet for the response
-
-				respPkt =
-					m_sess.getPacketPool().allocatePacket(
-						reqcnt + dataOff, smbPkt);
-
+				
+				respPkt = m_sess.getPacketPool().allocatePacket( reqcnt + dataOff, smbPkt);
+				
 				// Switch to the response buffer
-
+				
 				buf = respPkt.getBuffer();
 			}
-
+			
 			// Read from the file
 
-			rdlen =
-				disk.readFile(
-					m_sess, conn, netFile, buf, respPkt.getByteOffset() + 3,
-					reqcnt, reqoff);
+			rdlen = disk.readFile(m_sess, conn, netFile, buf, respPkt.getByteOffset() + 3, reqcnt, reqoff);
 		}
 		catch (InvalidDeviceInterfaceException ex) {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Debug
 
-			if (Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-				m_sess.debugPrintln("File Read Error [" + netFile.getFileId() +
-					"] : " + ex.toString());
+			if ( Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+				m_sess.debugPrintln("File Read Error [" + netFile.getFileId() + "] : " + ex.toString());
 
 			// Failed to read the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.HRDReadFault, SMBStatus.ErrHrd);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.HRDReadFault, SMBStatus.ErrHrd);
 			return;
 		}
 
@@ -2216,7 +1968,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Send the read response
 
-		m_sess.sendResponseSMB(respPkt);
+		m_sess.sendResponseSMB( respPkt);
 	}
 
 	/**
@@ -2224,51 +1976,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procRenameFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid rename file request
 
-		if (smbPkt.checkPacketIsValid(1, 4) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(1, 4) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -2276,23 +2021,20 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the old file name
 
 		boolean isUni = smbPkt.isUnicode();
-		String oldName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, isUni);
-		if (oldName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String oldName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, isUni);
+		if ( oldName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Update the data position
 
-		if (isUni) {
+		if ( isUni) {
 			int len = (oldName.length() * 2) + 2;
 			dataPos = DataPacker.wordAlign(dataPos + 1) + len;
 			dataLen -= len;
@@ -2304,20 +2046,16 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Extract the new file name
 
-		String newName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, isUni);
-		if (newName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String newName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, isUni);
+		if ( newName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("File Rename [" + treeId + "] old name=" +
-				oldName + ", new name=" + newName);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("File Rename [" + treeId + "] old name=" + oldName + ", new name=" + newName);
 
 		// Access the disk interface and rename the requested file
 
@@ -2326,11 +2064,9 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Rename the requested file
 
@@ -2340,16 +2076,14 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Failed to open the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -2368,27 +2102,23 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected final void procSearch(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid search request
 
-		if (smbPkt.checkPacketIsValid(2, 5) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(2, 5) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -2397,32 +2127,29 @@ class CoreProtocolHandler extends ProtocolHandler {
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
-		// Get the maximum number of entries to return and the search file
-		// attributes
+		// Get the maximum number of entries to return and the search file attributes
 
 		int maxFiles = smbPkt.getParameter(0);
 		int srchAttr = smbPkt.getParameter(1);
 
 		// Check if this is a volume label request
 
-		if ((srchAttr & FileAttribute.Volume) != 0) {
+		if ( (srchAttr & FileAttribute.Volume) != 0) {
 
 			// Process the volume label request
 
@@ -2434,17 +2161,14 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the search file name
 
-		String srchPath =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		String srchPath = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
 
-		if (srchPath == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidFunc, SMBStatus.ErrDos);
+		if ( srchPath == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidFunc, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -2455,7 +2179,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int resumeLen = 0;
 
-		if (buf[dataPos++] == DataType.VariableBlock) {
+		if ( buf[dataPos++] == DataType.VariableBlock) {
 
 			// Extract the resume key length
 
@@ -2468,9 +2192,8 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Check that we received enough data
 
-			if (resumeLen > dataLen) {
-				m_sess.sendErrorResponseSMB(
-					smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			if ( resumeLen > dataLen) {
+				m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 				return;
 			}
 		}
@@ -2487,8 +2210,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -2497,25 +2219,22 @@ class CoreProtocolHandler extends ProtocolHandler {
 		byte[] resumeKey = null;
 		int searchId = -1;
 
-		// Default resume point is at the start of the directory, at the '.'
-		// directory if
+		// Default resume point is at the start of the directory, at the '.' directory if
 		// directories are being returned.
 
 		int resumeId = RESUME_START;
 
-		if (resumeLen == 0 && srchPath.length() > 0) {
+		if ( resumeLen == 0 && srchPath.length() > 0) {
 
 			// Allocate a search slot for the new search
 
 			searchId = vc.allocateSearchSlot();
-			if (searchId == -1) {
+			if ( searchId == -1) {
 
-				// Try and find any 'leaked' searches, ie. searches that have
-				// been started but not
+				// Try and find any 'leaked' searches, ie. searches that have been started but not
 				// closed.
 				//
-				// Windows Explorer seems to leak searches after a new folder
-				// has been created, a
+				// Windows Explorer seems to leak searches after a new folder has been created, a
 				// search for '????????.???' is started but never continued.
 
 				int idx = 0;
@@ -2523,17 +2242,14 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 				while (ctx != null && searchId == -1) {
 
-					// Check if the current search context looks like a leaked
-					// search.
+					// Check if the current search context looks like a leaked search.
 
-					if (ctx.getSearchString().compareTo("????????.???") == 0) {
+					if ( ctx.getSearchString().compareTo("????????.???") == 0) {
 
 						// Debug
 
-						if (Debug.EnableWarn &&
-							m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
-							m_sess.debugPrintln("Release leaked search [" +
-								idx + "]");
+						if ( Debug.EnableWarn && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+							m_sess.debugPrintln("Release leaked search [" + idx + "]");
 
 						// Deallocate the search context
 
@@ -2545,8 +2261,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 					}
 					else {
 
-						// Update the search index and get the next search
-						// context
+						// Update the search index and get the next search context
 
 						ctx = vc.getSearchContext(++idx);
 					}
@@ -2554,28 +2269,25 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 				// Check if we freed up a search slot
 
-				if (searchId == -1) {
+				if ( searchId == -1) {
 
 					// Failed to allocate a slot for the new search
 
-					m_sess.sendErrorResponseSMB(
-						smbPkt, SMBStatus.SRVNoResourcesAvailable,
-						SMBStatus.ErrSrv);
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVNoResourcesAvailable, SMBStatus.ErrSrv);
 					return;
 				}
 			}
 
 			// Debug
 
-			if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
-				m_sess.debugPrintln("Start search [" + searchId + "] - " +
-					srchPath + ", attr=0x" + Integer.toHexString(srchAttr) +
-					", maxFiles=" + maxFiles);
+			if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+				m_sess.debugPrintln("Start search [" + searchId + "] - " + srchPath + ", attr=0x" + Integer.toHexString(srchAttr)
+						+ ", maxFiles=" + maxFiles);
 
 			// Start a new search
 
 			ctx = disk.startSearch(m_sess, conn, srchPath, srchAttr);
-			if (ctx != null) {
+			if ( ctx != null) {
 
 				// Store details of the search in the context
 
@@ -2594,8 +2306,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 			resumeKey = new byte[CoreResumeKey.LENGTH];
 			CoreResumeKey.getResumeKey(buf, dataPos, resumeKey);
 
-			// Get the search context slot id from the resume key, and get the
-			// search context.
+			// Get the search context slot id from the resume key, and get the search context.
 
 			int id = CoreResumeKey.getServerArea(resumeKey, 0);
 			searchId = (id & 0xFFFF0000) >> 16;
@@ -2603,9 +2314,8 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Check if the search context is valid
 
-			if (ctx == null) {
-				m_sess.sendErrorResponseSMB(
-					smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			if ( ctx == null) {
+				m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 				return;
 			}
 
@@ -2613,32 +2323,28 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			resumeId = id & 0x0000FFFF;
 
-			// Restart the search at the resume point, check if the resume point
-			// is already set, ie.
+			// Restart the search at the resume point, check if the resume point is already set, ie.
 			// we are just continuing the search.
 
-			if (resumeId < RESUME_DOTDOT && ctx.getResumeId() != resumeId) {
+			if ( resumeId < RESUME_DOTDOT && ctx.getResumeId() != resumeId) {
 
 				// Debug
 
-				if (Debug.EnableInfo &&
-					m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+				if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
 					m_sess.debugPrintln("Search resume at " + resumeId);
 
 				// Restart the search at the specified point
 
-				if (ctx.restartAt(resumeId) == false) {
+				if ( ctx.restartAt(resumeId) == false) {
 
 					// Debug
 
-					if (Debug.EnableError &&
-						m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+					if ( Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
 						m_sess.debugPrintln("Search restart failed");
 
 					// Failed to restart the search
 
-					m_sess.sendErrorResponseSMB(
-						smbPkt, SMBStatus.DOSNoMoreFiles, SMBStatus.ErrDos);
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSNoMoreFiles, SMBStatus.ErrDos);
 
 					// Release the search context
 
@@ -2650,43 +2356,38 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Check if the search context is valid
 
-		if (ctx == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		if ( ctx == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check that the search context and tree connection match
 
-		if (ctx.getTreeId() != treeId) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
+		if ( ctx.getTreeId() != treeId) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Check if this is a wildcard search
-
-		boolean wildcardSearch = WildCard.containsWildcards(srchPath);
-
+		
+		boolean wildcardSearch = WildCard.containsWildcards( srchPath);
+		
 		// Calculate the response packet length required
 
 		SMBSrvPacket respPkt = smbPkt;
-
-		if (wildcardSearch == true) {
-
-			// Allocate a response packet large enough to hold the maximum
-			// requested file info records
-
-			int pktSize =
-				SMBSrvPacket.calculateHeaderLength(1) +
-					(maxFiles * SearchInfoLen);
-			respPkt = m_sess.getPacketPool().allocatePacket(pktSize, smbPkt);
-
+		
+		if ( wildcardSearch == true) {
+			
+			// Allocate a response packet large enough to hold the maximum requested file info records
+			
+			int pktSize = SMBSrvPacket.calculateHeaderLength( 1) + ( maxFiles * SearchInfoLen);
+			respPkt = m_sess.getPacketPool().allocatePacket( pktSize, smbPkt);
+			
 			// Switch to using the new packet buffer
-
+			
 			buf = respPkt.getBuffer();
 		}
-
+		
 		// Start building the search response packet
 
 		respPkt.setParameterCount(1);
@@ -2695,18 +2396,14 @@ class CoreProtocolHandler extends ProtocolHandler {
 		bufPos += 3; // save two bytes for the actual block length
 		int fileCnt = 0;
 
-		// Check if this is the start of a wildcard search and includes
-		// directories
+		// Check if this is the start of a wildcard search and includes directories
 
-		if ((srchAttr & FileAttribute.Directory) != 0 &&
-			resumeId >= RESUME_DOTDOT && wildcardSearch == true) {
+		if ( (srchAttr & FileAttribute.Directory) != 0 && resumeId >= RESUME_DOTDOT && wildcardSearch == true) {
 
-			// The first entries in the search should be the '.' and '..'
-			// entries for the
+			// The first entries in the search should be the '.' and '..' entries for the
 			// current/parent directories.
 			//
-			// Remove the file name from the search path, and get the file
-			// information for the
+			// Remove the file name from the search path, and get the file information for the
 			// search directory.
 
 			String workDir = FileName.removeFileName(srchPath);
@@ -2714,27 +2411,23 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Check if we have valid information for the working directory
 
-			if (dirInfo != null)
+			if ( dirInfo != null)
 				dirInfo = new FileInfo(".", 0, FileAttribute.Directory);
 
 			// Debug
 
-			if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
-				m_sess.debugPrintln("Search adding . and .. entries:  " +
-					dirInfo.toString());
+			if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+				m_sess.debugPrintln("Search adding . and .. entries:  " + dirInfo.toString());
 
 			// Reset the file name to '.' and pack the directory information
 
-			if (resumeId == RESUME_START) {
+			if ( resumeId == RESUME_START) {
 
 				// Pack the '.' file information
 
 				dirInfo.setFileName(".");
 				resumeId = RESUME_DOT;
-				bufPos =
-					packSearchInfo(
-						buf, bufPos, ctx.getSearchString(), RESUME_DOT,
-						searchId, dirInfo);
+				bufPos = packSearchInfo(buf, bufPos, ctx.getSearchString(), RESUME_DOT, searchId, dirInfo);
 
 				// Update the file count
 
@@ -2743,15 +2436,12 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Reset the file name to '..' and pack the directory information
 
-			if (resumeId == RESUME_DOT) {
+			if ( resumeId == RESUME_DOT) {
 
 				// Pack the '..' file information
 
 				dirInfo.setFileName("..");
-				bufPos =
-					packSearchInfo(
-						buf, bufPos, ctx.getSearchString(), RESUME_DOTDOT,
-						searchId, dirInfo);
+				bufPos = packSearchInfo(buf, bufPos, ctx.getSearchString(), RESUME_DOTDOT, searchId, dirInfo);
 
 				// Update the file count
 
@@ -2763,14 +2453,13 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		FileInfo fileInfo = new FileInfo();
 
-		while (fileCnt < ctx.getMaximumFiles() &&
-			ctx.nextFileInfo(fileInfo) == true) {
+		while (fileCnt < ctx.getMaximumFiles() && ctx.nextFileInfo(fileInfo) == true) {
 
 			// Check for . files, ignore them.
 			//
 			// ** Should check for . and .. file names **
 
-			if (fileInfo.getFileName().startsWith("."))
+			if ( fileInfo.getFileName().startsWith("."))
 				continue;
 
 			// Get the resume id for the current file/directory
@@ -2779,28 +2468,21 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Debug
 
-			if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
-				m_sess.debugPrintln("Search return file " +
-					fileInfo.toString() + ", resumeId=" + resumeId);
+			if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+				m_sess.debugPrintln("Search return file " + fileInfo.toString() + ", resumeId=" + resumeId);
 
-			// Check if the share is read-only, if so then force the read-only
-			// flag for the file
+			// Check if the share is read-only, if so then force the read-only flag for the file
 
-			if (conn.getSharedDevice().isReadOnly() &&
-				fileInfo.isReadOnly() == false) {
+			if ( conn.getSharedDevice().isReadOnly() && fileInfo.isReadOnly() == false) {
 
 				// Make sure the read-only attribute is set
 
-				fileInfo.setFileAttributes(fileInfo.getFileAttributes() +
-					FileAttribute.ReadOnly);
+				fileInfo.setFileAttributes(fileInfo.getFileAttributes() + FileAttribute.ReadOnly);
 			}
 
 			// Pack the file information
 
-			bufPos =
-				packSearchInfo(
-					buf, bufPos, ctx.getSearchString(), resumeId, searchId,
-					fileInfo);
+			bufPos = packSearchInfo(buf, bufPos, ctx.getSearchString(), resumeId, searchId, fileInfo);
 
 			// Update the file count, reset the current file information
 
@@ -2810,7 +2492,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Check if any files were found
 
-		if (fileCnt == 0) {
+		if ( fileCnt == 0) {
 
 			// Send a repsonse that indicates that the search has finished
 
@@ -2821,11 +2503,11 @@ class CoreProtocolHandler extends ProtocolHandler {
 			respPkt.setErrorClass(SMBStatus.ErrDos);
 			respPkt.setErrorCode(SMBStatus.DOSNoMoreFiles);
 
-			m_sess.sendResponseSMB(respPkt);
+			m_sess.sendResponseSMB( respPkt);
 
 			// Debug
 
-			if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+			if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
 				m_sess.debugPrintln("End search [" + searchId + "]");
 
 			// Release the search context
@@ -2839,8 +2521,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 			dataLen = bufPos - respPkt.getByteOffset();
 			respPkt.setByteCount(dataLen);
 
-			// Set the variable data block length and returned file count
-			// parameter
+			// Set the variable data block length and returned file count parameter
 
 			bufPos = respPkt.getByteOffset() + 1;
 			DataPacker.putIntelShort(dataLen - 3, buf, bufPos);
@@ -2848,23 +2529,18 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Send the search response packet
 
-			m_sess.sendResponseSMB(respPkt);
+			m_sess.sendResponseSMB( respPkt);
 
-			// Check if the search string contains wildcards and this is the
-			// start of a new search,
+			// Check if the search string contains wildcards and this is the start of a new search,
 			// if not then
-			// release the search context now as the client will not continue
-			// the search.
+			// release the search context now as the client will not continue the search.
 
-			if (fileCnt == 1 && resumeLen == 0 &&
-				WildCard.containsWildcards(srchPath) == false) {
+			if ( fileCnt == 1 && resumeLen == 0 && WildCard.containsWildcards(srchPath) == false) {
 
 				// Debug
 
-				if (Debug.EnableInfo &&
-					m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
-					m_sess.debugPrintln("End search [" + searchId +
-						"] (Not wildcard)");
+				if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+					m_sess.debugPrintln("End search [" + searchId + "] (Not wildcard)");
 
 				// Release the search context
 
@@ -2874,7 +2550,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TXDATA))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TXDATA))
 			m_sess.debugPrintln("Tx " + respPkt.getLength() + " bytes");
 	}
 
@@ -2888,11 +2564,9 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -2901,26 +2575,24 @@ class CoreProtocolHandler extends ProtocolHandler {
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVInvalidTID, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
 			m_sess.debugPrintln("Start Search - Volume Label");
 
 		// Access the shared devices disk interface
@@ -2936,8 +2608,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -2945,7 +2616,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		VolumeInfo volInfo = diskCtx.getVolumeInformation();
 		String volLabel = "";
-		if (volInfo != null)
+		if ( volInfo != null)
 			volLabel = volInfo.getVolumeLabel();
 
 		// Start building the search response packet
@@ -2981,12 +2652,10 @@ class CoreProtocolHandler extends ProtocolHandler {
 		while (volBuf.length() < 13)
 			volBuf.append(" ");
 
-		if (volBuf.length() > 12)
+		if ( volBuf.length() > 12)
 			volBuf.setLength(12);
 
-		bufPos =
-			DataPacker.putString(
-				volBuf.toString().toUpperCase(), buf, bufPos, true);
+		bufPos = DataPacker.putString(volBuf.toString().toUpperCase(), buf, bufPos, true);
 
 		// Set the actual data length
 
@@ -2999,9 +2668,8 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
-			m_sess.debugPrintln("Volume label for " + conn.toString() + " is " +
-				volLabel);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_SEARCH))
+			m_sess.debugPrintln("Volume label for " + conn.toString() + " is " + volLabel);
 	}
 
 	/**
@@ -3014,65 +2682,57 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Check that the received packet looks like a valid file seek request
 
-		if (smbPkt.checkPacketIsValid(4, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(4, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the file id from the request
 
-		int fid = smbPkt.getParameter(0);
+		int fid      = smbPkt.getParameter(0);
 		int seekMode = smbPkt.getParameter(1);
 		long seekPos = (long) smbPkt.getParameterLong(2);
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("File Seek [" + netFile.getFileId() +
-				"] : Mode = " + seekMode + ", Pos = " + seekPos);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("File Seek [" + netFile.getFileId() + "] : Mode = " + seekMode + ", Pos = " + seekPos);
 
 		// Seek to the specified position within the file
 
@@ -3081,11 +2741,9 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Seek to the file position
 
@@ -3095,22 +2753,19 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (IOException ex) {
 
 			// Debug
 
-			if (Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-				m_sess.debugPrintln("File Seek Error [" + netFile.getFileId() +
-					"] : " + ex.toString());
+			if ( Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+				m_sess.debugPrintln("File Seek Error [" + netFile.getFileId() + "] : " + ex.toString());
 
 			// Failed to seek the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.HRDReadFault, SMBStatus.ErrHrd);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.HRDReadFault, SMBStatus.ErrHrd);
 			return;
 		}
 
@@ -3122,7 +2777,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Send the seek response
 
-		m_sess.sendResponseSMB(smbPkt);
+		m_sess.sendResponseSMB( smbPkt);
 	}
 
 	/**
@@ -3136,8 +2791,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Return an access denied error, require a logon
 
-		m_sess.sendErrorResponseSMB(
-			smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+		m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 	}
 
 	/**
@@ -3145,52 +2799,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procSetFileAttributes(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid set file attributes
-		// request
+		// Check that the received packet looks like a valid set file attributes request
 
-		if (smbPkt.checkPacketIsValid(8, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(8, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -3198,16 +2844,13 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the file name
 
-		String fileName =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
-		if (fileName == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String fileName = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, smbPkt.isUnicode());
+		if ( fileName == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -3221,27 +2864,24 @@ class CoreProtocolHandler extends ProtocolHandler {
 		int fdate = smbPkt.getParameter(1);
 		int ftime = smbPkt.getParameter(2);
 
-		if (fdate != 0 && ftime != 0) {
+		if ( fdate != 0 && ftime != 0) {
 			finfo.setModifyDateTime(new SMBDate(fdate, ftime).getTime());
 			setFlags += FileInfo.SetModifyDate;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Set File Attributes [" + treeId + "] name=" +
-				fileName + ", attr=0x" + Integer.toHexString(fattr) +
-				", fdate=" + fdate + ", ftime=" + ftime);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Set File Attributes [" + treeId + "] name=" + fileName + ", attr=0x"
+					+ Integer.toHexString(fattr) + ", fdate=" + fdate + ", ftime=" + ftime);
 
 		// Access the disk interface and set the file attributes
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Get the file information for the specified file/directory
 
@@ -3252,8 +2892,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
@@ -3274,52 +2913,44 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procSetFileInformation(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid set file
-		// information2 request
+		// Check that the received packet looks like a valid set file information2 request
 
-		if (smbPkt.checkPacketIsValid(7, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(7, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -3328,9 +2959,8 @@ class CoreProtocolHandler extends ProtocolHandler {
 		int fid = smbPkt.getParameter(0);
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -3342,7 +2972,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 		int fdate = smbPkt.getParameter(1);
 		int ftime = smbPkt.getParameter(2);
 
-		if (fdate != 0 && ftime != 0) {
+		if ( fdate != 0 && ftime != 0) {
 			finfo.setCreationDateTime(new SMBDate(fdate, ftime).getTime());
 			setFlags += FileInfo.SetCreationDate;
 		}
@@ -3352,7 +2982,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 		fdate = smbPkt.getParameter(3);
 		ftime = smbPkt.getParameter(4);
 
-		if (fdate != 0 && ftime != 0) {
+		if ( fdate != 0 && ftime != 0) {
 			finfo.setAccessDateTime(new SMBDate(fdate, ftime).getTime());
 			setFlags += FileInfo.SetAccessDate;
 		}
@@ -3362,26 +2992,23 @@ class CoreProtocolHandler extends ProtocolHandler {
 		fdate = smbPkt.getParameter(5);
 		ftime = smbPkt.getParameter(6);
 
-		if (fdate != 0 && ftime != 0) {
+		if ( fdate != 0 && ftime != 0) {
 			finfo.setModifyDateTime(new SMBDate(fdate, ftime).getTime());
 			setFlags += FileInfo.SetModifyDate;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-			m_sess.debugPrintln("Set File Information 2 [" +
-				netFile.getFileId() + "] " + finfo.toString());
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+			m_sess.debugPrintln("Set File Information 2 [" + netFile.getFileId() + "] " + finfo.toString());
 
 		// Access the disk interface and set the file information
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Get the file information for the specified file/directory
 
@@ -3392,8 +3019,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
@@ -3414,32 +3040,26 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
-	 * @exception org.alfresco.aifs.smb.TooManyConnectionsException Too many
-	 *                concurrent connections on this session.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
+	 * @exception org.alfresco.aifs.smb.TooManyConnectionsException Too many concurrent connections
+	 *                on this session.
 	 */
 
 	protected void procTreeConnect(SMBSrvPacket smbPkt)
-		throws SMBSrvException, TooManyConnectionsException,
-		java.io.IOException {
+		throws SMBSrvException, TooManyConnectionsException, java.io.IOException {
 
-		// Check that the received packet looks like a valid tree connect
-		// request
+		// Check that the received packet looks like a valid tree connect request
 
-		if (smbPkt.checkPacketIsValid(0, 4) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(0, 4) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -3447,25 +3067,21 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int dataPos = smbPkt.getByteOffset();
 		int dataLen = smbPkt.getByteCount();
-		byte[] buf = smbPkt.getBuffer();
+		byte[] buf  = smbPkt.getBuffer();
 
 		// Extract the requested share name, as a UNC path
 
 		boolean isUni = smbPkt.isUnicode();
-		String uncPath =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, isUni);
-		if (uncPath == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String uncPath = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, isUni);
+		if ( uncPath == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Extract the password string
 
-		if (isUni) {
-			dataPos =
-				DataPacker.wordAlign(dataPos + 1) + (uncPath.length() * 2) + 2;
+		if ( isUni) {
+			dataPos = DataPacker.wordAlign(dataPos + 1) + (uncPath.length() * 2) + 2;
 			dataLen -= (uncPath.length() * 2) + 2;
 		}
 		else {
@@ -3473,20 +3089,16 @@ class CoreProtocolHandler extends ProtocolHandler {
 			dataLen -= uncPath.length() + 2;
 		}
 
-		String pwd =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, isUni);
-		if (pwd == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String pwd = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, isUni);
+		if ( pwd == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Extract the service type string
 
-		if (isUni) {
-			dataPos =
-				DataPacker.wordAlign(dataPos + 1) + (pwd.length() * 2) + 2;
+		if ( isUni) {
+			dataPos = DataPacker.wordAlign(dataPos + 1) + (pwd.length() * 2) + 2;
 			dataLen -= (pwd.length() * 2) + 2;
 		}
 		else {
@@ -3494,27 +3106,23 @@ class CoreProtocolHandler extends ProtocolHandler {
 			dataLen -= pwd.length() + 2;
 		}
 
-		String service =
-			DataPacker.getDataString(
-				DataType.ASCII, buf, dataPos, dataLen, isUni);
-		if (service == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		String service = DataPacker.getDataString(DataType.ASCII, buf, dataPos, dataLen, isUni);
+		if ( service == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Convert the service type to a shared device type
 
 		int servType = ShareType.ServiceAsType(service);
-		if (servType == ShareType.UNKNOWN) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		if ( servType == ShareType.UNKNOWN) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
 			m_sess.debugPrintln("Tree connect - " + uncPath + ", " + service);
 
 		// Parse the requested share name
@@ -3525,15 +3133,13 @@ class CoreProtocolHandler extends ProtocolHandler {
 			share = new PCShare(uncPath);
 		}
 		catch (InvalidUNCPathException ex) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Map the IPC$ share to the admin pipe type
 
-		if (servType == ShareType.NAMEDPIPE &&
-			share.getShareName().compareTo("IPC$") == 0)
+		if ( servType == ShareType.NAMEDPIPE && share.getShareName().compareTo("IPC$") == 0)
 			servType = ShareType.ADMINPIPE;
 
 		// Find the requested shared device
@@ -3544,33 +3150,27 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Get/create the shared device
 
-			shareDev =
-				m_sess.getSMBServer().findShare(
-					share.getNodeName(), share.getShareName(), servType,
-					getSession(), true);
+			shareDev = m_sess.getSMBServer().findShare(share.getNodeName(), share.getShareName(), servType, getSession(), true);
 		}
 		catch (InvalidUserException ex) {
 
 			// Return a logon failure status
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 		catch (Exception ex) {
 
 			// Return a general status, bad network name
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVInvalidNetworkName, SMBStatus.ErrSrv);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVInvalidNetworkName, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Check if the share is valid
 
-		if (shareDev == null || shareDev.getType() != servType) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( shareDev == null || shareDev.getType() != servType) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -3578,33 +3178,27 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		int treeId = vc.addConnection(shareDev);
 
-		// Authenticate the share connection depending upon the security mode
-		// the server is running
+		// Authenticate the share connection depending upon the security mode the server is running
 		// under
 
-		ICifsAuthenticator auth =
-			getSession().getSMBServer().getCifsAuthenticator();
+		ICifsAuthenticator auth = getSession().getSMBServer().getCifsAuthenticator();
 		int filePerm = FileAccess.Writeable;
 
-		if (auth != null) {
+		if ( auth != null) {
 
 			// Validate the share connection
 
-			filePerm =
-				auth.authenticateShareConnect(
-					m_sess.getClientInformation(), shareDev, pwd, m_sess);
-			if (filePerm < 0) {
+			filePerm = auth.authenticateShareConnect(m_sess.getClientInformation(), shareDev, pwd, m_sess);
+			if ( filePerm < 0) {
 
 				// Invalid share connection request
 
-				m_sess.sendErrorResponseSMB(
-					smbPkt, SMBStatus.SRVNoAccessRights, SMBStatus.ErrSrv);
+				m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVNoAccessRights, SMBStatus.ErrSrv);
 				return;
 			}
 		}
 
-		// Set the file permission that this user has been granted for this
-		// share
+		// Set the file permission that this user has been granted for this share
 
 		TreeConnection tree = vc.findConnection(treeId);
 		tree.setPermission(filePerm);
@@ -3624,7 +3218,7 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Inform the driver that a connection has been opened
 
-		if (tree.getInterface() != null)
+		if ( tree.getInterface() != null)
 			tree.getInterface().treeOpened(m_sess, tree);
 	}
 
@@ -3633,69 +3227,60 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt Response SMB packet.
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procTreeDisconnect(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid tree disconnect
-		// request
+		// Check that the received packet looks like a valid tree disconnect request
 
-		if (smbPkt.checkPacketIsValid(0, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(0, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
-			m_sess.debugPrintln("Tree disconnect - " + treeId + ", " +
-				conn.toString());
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
+			m_sess.debugPrintln("Tree disconnect - " + treeId + ", " + conn.toString());
 
 		// Remove the specified connection from the session
 
 		vc.removeConnection(treeId, m_sess);
 
-		// Check if this is the last tree connection on the virtual circuit and
-		// the virtual circuit is logged off
-
-		if (vc.getConnectionCount() == 0 && vc.isLoggedOn() == false) {
-
+		// Check if this is the last tree connection on the virtual circuit and the virtual circuit is logged off
+		
+		if ( vc.getConnectionCount() == 0 && vc.isLoggedOn() == false) {
+			
 			// Remove the virtual circuit
-
-			m_sess.removeVirtualCircuit(vc.getUID());
-
+			
+			m_sess.removeVirtualCircuit( vc.getUID());
+			
 			// Debug
 
-			if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
+			if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_TREE))
 				m_sess.debugPrintln("  Removed virtual circuit " + vc);
 		}
-
+			
 		// Build the tree disconnect response
 
 		smbPkt.setParameterCount(0);
@@ -3704,23 +3289,22 @@ class CoreProtocolHandler extends ProtocolHandler {
 		m_sess.sendResponseSMB(smbPkt);
 
 		// If there are no active virtual circuits then close the session/socket
-
-		if (m_sess.numberOfVirtualCircuits() == 0) {
-
+		
+		if ( m_sess.numberOfVirtualCircuits() == 0) {
+			
 			// DEBUG
-
-			if (Debug.EnableInfo &&
-				m_sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+			
+			if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
 				Debug.println("  Closing session, no more virtual circuits");
-
+			
 			// Close the session/socket
-
-			m_sess.hangupSession("Tree disconnect");
+			
+			m_sess.hangupSession( "Tree disconnect");
 		}
 
 		// Inform the driver that a connection has been closed
 
-		if (conn.getInterface() != null)
+		if ( conn.getInterface() != null)
 			conn.getInterface().treeClosed(m_sess, conn);
 	}
 
@@ -3729,73 +3313,64 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.server.SMBSrvException The exception description.
 	 */
 	protected void procUnLockFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid unlock file request
 
-		if (smbPkt.checkPacketIsValid(5, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(5, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasReadAccess() == false) {
+		if ( conn.hasReadAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the file id from the request
 
-		int fid = smbPkt.getParameter(0);
+		int fid      = smbPkt.getParameter(0);
 		long lockcnt = smbPkt.getParameterLong(1);
 		long lockoff = smbPkt.getParameterLong(3);
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-			m_sess.debugPrintln("File UnLock [" + netFile.getFileId() +
-				"] : Offset=" + lockoff + " ,Count=" + lockcnt);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+			m_sess.debugPrintln("File UnLock [" + netFile.getFileId() + "] : Offset=" + lockoff + " ,Count=" + lockcnt);
 
 		// ***** Always return a success status, simulated locking ****
 		//
@@ -3814,16 +3389,14 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected final void procUnsupported(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Send an unsupported error response
 
-		m_sess.sendErrorResponseSMB(
-			smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+		m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
 	}
 
 	/**
@@ -3831,75 +3404,64 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procWriteFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
 		// Check that the received packet looks like a valid file write request
 
-		if (smbPkt.checkPacketIsValid(5, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(5, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the file id from the request
 
-		int fid = smbPkt.getParameter(0);
-		int wrtcnt = smbPkt.getParameter(1);
-		long wrtoff =
-			smbPkt.getParameter(2) +
-				((smbPkt.getParameter(3) << 16) & 0xFFFFFFFFL);
+		int fid     = smbPkt.getParameter(0);
+		int wrtcnt  = smbPkt.getParameter(1);
+		long wrtoff = smbPkt.getParameter(2) + ((smbPkt.getParameter(3) << 16) & 0xFFFFFFFFL);
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-			m_sess.debugPrintln("File Write [" + netFile.getFileId() +
-				"] : Size=" + wrtcnt + " ,Pos=" + wrtoff);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+			m_sess.debugPrintln("File Write [" + netFile.getFileId() + "] : Size=" + wrtcnt + " ,Pos=" + wrtoff);
 
 		// Write data to the file
 
@@ -3909,29 +3471,25 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		// Check that the data block is valid
 
-		if (buf[pos] != DataType.DataBlock) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+		if ( buf[pos] != DataType.DataBlock) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Update the buffer position to the start of the data to be written
 
 			pos += 3;
 
-			// Check for a zero length write, this should truncate/extend the
-			// file to the write
+			// Check for a zero length write, this should truncate/extend the file to the write
 			// offset position
 
-			if (wrtcnt == 0) {
+			if ( wrtcnt == 0) {
 
 				// Truncate/extend the file to the write offset
 
@@ -3941,31 +3499,26 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 				// Write to the file
 
-				wrtlen =
-					disk.writeFile(
-						m_sess, conn, netFile, buf, pos, wrtcnt, wrtoff);
+				wrtlen = disk.writeFile(m_sess, conn, netFile, buf, pos, wrtcnt, wrtoff);
 			}
 		}
 		catch (InvalidDeviceInterfaceException ex) {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Debug
 
-			if (Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-				m_sess.debugPrintln("File Write Error [" + netFile.getFileId() +
-					"] : " + ex.toString());
+			if ( Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+				m_sess.debugPrintln("File Write Error [" + netFile.getFileId() + "] : " + ex.toString());
 
 			// Failed to read the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.HRDWriteFault, SMBStatus.ErrHrd);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.HRDWriteFault, SMBStatus.ErrHrd);
 			return;
 		}
 
@@ -3985,74 +3538,64 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException The exception description.
-	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception
-	 *                description.
+	 * @exception org.alfresco.aifs.smb.SMBSrvException The exception description.
 	 */
 	protected void procWriteAndCloseFile(SMBSrvPacket smbPkt)
 		throws java.io.IOException, SMBSrvException {
 
-		// Check that the received packet looks like a valid file write and
-		// close request
+		// Check that the received packet looks like a valid file write and close request
 
-		if (smbPkt.checkPacketIsValid(6, 0) == false) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.checkPacketIsValid(6, 0) == false) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
 		// Get the virtual circuit for the request
 
-		VirtualCircuit vc = m_sess.findVirtualCircuit(smbPkt.getUserId());
-		if (vc == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.NTInvalidParameter,
-				SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+		VirtualCircuit vc = m_sess.findVirtualCircuit( smbPkt.getUserId());
+		if ( vc == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = smbPkt.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Check if the user has the required access permission
 
-		if (conn.hasWriteAccess() == false) {
+		if ( conn.hasWriteAccess() == false) {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Get the file id from the request
 
-		int fid = smbPkt.getParameter(0);
+		int fid    = smbPkt.getParameter(0);
 		int wrtcnt = smbPkt.getParameter(1);
 		int wrtoff = smbPkt.getParameterLong(2);
 
 		NetworkFile netFile = conn.findFile(fid);
 
-		if (netFile == null) {
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( netFile == null) {
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-			m_sess.debugPrintln("File Write And Close [" + netFile.getFileId() +
-				"] : Size=" + wrtcnt + " ,Pos=" + wrtoff);
+		if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+			m_sess.debugPrintln("File Write And Close [" + netFile.getFileId() + "] : Size=" + wrtcnt + " ,Pos=" + wrtoff);
 
 		// Write data to the file
 
@@ -4062,22 +3605,19 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 		try {
 
-			// Access the disk interface that is associated with the shared
-			// device
+			// Access the disk interface that is associated with the shared device
 
-			DiskInterface disk =
-				(DiskInterface) conn.getSharedDevice().getInterface();
+			DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
 			// Write to the file
 
-			wrtlen =
-				disk.writeFile(m_sess, conn, netFile, buf, pos, wrtcnt, wrtoff);
+			wrtlen = disk.writeFile(m_sess, conn, netFile, buf, pos, wrtcnt, wrtoff);
 
 			// Close the file
 			//
 			// The disk interface may be null if the file is a named pipe file
 
-			if (disk != null)
+			if ( disk != null)
 				disk.closeFile(m_sess, conn, netFile);
 
 			// Indicate that the file has been closed
@@ -4088,22 +3628,19 @@ class CoreProtocolHandler extends ProtocolHandler {
 
 			// Failed to get/initialize the disk interface
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 			return;
 		}
 		catch (java.io.IOException ex) {
 
 			// Debug
 
-			if (Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
-				m_sess.debugPrintln("File Write Error [" + netFile.getFileId() +
-					"] : " + ex.toString());
+			if ( Debug.EnableError && m_sess.hasDebug(SMBSrvSession.DBG_FILEIO))
+				m_sess.debugPrintln("File Write Error [" + netFile.getFileId() + "] : " + ex.toString());
 
 			// Failed to read the file
 
-			m_sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.HRDWriteFault, SMBStatus.ErrHrd);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.HRDWriteFault, SMBStatus.ErrHrd);
 			return;
 		}
 
@@ -4129,202 +3666,198 @@ class CoreProtocolHandler extends ProtocolHandler {
 	 * @exception SMBSrvException
 	 * @exception TooManyConnectionsException
 	 */
-	public boolean runProtocol(SMBSrvPacket smbPkt)
-		throws java.io.IOException, SMBSrvException,
-		TooManyConnectionsException {
+	public boolean runProtocol( SMBSrvPacket smbPkt)
+		throws java.io.IOException, SMBSrvException, TooManyConnectionsException {
 
 		// Determine the SMB command type
 
 		boolean handledOK = true;
 
-		switch (smbPkt.getCommand()) {
+		switch ( smbPkt.getCommand()) {
 
-		// Session setup
-
-		case PacketType.SessionSetupAndX:
-			procSessionSetup(smbPkt);
-			break;
-
-		// Tree connect
-
-		case PacketType.TreeConnect:
-			procTreeConnect(smbPkt);
-			break;
-
-		// Tree disconnect
-
-		case PacketType.TreeDisconnect:
-			procTreeDisconnect(smbPkt);
-			break;
-
-		// Search
-
-		case PacketType.Search:
-			procSearch(smbPkt);
-			break;
-
-		// Get disk attributes
-
-		case PacketType.DiskInformation:
-			procDiskAttributes(smbPkt);
-			break;
-
-		// Get file attributes
-
-		case PacketType.GetFileAttributes:
-			procGetFileAttributes(smbPkt);
-			break;
-
-		// Set file attributes
-
-		case PacketType.SetFileAttributes:
-			procSetFileAttributes(smbPkt);
-			break;
-
-		// Get file information
-
-		case PacketType.QueryInformation2:
-			procGetFileInformation(smbPkt);
-			break;
-
-		// Set file information
-
-		case PacketType.SetInformation2:
-			procSetFileInformation(smbPkt);
-			break;
-
-		// Open a file
-
-		case PacketType.OpenFile:
-			procOpenFile(smbPkt);
-			break;
-
-		// Read from a file
-
-		case PacketType.ReadFile:
-			procReadFile(smbPkt);
-			break;
-
-		// Seek file
-
-		case PacketType.SeekFile:
-			procSeekFile(smbPkt);
-			break;
-
-		// Close a file
-
-		case PacketType.CloseFile:
-			procCloseFile(smbPkt);
-			break;
-
-		// Create a new file
-
-		case PacketType.CreateFile:
-		case PacketType.CreateNew:
-			procCreateFile(smbPkt);
-			break;
-
-		// Write to a file
-
-		case PacketType.WriteFile:
-			procWriteFile(smbPkt);
-			break;
-
-		// Write to a file, then close the file
-
-		case PacketType.WriteAndClose:
-			procWriteAndCloseFile(smbPkt);
-			break;
-
-		// Flush file
-
-		case PacketType.FlushFile:
-			procFlushFile(smbPkt);
-			break;
-
-		// Rename a file
-
-		case PacketType.RenameFile:
-			procRenameFile(smbPkt);
-			break;
-
-		// Delete a file
-
-		case PacketType.DeleteFile:
-			procDeleteFile(smbPkt);
-			break;
-
-		// Create a new directory
-
-		case PacketType.CreateDirectory:
-			procCreateDirectory(smbPkt);
-			break;
-
-		// Delete a directory
-
-		case PacketType.DeleteDirectory:
-			procDeleteDirectory(smbPkt);
-			break;
-
-		// Check if a directory exists
-
-		case PacketType.CheckDirectory:
-			procCheckDirectory(smbPkt);
-			break;
-
-		// Unsupported requests
-
-		case PacketType.IOCtl:
-			procUnsupported(smbPkt);
-			break;
-
-		// Echo request
-
-		case PacketType.Echo:
-			procEcho(smbPkt);
-			break;
-
-		// Process exit request
-
-		case PacketType.ProcessExit:
-			procProcessExit(smbPkt);
-			break;
-
-		// Create temoporary file request
-
-		case PacketType.CreateTemporary:
-			procCreateTemporaryFile(smbPkt);
-			break;
-
-		// Lock file request
-
-		case PacketType.LockFile:
-			procLockFile(smbPkt);
-			break;
-
-		// Unlock file request
-
-		case PacketType.UnLockFile:
-			procUnLockFile(smbPkt);
-			break;
-
-		// Default
-
-		default:
-
-			// Indicate that the protocol handler did not process the SMB
-			// request
-
-			if (Debug.EnableError)
-				Debug.println("<<<<< Unknown SMB type : 0x" +
-					Integer.toHexString(smbPkt.getCommand()) + " >>>>>");
-			handledOK = false;
-			break;
+			// Session setup
+	
+			case PacketType.SessionSetupAndX:
+				procSessionSetup( smbPkt);
+				break;
+	
+			// Tree connect
+	
+			case PacketType.TreeConnect:
+				procTreeConnect( smbPkt);
+				break;
+	
+			// Tree disconnect
+	
+			case PacketType.TreeDisconnect:
+				procTreeDisconnect( smbPkt);
+				break;
+	
+			// Search
+	
+			case PacketType.Search:
+				procSearch( smbPkt);
+				break;
+	
+			// Get disk attributes
+	
+			case PacketType.DiskInformation:
+				procDiskAttributes( smbPkt);
+				break;
+	
+			// Get file attributes
+	
+			case PacketType.GetFileAttributes:
+				procGetFileAttributes( smbPkt);
+				break;
+	
+			// Set file attributes
+	
+			case PacketType.SetFileAttributes:
+				procSetFileAttributes( smbPkt);
+				break;
+	
+			// Get file information
+	
+			case PacketType.QueryInformation2:
+				procGetFileInformation( smbPkt);
+				break;
+	
+			// Set file information
+	
+			case PacketType.SetInformation2:
+				procSetFileInformation( smbPkt);
+				break;
+	
+			// Open a file
+	
+			case PacketType.OpenFile:
+				procOpenFile( smbPkt);
+				break;
+	
+			// Read from a file
+	
+			case PacketType.ReadFile:
+				procReadFile( smbPkt);
+				break;
+	
+			// Seek file
+	
+			case PacketType.SeekFile:
+				procSeekFile( smbPkt);
+				break;
+	
+			// Close a file
+	
+			case PacketType.CloseFile:
+				procCloseFile( smbPkt);
+				break;
+	
+			// Create a new file
+	
+			case PacketType.CreateFile:
+			case PacketType.CreateNew:
+				procCreateFile( smbPkt);
+				break;
+	
+			// Write to a file
+	
+			case PacketType.WriteFile:
+				procWriteFile( smbPkt);
+				break;
+	
+			// Write to a file, then close the file
+	
+			case PacketType.WriteAndClose:
+				procWriteAndCloseFile( smbPkt);
+				break;
+	
+			// Flush file
+	
+			case PacketType.FlushFile:
+				procFlushFile( smbPkt);
+				break;
+	
+			// Rename a file
+	
+			case PacketType.RenameFile:
+				procRenameFile( smbPkt);
+				break;
+	
+			// Delete a file
+	
+			case PacketType.DeleteFile:
+				procDeleteFile( smbPkt);
+				break;
+	
+			// Create a new directory
+	
+			case PacketType.CreateDirectory:
+				procCreateDirectory( smbPkt);
+				break;
+	
+			// Delete a directory
+	
+			case PacketType.DeleteDirectory:
+				procDeleteDirectory( smbPkt);
+				break;
+	
+			// Check if a directory exists
+	
+			case PacketType.CheckDirectory:
+				procCheckDirectory( smbPkt);
+				break;
+	
+			// Unsupported requests
+	
+			case PacketType.IOCtl:
+				procUnsupported( smbPkt);
+				break;
+	
+			// Echo request
+	
+			case PacketType.Echo:
+				procEcho( smbPkt);
+				break;
+	
+			// Process exit request
+	
+			case PacketType.ProcessExit:
+				procProcessExit( smbPkt);
+				break;
+	
+			// Create temoporary file request
+	
+			case PacketType.CreateTemporary:
+				procCreateTemporaryFile( smbPkt);
+				break;
+	
+			// Lock file request
+	
+			case PacketType.LockFile:
+				procLockFile( smbPkt);
+				break;
+	
+			// Unlock file request
+	
+			case PacketType.UnLockFile:
+				procUnLockFile( smbPkt);
+				break;
+	
+			// Default
+	
+			default:
+	
+				// Indicate that the protocol handler did not process the SMB request
+	
+				if ( Debug.EnableError)
+					Debug.println("<<<<< Unknown SMB type : 0x" + Integer.toHexString( smbPkt.getCommand()) + " >>>>>");
+				handledOK = false;
+				break;
 		}
 
 		// Return the handled status
 
 		return handledOK;
 	}
-
 }

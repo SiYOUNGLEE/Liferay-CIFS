@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -77,8 +77,7 @@ public class Win32NetBIOS {
 	 * @param bufLen int
 	 * @return int
 	 */
-	public static native int FindNameRaw(
-		int lana, byte[] name, byte[] nameBuf, int bufLen);
+	public static native int FindNameRaw(int lana, byte[] name, byte[] nameBuf, int bufLen);
 
 	/**
 	 * Find a NetBIOS name
@@ -95,10 +94,9 @@ public class Win32NetBIOS {
 
 		// Get the raw NetBIOS name data
 
-		int sts = FindNameRaw(
-			lana, nbName.getNetBIOSName(), nameBuf, nameBuf.length);
+		int sts = FindNameRaw(lana, nbName.getNetBIOSName(), nameBuf, nameBuf.length);
 
-		if (sts != NetBIOS.NRC_GoodRet)
+		if ( sts != NetBIOS.NRC_GoodRet)
 			return -sts;
 
 		// Unpack the FIND_NAME_HEADER structure
@@ -107,10 +105,10 @@ public class Win32NetBIOS {
 
 		int nodeCount = buf.getShort();
 		buf.skipBytes(1);
-
+		
 		boolean isGroupName = buf.getByte() == 0 ? false : true;
-		nbName.setGroup(isGroupName);
-
+		nbName.setGroup( isGroupName);
+		
 		// Unpack the FIND_NAME_BUFFER structures
 
 		int curPos = buf.getPosition();
@@ -129,10 +127,9 @@ public class Win32NetBIOS {
 
 			buf.skipBytes(9);
 
-			// Source address field format should be 0.0.n.n.n.n for TCP/IP
-			// address
+			// Source address field format should be 0.0.n.n.n.n for TCP/IP address
 
-			if (buf.getByte() == 0 && buf.getByte() == 0) {
+			if ( buf.getByte() == 0 && buf.getByte() == 0) {
 
 				// Looks like a TCP/IP format address, unpack it
 
@@ -143,8 +140,7 @@ public class Win32NetBIOS {
 				ipAddr[2] = (byte) buf.getByte();
 				ipAddr[3] = (byte) buf.getByte();
 
-				// Add the address to the list of TCP/IP addresses for the
-				// NetBIOS name
+				// Add the address to the list of TCP/IP addresses for the NetBIOS name
 
 				nbName.addIPAddress(ipAddr);
 
@@ -175,31 +171,28 @@ public class Win32NetBIOS {
 	 * @return int[]
 	 */
 	public static int[] LanaEnumerate() {
-
-		// Make sure that there is an active network adapter as making calls to
-		// the LanaEnum native
+		
+		// Make sure that there is an active network adapter as making calls to the LanaEnum native
 		// call causes problems when there are no active network adapters.
 
 		boolean adapterAvail = false;
 
 		try {
 
-			// Enumerate the available network adapters and check for an active
-			// adapter, not
+			// Enumerate the available network adapters and check for an active adapter, not
 			// including the loopback adapter
 
-			Enumeration<NetworkInterface> nis =
-				NetworkInterface.getNetworkInterfaces();
+			Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 
 			while (nis.hasMoreElements() && adapterAvail == false) {
 
 				NetworkInterface ni = nis.nextElement();
-				if (ni.getName().equals("lo") == false) {
+				if ( ni.getName().equals("lo") == false) {
 
 					// Make sure the adapter has a valid IP address
 
 					Enumeration<InetAddress> addrs = ni.getInetAddresses();
-					if (addrs.hasMoreElements())
+					if ( addrs.hasMoreElements())
 						adapterAvail = true;
 				}
 			}
@@ -209,7 +202,7 @@ public class Win32NetBIOS {
 
 		// Check if there are network adapter(s) available
 
-		if (adapterAvail == false)
+		if ( adapterAvail == false)
 			return null;
 
 		// Call the native code to return the available LANA list
@@ -241,8 +234,7 @@ public class Win32NetBIOS {
 	 * @param callerName byte[]
 	 * @return int
 	 */
-	public static native int Listen(
-		int lana, byte[] toName, byte[] fromName, byte[] callerName);
+	public static native int Listen(int lana, byte[] toName, byte[] fromName, byte[] callerName);
 
 	/**
 	 * Receive a data packet on a session
@@ -254,8 +246,7 @@ public class Win32NetBIOS {
 	 * @param maxLen int
 	 * @return int
 	 */
-	public static native int Receive(
-		int lana, int lsn, byte[] buf, int off, int maxLen);
+	public static native int Receive(int lana, int lsn, byte[] buf, int off, int maxLen);
 
 	/**
 	 * Send a data packet on a session
@@ -267,8 +258,7 @@ public class Win32NetBIOS {
 	 * @param len int
 	 * @return int
 	 */
-	public static native int Send(
-		int lana, int lsn, byte[] buf, int off, int len);
+	public static native int Send(int lana, int lsn, byte[] buf, int off, int len);
 
 	/**
 	 * Send a datagram to a specified name
@@ -281,8 +271,7 @@ public class Win32NetBIOS {
 	 * @param len int
 	 * @return int
 	 */
-	public static native int SendDatagram(
-		int lana, int srcNum, byte[] destName, byte[] buf, int off, int len);
+	public static native int SendDatagram(int lana, int srcNum, byte[] destName, byte[] buf, int off, int len);
 
 	/**
 	 * Send a broadcast datagram
@@ -293,8 +282,7 @@ public class Win32NetBIOS {
 	 * @param len int
 	 * @return int
 	 */
-	public static native int SendBroadcastDatagram(
-		int lana, byte[] buf, int off, int len);
+	public static native int SendBroadcastDatagram(int lana, byte[] buf, int off, int len);
 
 	/**
 	 * Receive a datagram on a specified name
@@ -306,8 +294,7 @@ public class Win32NetBIOS {
 	 * @param maxLen int
 	 * @return int
 	 */
-	public static native int ReceiveDatagram(
-		int lana, int nameNum, byte[] buf, int off, int maxLen);
+	public static native int ReceiveDatagram(int lana, int nameNum, byte[] buf, int off, int maxLen);
 
 	/**
 	 * Receive a broadcast datagram
@@ -319,8 +306,7 @@ public class Win32NetBIOS {
 	 * @param maxLen int
 	 * @return int
 	 */
-	public static native int ReceiveBroadcastDatagram(
-		int lana, int nameNum, byte[] buf, int off, int maxLen);
+	public static native int ReceiveBroadcastDatagram(int lana, int nameNum, byte[] buf, int off, int maxLen);
 
 	/**
 	 * Hangup a session
@@ -345,8 +331,8 @@ public class Win32NetBIOS {
 	public static native String GetLocalDomainName();
 
 	/**
-	 * Return a comma delimeted list of WINS server TCP/IP addresses, or null if
-	 * no WINS servers are configured.
+	 * Return a comma delimeted list of WINS server TCP/IP addresses, or null if no WINS servers are
+	 * configured.
 	 * 
 	 * @return String
 	 */
@@ -363,19 +349,18 @@ public class Win32NetBIOS {
 		// Get the local NetBIOS name
 
 		String localName = GetLocalNetBIOSName();
-		if (localName == null)
+		if ( localName == null)
 			return null;
 
 		// Create a NetBIOS name for the local name
 
-		NetBIOSName nbName = new NetBIOSName(
-			localName, NetBIOSName.WorkStation, false);
+		NetBIOSName nbName = new NetBIOSName(localName, NetBIOSName.WorkStation, false);
 
 		// Get the local NetBIOS name details
 
 		int sts = FindName(lana, nbName);
 
-		if (sts == -NetBIOS.NRC_EnvNotDef) {
+		if ( sts == -NetBIOS.NRC_EnvNotDef) {
 
 			// Reset the LANA then try the name lookup again
 
@@ -387,7 +372,7 @@ public class Win32NetBIOS {
 
 		String ipAddr = null;
 
-		if (sts >= 0) {
+		if ( sts >= 0) {
 
 			// Get the first IP address from the list
 
@@ -410,7 +395,7 @@ public class Win32NetBIOS {
 		// Get the TCP/IP address for a LANA
 
 		String ipAddr = getIPAddressForLANA(lana);
-		if (ipAddr == null)
+		if ( ipAddr == null)
 			return null;
 
 		// Get the list of available network adapters
@@ -418,12 +403,12 @@ public class Win32NetBIOS {
 		Hashtable<String, NetworkInterface> adapters = getNetworkAdapterList();
 		String adapterName = null;
 
-		if (adapters != null) {
+		if ( adapters != null) {
 
 			// Find the network adapter for the TCP/IP address
 
 			NetworkInterface ni = adapters.get(ipAddr);
-			if (ni != null)
+			if ( ni != null)
 				adapterName = ni.getDisplayName();
 		}
 
@@ -442,13 +427,13 @@ public class Win32NetBIOS {
 
 		// Check if the address is a numeric TCP/IP address
 
-		if (IPAddress.isNumericAddress(addr) == false)
+		if ( IPAddress.isNumericAddress(addr) == false)
 			return -1;
 
 		// Get a list of the available NetBIOS LANAs
 
 		int[] lanas = LanaEnum();
-		if (lanas == null || lanas.length == 0)
+		if ( lanas == null || lanas.length == 0)
 			return -1;
 
 		// Search for the LANA with the matching TCP/IP address
@@ -458,7 +443,7 @@ public class Win32NetBIOS {
 			// Get the current LANAs TCP/IP address
 
 			String curAddr = getIPAddressForLANA(lanas[i]);
-			if (curAddr != null && curAddr.equals(addr))
+			if ( curAddr != null && curAddr.equals(addr))
 				return lanas[i];
 		}
 
@@ -490,7 +475,7 @@ public class Win32NetBIOS {
 			String ipAddr = niEnum.nextElement();
 			NetworkInterface ni = (NetworkInterface) niList.get(ipAddr);
 
-			if (ni.getName().equalsIgnoreCase(name)) {
+			if ( ni.getName().equalsIgnoreCase(name)) {
 
 				// Return the LANA for the network adapters TCP/IP address
 
@@ -508,20 +493,17 @@ public class Win32NetBIOS {
 	 * 
 	 * @return Hashtable<String, NetworkInterface>
 	 */
-	private static final Hashtable<String, NetworkInterface> 
-		getNetworkAdapterList() {
+	private static final Hashtable<String, NetworkInterface> getNetworkAdapterList() {
 
 		// Get a list of the local network adapters
 
-		Hashtable<String, NetworkInterface> niList =
-			new Hashtable<String, NetworkInterface>();
+		Hashtable<String, NetworkInterface> niList = new Hashtable<String, NetworkInterface>();
 
 		try {
 
 			// Enumerate the available network adapters
 
-			Enumeration<NetworkInterface> niEnum =
-				NetworkInterface.getNetworkInterfaces();
+			Enumeration<NetworkInterface> niEnum = NetworkInterface.getNetworkInterfaces();
 
 			while (niEnum.hasMoreElements()) {
 
@@ -532,8 +514,7 @@ public class Win32NetBIOS {
 
 				while (addrEnum.hasMoreElements()) {
 
-					// Get the address and add the adapter to the list indexed
-					// via the numeric IP
+					// Get the address and add the adapter to the list indexed via the numeric IP
 					// address string
 
 					InetAddress addr = addrEnum.nextElement();
@@ -582,8 +563,9 @@ public class Win32NetBIOS {
 	 * @exception WinsockNetBIOSException If a Winsock error occurs
 	 */
 	protected static int BindSocket(int sockPtr, byte[] name)
-		throws WinsockNetBIOSException {
-		return BindSocket(sockPtr, name, false);
+		throws WinsockNetBIOSException
+	{
+		return BindSocket( sockPtr, name, false);
 	}
 
 	/**
@@ -594,8 +576,7 @@ public class Win32NetBIOS {
 	 * @param fastAddName boolean
 	 * @exception WinsockNetBIOSException If a Winsock error occurs
 	 */
-	protected static native int BindSocket(
-		int sockPtr, byte[] name, boolean fastAddName)
+	protected static native int BindSocket(int sockPtr, byte[] name, boolean fastAddName)
 		throws WinsockNetBIOSException;
 
 	/**
@@ -618,7 +599,7 @@ public class Win32NetBIOS {
 	 */
 	protected static native void ConnectSocket(int sockPtr, byte[] remoteName)
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Close a NetBIOS socket
 	 * 
@@ -636,8 +617,7 @@ public class Win32NetBIOS {
 	 * @return int
 	 * @exception WinsockNetBIOSException If a Winsock error occurs
 	 */
-	protected static native int SendSocket(
-		int sockPtr, byte[] buf, int off, int len)
+	protected static native int SendSocket(int sockPtr, byte[] buf, int off, int len)
 		throws WinsockNetBIOSException;
 
 	/**
@@ -650,8 +630,7 @@ public class Win32NetBIOS {
 	 * @return int
 	 * @exception WinsockNetBIOSException If a Winsock error occurs
 	 */
-	protected static native int ReceiveSocket(
-		int sockPtr, byte[] buf, int off, int maxLen)
+	protected static native int ReceiveSocket(int sockPtr, byte[] buf, int off, int maxLen)
 		throws WinsockNetBIOSException;
 
 	/**
@@ -663,7 +642,7 @@ public class Win32NetBIOS {
 	 */
 	protected static native int ReceiveLengthSocket(int sockPtr)
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Configure a socket to be non-blocking
 	 * 
@@ -671,8 +650,7 @@ public class Win32NetBIOS {
 	 * @param nonBlocking boolean
 	 * @exception WinsockNetBIOSException If a Winsock error occurs
 	 */
-	protected static native int SetNonBlockingSocket(
-		int sockPtr, boolean nonBlocking)
+	protected static native int SetNonBlockingSocket(int sockPtr, boolean nonBlocking)
 		throws WinsockNetBIOSException;
 
 	/**
@@ -684,13 +662,11 @@ public class Win32NetBIOS {
 	 * @return int Count of sockets have triggered events
 	 * @exception WinsockNetBIOSException If a Winsock error occurs
 	 */
-	protected static native int SelectReceiveSockets(
-		int sockCnt, int[] readSocksIn, int[] readSocksOut)
+	protected static native int SelectReceiveSockets( int sockCnt, int[] readSocksIn, int[] readSocksOut)
 		throws WinsockNetBIOSException;
-
+	
 	/**
-	 * Return the maximum number of sockets that can be configured per
-	 * SelectSockets() call
+	 * Return the maximum number of sockets that can be configured per SelectSockets() call
 	 * 
 	 * @return int
 	 */
@@ -704,32 +680,32 @@ public class Win32NetBIOS {
 	 */
 	public static native int Win32CreateEvent()
 		throws Exception;
-
+	
 	/**
 	 * Close a Win32 event
 	 * 
 	 * @param eventHandle int
 	 * @throws Exception
 	 */
-	public static native void Win32CloseEvent(int eventHandle)
+	public static native void Win32CloseEvent( int eventHandle)
 		throws Exception;
-
+	
 	/**
 	 * Set a Win32 event
 	 * 
 	 * @param eventHandle int
 	 * @return boolean
 	 */
-	public static native boolean Win32SetEvent(int eventHandle);
-
+	public static native boolean Win32SetEvent( int eventHandle);
+	
 	/**
 	 * Reset a Win32 event
 	 * 
-	 * @param eventHandle int
-	 * @return boolean
+	 *  @param eventHandle int
+	 *  @return boolean
 	 */
-	public static native boolean Win32ResetEvent(int eventHandle);
-
+	public static native boolean Win32ResetEvent( int eventHandle);
+	
 	/**
 	 * Create a Winsock event
 	 * 
@@ -738,30 +714,30 @@ public class Win32NetBIOS {
 	 */
 	public static native int WinsockCreateEvent()
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Set a Winsock event
 	 * 
 	 * @param eventHandle int
 	 * @return boolean
 	 */
-	public static native boolean WinsockSetEvent(int eventHandle);
-
+	public static native boolean WinsockSetEvent( int eventHandle);
+	
 	/**
 	 * Reset a Winsock event
 	 * 
 	 * @param eventHandle int
 	 * @return boolean
 	 */
-	public static native boolean WinsockResetEvent(int eventHandle);
+	public static native boolean WinsockResetEvent( int eventHandle);
 
 	/**
 	 * Close a Winsock event
 	 * 
-	 * @param eventHandle int
-	 * @exception WinsockNetBIOSException
+	 *  @param eventHandle int
+	 *  @exception WinsockNetBIOSException
 	 */
-	public static native void WinsockCloseEvent(int eventHandle)
+	public static native void WinsockCloseEvent( int eventHandle)
 		throws WinsockNetBIOSException;
 
 	/**
@@ -775,11 +751,9 @@ public class Win32NetBIOS {
 	 * @return int
 	 * @throws WinsockNetBIOSException
 	 */
-	public static native int WinsockWaitForMultipleEvents(
-		int eventCnt, int[] events, boolean waitAll, int timeout,
-		boolean alertable)
+	public static native int WinsockWaitForMultipleEvents( int eventCnt, int[] events, boolean waitAll, int timeout, boolean alertable)
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Set Winsock events for a socket
 	 * 
@@ -788,10 +762,9 @@ public class Win32NetBIOS {
 	 * @param eventMask int
 	 * @throws WinsockNetBIOSException
 	 */
-	public static native void WinsockEventSelect(
-		int sockPtr, int eventHandle, int eventMask)
+	public static native void WinsockEventSelect( int sockPtr, int eventHandle, int eventMask)
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Get the list of socket events that have triggered for a particular socket
 	 * 
@@ -800,8 +773,7 @@ public class Win32NetBIOS {
 	 * @return int
 	 * @throws WinsockNetBIOSException
 	 */
-	public static native int WinsockEnumNetworkEvents(
-		int sockPtr, int eventHandle)
+	public static native int WinsockEnumNetworkEvents( int sockPtr, int eventHandle)
 		throws WinsockNetBIOSException;
 
 	/**
@@ -811,9 +783,9 @@ public class Win32NetBIOS {
 	 * @return int
 	 * @throws winsockNetBIOSException
 	 */
-	public static native int getSocketReceiveBufferSize(int sockPtr)
+	public static native int getSocketReceiveBufferSize( int sockPtr)
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Set the socket receive buffer size
 	 * 
@@ -821,10 +793,9 @@ public class Win32NetBIOS {
 	 * @param bufSize int
 	 * @throws WinsockNetBIOSException
 	 */
-	public static native void setSocketReceiveBufferSize(
-		int sockPtr, int bufSize)
+	public static native void setSocketReceiveBufferSize( int sockPtr, int bufSize)
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Get the current send buffer size for the socket
 	 * 
@@ -832,9 +803,9 @@ public class Win32NetBIOS {
 	 * @return int
 	 * @throws winsockNetBIOSException
 	 */
-	public static native int getSocketSendBufferSize(int sockPtr)
+	public static native int getSocketSendBufferSize( int sockPtr)
 		throws WinsockNetBIOSException;
-
+	
 	/**
 	 * Set the socket send buffer size
 	 * 
@@ -842,12 +813,12 @@ public class Win32NetBIOS {
 	 * @param bufSize int
 	 * @throws WinsockNetBIOSException
 	 */
-	public static native void setSocketSendBufferSize(int sockPtr, int bufSize)
+	public static native void setSocketSendBufferSize( int sockPtr, int bufSize)
 		throws WinsockNetBIOSException;
-
+	
 	/**
-	 * Wait for a network address change event, block until a change occurs or
-	 * the Winsock NetBIOS interface is shut down
+	 * Wait for a network address change event, block until a change occurs or the Winsock NetBIOS
+	 * interface is shut down
 	 */
 	public static native void waitForNetworkAddressChange();
 
@@ -860,7 +831,7 @@ public class Win32NetBIOS {
 
 		String dllName = "Win32NetBIOS";
 
-		if (X64.isWindows64())
+		if ( X64.isWindows64())
 			dllName = "Win32NetBIOSx64";
 
 		// Load the Win32 NetBIOS interface library
@@ -869,8 +840,7 @@ public class Win32NetBIOS {
 			System.loadLibrary(dllName);
 		}
 		catch (Throwable ex) {
-			Debug.println(ex);
+			Debug.println( ex);
 		}
 	}
-
 }

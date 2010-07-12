@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -28,51 +28,50 @@ package org.alfresco.jlan.netbios.server;
 import org.alfresco.jlan.netbios.NetBIOSName;
 
 /**
- * NetBIOS Request Class <p>Contains the details of NetBIOS server request, such
- * as an add name request.
+ * NetBIOS Request Class
  * 
+ * <p>Contains the details of NetBIOS server request, such as an add name request.
+ *
  * @author gkspencer
  */
 class NetBIOSRequest {
 
-	// Request types
+	//	Request types
+	
+	public final static int AddName			= 0;
+	public final static int DeleteName	= 1;
+	public final static int RefreshName	= 2;
+	
+	//	Default retry count and interval
+	
+	public final static int DefaultRetries		= 5;
+	public final static long DefaultInterval	= 2000;	//	ms
 
-	public final static int AddName = 0;
-	public final static int DeleteName = 1;
-	public final static int RefreshName = 2;
-
-	// Default retry count and interval
-
-	public final static int DefaultRetries = 5;
-	public final static long DefaultInterval = 2000; // ms
-
-	// Requets type strings
-
-	private final static String[] _typeNames = {
-		"AddName", "DelName", "RefreshName"
-	};
-
-	// Request type
-
+	//	Requets type strings
+	
+	private final static String[] _typeNames = {"AddName", "DelName", "RefreshName"};
+		
+	//	Request type
+	
 	private int m_type;
-
-	// NetBIOS name details
-
+	
+	//	NetBIOS name details
+	
 	private NetBIOSName m_nbName;
-
-	// Retry count and interval
-
+	
+	//	Retry count and interval
+	
 	private int m_retry;
 	private long m_retryIntvl;
-
-	// Response status
-
+	
+	//	Response status
+	
 	private boolean m_error;
-
-	// Transaction id for this request
-
+	
+	//	Transaction id for this request
+	
 	private int m_tranId;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -81,16 +80,16 @@ class NetBIOSRequest {
 	 * @param tranId int
 	 */
 	public NetBIOSRequest(int typ, NetBIOSName nbName, int tranId) {
-		m_type = typ;
+		m_type   = typ;
 		m_nbName = nbName;
 		m_tranId = tranId;
-
-		m_retry = DefaultRetries;
+		
+		m_retry      = DefaultRetries;
 		m_retryIntvl = DefaultInterval;
 
 		m_error = false;
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -100,16 +99,16 @@ class NetBIOSRequest {
 	 * @param retry int
 	 */
 	public NetBIOSRequest(int typ, NetBIOSName nbName, int tranId, int retry) {
-		m_type = typ;
+		m_type   = typ;
 		m_nbName = nbName;
 		m_tranId = tranId;
-
-		m_retry = retry;
+		
+		m_retry      = retry;
 		m_retryIntvl = DefaultInterval;
 
 		m_error = false;
 	}
-
+	
 	/**
 	 * Return the request type
 	 * 
@@ -125,11 +124,11 @@ class NetBIOSRequest {
 	 * @return String
 	 */
 	public final String getTypeAsString() {
-		if (m_type < 0 || m_type >= _typeNames.length)
+		if ( m_type < 0 || m_type >= _typeNames.length)
 			return "";
 		return _typeNames[m_type];
 	}
-
+	
 	/**
 	 * Return the NetBIOS name details
 	 * 
@@ -147,7 +146,7 @@ class NetBIOSRequest {
 	public final int getRetryCount() {
 		return m_retry;
 	}
-
+	
 	/**
 	 * Return the retry interval
 	 * 
@@ -174,7 +173,7 @@ class NetBIOSRequest {
 	public final boolean hasErrorStatus() {
 		return m_error;
 	}
-
+			
 	/**
 	 * Decrement the retry count
 	 * 
@@ -183,7 +182,7 @@ class NetBIOSRequest {
 	protected final int decrementRetryCount() {
 		return m_retry--;
 	}
-
+	
 	/**
 	 * Set the error status
 	 * 
@@ -199,9 +198,9 @@ class NetBIOSRequest {
 	 * @param retry int
 	 */
 	public final void setRetryCount(int retry) {
-		m_retry = retry;
+		m_retry = retry;	
 	}
-
+	
 	/**
 	 * Set the retry interval, in milliseconds
 	 * 
@@ -218,7 +217,7 @@ class NetBIOSRequest {
 	 */
 	public String toString() {
 		StringBuffer str = new StringBuffer();
-
+		
 		str.append("[");
 		str.append(getTypeAsString());
 		str.append(":");
@@ -230,8 +229,7 @@ class NetBIOSRequest {
 		str.append(",");
 		str.append(getTransactionId());
 		str.append("]");
-
+		
 		return str.toString();
 	}
-	
 }

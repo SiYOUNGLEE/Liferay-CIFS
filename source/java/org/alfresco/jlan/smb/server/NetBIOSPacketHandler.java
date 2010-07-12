@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -49,9 +49,7 @@ public class NetBIOSPacketHandler extends SocketPacketHandler {
 	 * @param packetPool CIFSPacketPool
 	 * @exception IOException If a network error occurs
 	 */
-	public NetBIOSPacketHandler(Socket sock, CIFSPacketPool packetPool)
-		throws IOException {
-		
+	public NetBIOSPacketHandler(Socket sock, CIFSPacketPool packetPool) throws IOException {
 		super(sock, SMBSrvPacket.PROTOCOL_NETBIOS, "NetBIOS", "NB", packetPool);
 	}
 
@@ -70,12 +68,12 @@ public class NetBIOSPacketHandler extends SocketPacketHandler {
 
 		// Check if the connection has been closed, read length equals -1
 
-		if (len == -1)
+		if ( len == -1)
 			throw new IOException("Connection closed (header read)");
 
 		// Check if we received a valid NetBIOS header
 
-		if (len < RFCNetBIOSProtocol.HEADER_LEN)
+		if ( len < RFCNetBIOSProtocol.HEADER_LEN)
 			throw new IOException("Invalid NetBIOS header, len=" + len);
 
 		// Get the packet type from the header
@@ -84,22 +82,19 @@ public class NetBIOSPacketHandler extends SocketPacketHandler {
 		int flags = (int) m_headerBuf[1];
 		int dlen = (int) DataPacker.getShort(m_headerBuf, 2);
 
-		if ((flags & 0x01) != 0)
+		if ( (flags & 0x01) != 0)
 			dlen += 0x10000;
 
 		// Check for a session keep alive type message
 
-		if (typ == RFCNetBIOSProtocol.SESSION_KEEPALIVE)
+		if ( typ == RFCNetBIOSProtocol.SESSION_KEEPALIVE)
 			return null;
 
-		// Get a packet from the pool to hold the request data, allow for the
-		// NetBIOS header length
+		// Get a packet from the pool to hold the request data, allow for the NetBIOS header length
 		// so that the CIFS request lines up with other implementations.
-
-		SMBSrvPacket pkt =
-			getPacketPool().allocatePacket(
-				dlen + RFCNetBIOSProtocol.HEADER_LEN);
-
+		
+		SMBSrvPacket pkt = getPacketPool().allocatePacket( dlen + RFCNetBIOSProtocol.HEADER_LEN);
+		
 		// Read the data part of the packet into the users buffer, this may take
 		// several reads
 
@@ -107,49 +102,49 @@ public class NetBIOSPacketHandler extends SocketPacketHandler {
 		int totlen = offset;
 
 		try {
-
+			
 			while (dlen > 0) {
-
+	
 				// Read the data
-
-				len = readBytes(pkt.getBuffer(), offset, dlen);
-
+	
+				len = readBytes( pkt.getBuffer(), offset, dlen);
+	
 				// Check if the connection has been closed
-
-				if (len == -1)
+	
+				if ( len == -1)
 					throw new IOException("Connection closed (request read)");
-
+	
 				// Update the received length and remaining data length
-
+	
 				totlen += len;
 				dlen -= len;
-
+	
 				// Update the user buffer offset as more reads will be required
 				// to complete the data read
-
+	
 				offset += len;
-
+	
 			}
 		}
 		catch (IOException ex) {
-
+			
 			// Release the packet back to the pool
-
-			getPacketPool().releasePacket(pkt);
-
+			
+			getPacketPool().releasePacket( pkt);
+			
 			// Rethrow the exception
-
+			
 			throw ex;
 		}
 
 		// Copy the NetBIOS header to the request buffer
-
-		System.arraycopy(m_headerBuf, 0, pkt.getBuffer(), 0, 4);
-
+		
+		System.arraycopy( m_headerBuf, 0, pkt.getBuffer(), 0, 4);
+		
 		// Set the received request length
-
-		pkt.setReceivedLength(totlen);
-
+		
+		pkt.setReceivedLength( totlen);
+		
 		// Return the received packet
 
 		return pkt;
@@ -166,43 +161,41 @@ public class NetBIOSPacketHandler extends SocketPacketHandler {
 	public final void writePacket(SMBSrvPacket pkt, int len, boolean writeRaw)
 		throws IOException {
 
-		// Update the NetBIOS header, unless this is write raw request
-
+		// Update the NetBIOS header, unless this is  write raw request
+		
 		byte[] buf = pkt.getBuffer();
-
-		if (writeRaw == false) {
-
-			// Fill in the NetBIOS message header, this is already allocated as
-			// part of the users buffer.
-
+		 
+		if ( writeRaw == false) {
+			
+			// Fill in the NetBIOS message header, this is already allocated as part of the users buffer.
+	
 			buf[0] = (byte) RFCNetBIOSProtocol.SESSION_MESSAGE;
 			buf[1] = (byte) 0;
-
-			if (len > 0xFFFF) {
-
+	
+			if ( len > 0xFFFF) {
+	
 				// Set the >64K flag
-
+	
 				buf[1] = (byte) 0x01;
-
+	
 				// Set the low word of the data length
-
+	
 				DataPacker.putShort((short) (len & 0xFFFF), buf, 2);
 			}
 			else {
-
+	
 				// Set the data length
-
+	
 				DataPacker.putShort((short) len, buf, 2);
 			}
-
+			
 			// Update the length to include the NetBIOS header
-
+			
 			len += RFCNetBIOSProtocol.HEADER_LEN;
 		}
-
+		
 		// Output the data packet
 
 		writeBytes(buf, 0, len);
 	}
-
 }

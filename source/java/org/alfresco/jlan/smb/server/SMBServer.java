@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -63,8 +63,7 @@ import org.alfresco.jlan.smb.server.win32.Win32NetBIOSLanaMonitor;
  * 
  * @author gkspencer
  */
-public class SMBServer extends NetworkFileServer
-	implements Runnable, ConfigurationListener {
+public class SMBServer extends NetworkFileServer implements Runnable, ConfigurationListener {
 
 	// Constants
 	//
@@ -74,22 +73,21 @@ public class SMBServer extends NetworkFileServer
 
 	// CIFS server custom server events
 
-	public static final int CIFSNetBIOSNamesAdded =
-		ServerListener.ServerCustomEvent;
+	public static final int CIFSNetBIOSNamesAdded = ServerListener.ServerCustomEvent;
 
 	// Configuration sections
 
 	private CIFSConfigSection m_cifsConfig;
 	private CoreServerConfigSection m_coreConfig;
-
+	
 	// Server thread
 
 	private Thread m_srvThread;
 
 	// Session connections handler
-
+	
 	private CifsConnectionsHandler m_connectionsHandler;
-
+	
 	// Active session list
 
 	private SrvSessionList m_sessions;
@@ -103,16 +101,15 @@ public class SMBServer extends NetworkFileServer
 	private UUID m_serverGUID;
 
 	// CIFS packet pool
-
+	
 	private CIFSPacketPool m_packetPool;
-
+	
 	/**
 	 * Create an SMB server using the specified configuration.
 	 * 
 	 * @param cfg ServerConfiguration
 	 */
-	public SMBServer(ServerConfiguration cfg)
-		throws IOException {
+	public SMBServer(ServerConfiguration cfg) throws IOException {
 
 		super("CIFS", cfg);
 
@@ -134,7 +131,7 @@ public class SMBServer extends NetworkFileServer
 
 		// Propagate the debug settings to the new session
 
-		if (Debug.EnableInfo && hasDebug()) {
+		if ( Debug.EnableInfo && hasDebug()) {
 
 			// Enable session debugging, output to the same stream as the server
 
@@ -149,11 +146,10 @@ public class SMBServer extends NetworkFileServer
 	 */
 	protected final void checkReadOnly(SharedDevice shr) {
 
-		// For disk devices check if the shared device is read-only, this should
-		// also check if the
+		// For disk devices check if the shared device is read-only, this should also check if the
 		// shared device path actually exists.
 
-		if (shr.getType() == ShareType.DISK) {
+		if ( shr.getType() == ShareType.DISK) {
 
 			// Check if the disk device is read-only
 
@@ -162,45 +158,41 @@ public class SMBServer extends NetworkFileServer
 				// Get the device interface for the shared device
 
 				DiskInterface disk = (DiskInterface) shr.getInterface();
-				if (disk.isReadOnly(null, shr.getContext())) {
+				if ( disk.isReadOnly(null, shr.getContext())) {
 
 					// The disk is read-only, mark the share as read-only
 
 					int attr = shr.getAttributes();
-					if ((attr & SharedDevice.ReadOnly) == 0)
+					if ( (attr & SharedDevice.ReadOnly) == 0)
 						attr += SharedDevice.ReadOnly;
 					shr.setAttributes(attr);
 
 					// Debug
 
-					if (Debug.EnableInfo && hasDebug())
-						Debug.println("[SMB] Add Share " + shr.toString() +
-							" : isReadOnly");
+					if ( Debug.EnableInfo && hasDebug())
+						Debug.println("[SMB] Add Share " + shr.toString() + " : isReadOnly");
 				}
 			}
 			catch (InvalidDeviceInterfaceException ex) {
 
 				// Shared device interface error
 
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("[SMB] Add Share " + shr.toString() + " : " +
-						ex.toString());
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] Add Share " + shr.toString() + " : " + ex.toString());
 			}
 			catch (FileNotFoundException ex) {
 
 				// Shared disk device local path does not exist
 
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("[SMB] Add Share " + shr.toString() + " : " +
-						ex.toString());
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] Add Share " + shr.toString() + " : " + ex.toString());
 			}
 			catch (IOException ex) {
 
 				// Shared disk device access error
 
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("[SMB] Add Share " + shr.toString() + " : " +
-						ex.toString());
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] Add Share " + shr.toString() + " : " + ex.toString());
 			}
 		}
 	}
@@ -213,20 +205,17 @@ public class SMBServer extends NetworkFileServer
 
 		// Get the CIFS server configuration
 
-		m_cifsConfig =
-			(CIFSConfigSection) getConfiguration().getConfigSection(
-				CIFSConfigSection.SectionName);
+		m_cifsConfig = (CIFSConfigSection) getConfiguration().getConfigSection(CIFSConfigSection.SectionName);
 
-		if (m_cifsConfig != null) {
+		if ( m_cifsConfig != null) {
 
-			// Add the SMB server as a configuration change listener of the
-			// server configuration
+			// Add the SMB server as a configuration change listener of the server configuration
 
 			getConfiguration().addListener(this);
 
 			// Check if debug output is enabled
 
-			if (getCIFSConfiguration().getSessionDebugFlags() != 0)
+			if ( getCIFSConfiguration().getSessionDebugFlags() != 0)
 				setDebug(true);
 
 			// Set the server version
@@ -236,33 +225,29 @@ public class SMBServer extends NetworkFileServer
 			// Create the active session list
 
 			m_sessions = new SrvSessionList();
-
+			
 			// Get the core server configuration
-
-			m_coreConfig =
-				(CoreServerConfigSection) getConfiguration().getConfigSection(
-					CoreServerConfigSection.SectionName);
-			if (m_coreConfig != null) {
+			
+			m_coreConfig = (CoreServerConfigSection) getConfiguration().getConfigSection( CoreServerConfigSection.SectionName);
+			if ( m_coreConfig != null) {
 
 				// Create the CIFS packet pool using the global memory pool
-
-				m_packetPool = new CIFSPacketPool(m_coreConfig.getMemoryPool());
-
+				
+				m_packetPool = new CIFSPacketPool( m_coreConfig.getMemoryPool());
+				
 				// Check if packet pool debugging is enabled
-
-				if ((m_cifsConfig.getSessionDebugFlags() & 
-								SMBSrvSession.DBG_PKTPOOL) != 0)
-					m_packetPool.setDebug(true);
+				
+				if (( m_cifsConfig.getSessionDebugFlags() & SMBSrvSession.DBG_PKTPOOL) != 0)
+					m_packetPool.setDebug( true);
 			}
 		}
 		else
 			setEnabled(false);
-
+		
 	}
 
 	/**
-	 * Delete temporary shares created by the share mapper for the specified
-	 * session
+	 * Delete temporary shares created by the share mapper for the specified session
 	 * 
 	 * @param sess SMBSrvSession
 	 */
@@ -351,7 +336,7 @@ public class SMBServer extends NetworkFileServer
 	public final CIFSPacketPool getPacketPool() {
 		return m_packetPool;
 	}
-
+	
 	/**
 	 * Return the thread pool
 	 * 
@@ -360,7 +345,7 @@ public class SMBServer extends NetworkFileServer
 	public final ThreadRequestPool getThreadPool() {
 		return m_coreConfig.getThreadPool();
 	}
-
+	
 	/**
 	 * Start the SMB server.
 	 */
@@ -385,38 +370,32 @@ public class SMBServer extends NetworkFileServer
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug()) {
+		if ( Debug.EnableInfo && hasDebug()) {
 
 			// Dump the server name/version and Java runtime details
 
 			Debug.println("[SMB] CIFS Server " + getServerName() + " starting");
 			Debug.print("[SMB] Version " + isVersion());
 			Debug.print(", Java VM " + System.getProperty("java.vm.version"));
-			Debug.println(", OS " + System.getProperty("os.name") +
-				", version " + System.getProperty("os.version"));
+			Debug.println(", OS " + System.getProperty("os.name") + ", version " + System.getProperty("os.version"));
 
 			// Check for server alias names
 
-			if (getCIFSConfiguration().hasAliasNames())
-				Debug.println("[SMB] Server alias(es) : " +
-					getCIFSConfiguration().getAliasNames());
+			if ( getCIFSConfiguration().hasAliasNames())
+				Debug.println("[SMB] Server alias(es) : " + getCIFSConfiguration().getAliasNames());
 
 			// Output the authenticator details
 
-			if (getCifsAuthenticator() != null)
-				Debug.println("[SMB] Using authenticator " +
-					getCifsAuthenticator().toString());
+			if ( getCifsAuthenticator() != null)
+				Debug.println("[SMB] Using authenticator " + getCifsAuthenticator().toString());
 
 			// Display the timezone offset/name
 
-			if (getGlobalConfiguration().getTimeZone() != null)
-				Debug.println("[SMB] Server timezone " +
-					getGlobalConfiguration().getTimeZone() +
-					", offset from UTC = " +
-					getGlobalConfiguration().getTimeZoneOffset() / 60 + "hrs");
+			if ( getGlobalConfiguration().getTimeZone() != null)
+				Debug.println("[SMB] Server timezone " + getGlobalConfiguration().getTimeZone() + ", offset from UTC = "
+						+ getGlobalConfiguration().getTimeZoneOffset() / 60 + "hrs");
 			else
-				Debug.println("[SMB] Server timezone offset = " +
-					getGlobalConfiguration().getTimeZoneOffset() / 60 + "hrs");
+				Debug.println("[SMB] Server timezone offset = " + getGlobalConfiguration().getTimeZoneOffset() / 60 + "hrs");
 
 			// Dump the available dialect list
 
@@ -425,17 +404,12 @@ public class SMBServer extends NetworkFileServer
 			// Dump the share list
 
 			Debug.println("[SMB] Shares:");
-			Enumeration<SharedDevice> enm =
-				getFullShareList(getCIFSConfiguration().getServerName(), null)
-				.enumerateShares();
+			Enumeration<SharedDevice> enm = getFullShareList(getCIFSConfiguration().getServerName(), null).enumerateShares();
 
 			while (enm.hasMoreElements()) {
 				SharedDevice share = enm.nextElement();
-				Debug.println("[SMB]  " +
-					share.toString() +
-					" " +
-					(share.getContext() != null
-						? share.getContext().toString() : ""));
+				Debug.println("[SMB]  " + share.toString() + " "
+						+ (share.getContext() != null ? share.getContext().toString() : ""));
 			}
 		}
 
@@ -456,70 +430,57 @@ public class SMBServer extends NetworkFileServer
 
 			getServerIPAddresses();
 
-			// Check if the NT SMB dialect is enabled, if so then update the
-			// server flags to
+			// Check if the NT SMB dialect is enabled, if so then update the server flags to
 			// indicate that this is an NT server
 
-			if (getCIFSConfiguration().getEnabledDialects().hasDialect(
-				Dialect.NT) == true) {
+			if ( getCIFSConfiguration().getEnabledDialects().hasDialect(Dialect.NT) == true) {
 
 				// Enable the NT server flag
 
-				getCIFSConfiguration().setServerType(
-					getServerType() + ServerType.NTServer);
+				getCIFSConfiguration().setServerType(getServerType() + ServerType.NTServer);
 
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("[SMB] Added NTServer flag to host " +
-							"announcement");
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] Added NTServer flag to host announcement");
 			}
 
 			// Create the CIFS connections handler
 			//
-			// Note: The older thread per session/socket handler is used for
-			// Win32 NetBIOS connections
+			// Note: The older thread per session/socket handler is used for Win32 NetBIOS connections
 
-			if (getCIFSConfiguration().hasDisableNIOCode() ||
-				getCIFSConfiguration().hasWin32NetBIOS()) {
-
-				// Use the older threaded connections handler (thread per
-				// session model)
-
+			if ( getCIFSConfiguration().hasDisableNIOCode() || getCIFSConfiguration().hasWin32NetBIOS()) {
+				
+				// Use the older threaded connections handler (thread per session model)
+			
 				m_connectionsHandler = new ThreadedCifsConnectionsHandler();
 			}
 			else {
-
-				// Check if the Java socket or JNI based connections handler
-				// should be used
-
-				if (getCIFSConfiguration().hasTcpipSMB() ||
-					getCIFSConfiguration().hasNetBIOSSMB()) {
-
-					// Use the NIO based native SMB/NetBIOS SMB connections
-					// handler
-
+				
+				// Check if the Java socket or JNI based connections handler should be used
+				
+				if ( getCIFSConfiguration().hasTcpipSMB() || getCIFSConfiguration().hasNetBIOSSMB()) {
+					
+					// Use the NIO based native SMB/NetBIOS SMB connections handler
+				
 					m_connectionsHandler = new NIOCifsConnectionsHandler();
 				}
 				else {
-
+					
 					// Use the JNI based Winsock NetBIOS connections handler
-
-					m_connectionsHandler =
-						new AsyncWinsockCifsConnectionsHandler();
+					
+					m_connectionsHandler = new AsyncWinsockCifsConnectionsHandler();
 				}
 			}
-
+			
 			// Initialize the connections handler
-
-			m_connectionsHandler.initializeHandler(this, getCIFSConfiguration());
+			
+			m_connectionsHandler.initializeHandler( this, getCIFSConfiguration());
 			m_connectionsHandler.startHandler();
+			
+			// Check if there are any session handlers installed, if not then close the server
 
-			// Check if there are any session handlers installed, if not then
-			// close the server
-
-			if (m_connectionsHandler.numberOfSessionHandlers() > 0 ||
-				getCIFSConfiguration().hasWin32NetBIOS()) {
+			if ( m_connectionsHandler.numberOfSessionHandlers() > 0 || getCIFSConfiguration().hasWin32NetBIOS()) {
 
 				// Fire a server active event
 
@@ -538,7 +499,7 @@ public class SMBServer extends NetworkFileServer
 					}
 				}
 			}
-			else if (Debug.EnableError && hasDebug()) {
+			else if ( Debug.EnableError && hasDebug()) {
 
 				// DEBUG
 
@@ -547,13 +508,11 @@ public class SMBServer extends NetworkFileServer
 		}
 		catch (Exception ex) {
 
-			// Do not report an error if the server has shutdown, closing the
-			// server socket
+			// Do not report an error if the server has shutdown, closing the server socket
 			// causes an exception to be thrown.
 
-			if (hasShutdown() == false) {
-				Debug.println(
-					"[SMB] Server error : " + ex.toString(), Debug.Error);
+			if ( hasShutdown() == false) {
+				Debug.println("[SMB] Server error : " + ex.toString(), Debug.Error);
 				Debug.println(ex);
 
 				// Store the error, fire a server error event
@@ -565,7 +524,7 @@ public class SMBServer extends NetworkFileServer
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug())
+		if ( Debug.EnableInfo && hasDebug())
 			Debug.println("[SMB] SMB Server shutting down ...");
 
 		// Close the host announcer and session handlers
@@ -574,7 +533,7 @@ public class SMBServer extends NetworkFileServer
 
 		// Shutdown the Win32 NetBIOS LANA monitor, if enabled
 
-		if (isWindows && Win32NetBIOSLanaMonitor.getLanaMonitor() != null) {
+		if ( isWindows && Win32NetBIOSLanaMonitor.getLanaMonitor() != null) {
 
 			// Shutdown the LANA monitor
 
@@ -585,10 +544,10 @@ public class SMBServer extends NetworkFileServer
 
 		setActive(false);
 		fireServerEvent(ServerListener.ServerShutdown);
-
+		
 		// DEBUG
-
-		if (Debug.EnableInfo && hasDebug())
+		
+		if ( Debug.EnableInfo && hasDebug())
 			Debug.println("[SMB] Packet pool at shutdown: " + getPacketPool());
 	}
 
@@ -604,25 +563,20 @@ public class SMBServer extends NetworkFileServer
 		m_sessions.removeSession(sess);
 
 		// DEBUG
-
-		if (hasDebug()) {
-			Debug.println("[SMB] Closed session " + sess.getSessionId() +
-				", sessions=" + m_sessions.numberOfSessions());
-			if (m_sessions.numberOfSessions() > 0 &&
-				m_sessions.numberOfSessions() <= 10) {
+		
+		if ( hasDebug()) {
+			Debug.println("[SMB] Closed session " + sess.getSessionId() + ", sessions=" + m_sessions.numberOfSessions());
+			if ( m_sessions.numberOfSessions() > 0 && m_sessions.numberOfSessions() <= 10) {
 				Enumeration<Integer> sessIds = m_sessions.enumerate();
 				Debug.print("      Active sessions [");
-				while (sessIds.hasMoreElements()) {
-					SMBSrvSession curSess =
-						(SMBSrvSession) m_sessions.findSession(
-							sessIds.nextElement());
-					Debug.print("" + curSess.getSessionId() + "=" +
-						curSess.getRemoteAddress().getHostAddress() + ",");
+				while ( sessIds.hasMoreElements()) {
+					SMBSrvSession curSess = (SMBSrvSession) m_sessions.findSession( sessIds.nextElement());
+					Debug.print("" + curSess.getSessionId() + "=" + curSess.getRemoteAddress().getHostAddress() + ",");
 				}
 				Debug.println("]");
 			}
 		}
-
+		
 		// Notify session listeners that a session has been closed
 
 		fireSessionClosedEvent(sess);
@@ -694,7 +648,7 @@ public class SMBServer extends NetworkFileServer
 
 		// Wait for the main server thread to close
 
-		if (m_srvThread != null) {
+		if ( m_srvThread != null) {
 
 			try {
 				m_srvThread.join(3000);
@@ -730,8 +684,7 @@ public class SMBServer extends NetworkFileServer
 	 * @return int
 	 * @throws InvalidConfigurationException
 	 */
-	public int configurationChanged(
-		int id, ServerConfiguration config, Object newVal)
+	public int configurationChanged(int id, ServerConfiguration config, Object newVal)
 		throws InvalidConfigurationException {
 
 		int sts = ConfigurationListener.StsIgnored;
@@ -750,13 +703,13 @@ public class SMBServer extends NetworkFileServer
 
 				Boolean enaSMB = (Boolean) newVal;
 
-				if (isActive() && enaSMB.booleanValue() == false) {
+				if ( isActive() && enaSMB.booleanValue() == false) {
 
 					// Shutdown the server
 
 					shutdownServer(false);
 				}
-				else if (isActive() == false && enaSMB.booleanValue() == true) {
+				else if ( isActive() == false && enaSMB.booleanValue() == true) {
 
 					// Start the server
 
@@ -789,9 +742,9 @@ public class SMBServer extends NetworkFileServer
 
 			case ConfigId.SMBSessionDebug:
 				sts = ConfigurationListener.StsNewSessionsOnly;
-				if (newVal instanceof Integer) {
+				if ( newVal instanceof Integer) {
 					Integer dbgVal = (Integer) newVal;
-					setDebug(dbgVal.intValue() != 0 ? true : false);
+					setDebug( dbgVal.intValue() != 0 ? true : false);
 				}
 				break;
 
@@ -811,8 +764,7 @@ public class SMBServer extends NetworkFileServer
 			}
 		}
 		catch (Exception ex) {
-			throw new InvalidConfigurationException(
-				"SMB Server configuration error", ex);
+			throw new InvalidConfigurationException("SMB Server configuration error", ex);
 		}
 
 		// Return the status
@@ -831,9 +783,8 @@ public class SMBServer extends NetworkFileServer
 
 		String osName = System.getProperty("os.name");
 
-		if (osName.startsWith("Windows")) {
-			if (osName.endsWith("95") || osName.endsWith("98") ||
-				osName.endsWith("ME")) {
+		if ( osName.startsWith("Windows")) {
+			if ( osName.endsWith("95") || osName.endsWith("98") || osName.endsWith("ME")) {
 
 				// Windows 95-ME
 
@@ -852,6 +803,7 @@ public class SMBServer extends NetworkFileServer
 
 	/**
 	 * Get the list of local IP addresses
+	 * 
 	 */
 	private final void getServerIPAddresses() {
 
@@ -859,8 +811,7 @@ public class SMBServer extends NetworkFileServer
 
 			// Get the local IP address list
 
-			Enumeration<NetworkInterface> enm =
-				NetworkInterface.getNetworkInterfaces();
+			Enumeration<NetworkInterface> enm = NetworkInterface.getNetworkInterfaces();
 			Vector<InetAddress> addrList = new Vector<InetAddress>();
 
 			while (enm.hasMoreElements()) {
@@ -879,7 +830,7 @@ public class SMBServer extends NetworkFileServer
 
 			// Convert the vector of addresses to an array
 
-			if (addrList.size() > 0) {
+			if ( addrList.size() > 0) {
 
 				// Convert the address vector to an array
 
@@ -899,9 +850,8 @@ public class SMBServer extends NetworkFileServer
 
 			// DEBUG
 
-			if (Debug.EnableError && hasDebug())
-				Debug.println("[SMB] Error getting local IP addresses, " +
-					ex.toString());
+			if ( Debug.EnableError && hasDebug())
+				Debug.println("[SMB] Error getting local IP addresses, " + ex.toString());
 		}
 	}
 
@@ -921,10 +871,8 @@ public class SMBServer extends NetworkFileServer
 	 */
 	public final void fireNetBIOSNamesAddedEvent(int lana) {
 
-		// Send the event to registered listeners, encode the LANA id in the top
-		// of the event id
+		// Send the event to registered listeners, encode the LANA id in the top of the event id
 
 		fireServerEvent(CIFSNetBIOSNamesAdded + (lana << 16));
 	}
-
 }

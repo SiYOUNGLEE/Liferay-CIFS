@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -62,9 +62,12 @@ import org.alfresco.jlan.util.HexDump;
 import org.alfresco.jlan.util.StringList;
 
 /**
- * <p> The SMB server creates a server session object for each incoming session
- * request. <p> The server session holds the context of a particular session,
- * including the list of open files and active searches.
+ * <p>
+ * The SMB server creates a server session object for each incoming session request.
+ * 
+ * <p>
+ * The server session holds the context of a particular session, including the list of open files
+ * and active searches.
  * 
  * @author gkspencer
  */
@@ -72,8 +75,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 	// Define the default receive buffer size to allocate.
 
-	public static final int DefaultBufferSize =
-		0x010000 + RFCNetBIOSProtocol.HEADER_LEN;
+	public static final int DefaultBufferSize = 0x010000 + RFCNetBIOSProtocol.HEADER_LEN;
 	public static final int LanManBufferSize = 8192;
 
 	// Default and maximum number of connection slots
@@ -81,12 +83,10 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public static final int DefaultConnections = 4;
 	public static final int MaxConnections = 16;
 
-	// Maximum multiplexed packets allowed (client can send up to this many SMBs
-	// before waiting for
+	// Maximum multiplexed packets allowed (client can send up to this many SMBs before waiting for
 	// a response)
 	//
-	// Setting NTMaxMultiplexed to one will disable asynchronous notifications
-	// on the client
+	// Setting NTMaxMultiplexed to one will disable asynchronous notifications on the client
 
 	public static final int LanManMaxMultiplexed = 1;
 	public static final int NTMaxMultiplexed = 4;
@@ -97,50 +97,43 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 	// Debug flag values
 
-	public static final int DBG_NETBIOS = 0x00000001; // NetBIOS layer
-	public static final int DBG_STATE = 0x00000002; // Session state changes
-	public static final int DBG_RXDATA = 0x00000004; // Received data
-	public static final int DBG_TXDATA = 0x00000008; // Transmit data
-	public static final int DBG_DUMPDATA = 0x00000010; // Dump data packets
-	public static final int DBG_NEGOTIATE = 0x00000020; // Protocol negotiate
-														// phase
-	public static final int DBG_TREE = 0x00000040; // Tree
-													// connection/disconnection
-	public static final int DBG_SEARCH = 0x00000080; // File/directory search
-	public static final int DBG_INFO = 0x00000100; // Information requests
-	public static final int DBG_FILE = 0x00000200; // File open/close/info
-	public static final int DBG_FILEIO = 0x00000400; // File read/write
-	public static final int DBG_TRAN = 0x00000800; // Transactions
-	public static final int DBG_ECHO = 0x00001000; // Echo requests
-	public static final int DBG_ERROR = 0x00002000; // Errors
-	public static final int DBG_IPC = 0x00004000; // IPC$ requests
-	public static final int DBG_LOCK = 0x00008000; // Lock/unlock requests
-	public static final int DBG_PKTTYPE = 0x00010000; // Received packet type
-	public static final int DBG_DCERPC = 0x00020000; // DCE/RPC
-	public static final int DBG_STATECACHE = 0x00040000; // File state cache
-	public static final int DBG_TIMING = 0x00080000; // Time packet processing
-	public static final int DBG_NOTIFY = 0x00100000; // Asynchronous change
-														// notification
-	public static final int DBG_STREAMS = 0x00200000; // NTFS streams
-	public static final int DBG_SOCKET = 0x00400000; // NetBIOS/native SMB
-														// socket connections
-	public static final int DBG_PKTPOOL = 0x00800000; // Packet pool
-														// allocate/release
-	public static final int DBG_PKTSTATS = 0x01000000; // Packet pool statistics
-	public static final int DBG_THREADPOOL = 0x02000000; // Thread pool
-	public static final int DBG_BENCHMARK = 0x04000000; // Benchmarking
+	public static final int DBG_NETBIOS 	= 0x00000001; // NetBIOS layer
+	public static final int DBG_STATE 		= 0x00000002; // Session state changes
+	public static final int DBG_RXDATA 		= 0x00000004; // Received data
+	public static final int DBG_TXDATA 		= 0x00000008; // Transmit data
+	public static final int DBG_DUMPDATA 	= 0x00000010; // Dump data packets
+	public static final int DBG_NEGOTIATE 	= 0x00000020; // Protocol negotiate phase
+	public static final int DBG_TREE 		= 0x00000040; // Tree connection/disconnection
+	public static final int DBG_SEARCH 		= 0x00000080; // File/directory search
+	public static final int DBG_INFO 		= 0x00000100; // Information requests
+	public static final int DBG_FILE 		= 0x00000200; // File open/close/info
+	public static final int DBG_FILEIO 		= 0x00000400; // File read/write
+	public static final int DBG_TRAN 		= 0x00000800; // Transactions
+	public static final int DBG_ECHO 		= 0x00001000; // Echo requests
+	public static final int DBG_ERROR 		= 0x00002000; // Errors
+	public static final int DBG_IPC 		= 0x00004000; // IPC$ requests
+	public static final int DBG_LOCK 		= 0x00008000; // Lock/unlock requests
+	public static final int DBG_PKTTYPE 	= 0x00010000; // Received packet type
+	public static final int DBG_DCERPC 		= 0x00020000; // DCE/RPC
+	public static final int DBG_STATECACHE 	= 0x00040000; // File state cache
+	public static final int DBG_TIMING 		= 0x00080000; // Time packet processing
+	public static final int DBG_NOTIFY 		= 0x00100000; // Asynchronous change notification
+	public static final int DBG_STREAMS 	= 0x00200000; // NTFS streams
+	public static final int DBG_SOCKET 		= 0x00400000; // NetBIOS/native SMB socket connections
+	public static final int DBG_PKTPOOL     = 0x00800000; // Packet pool allocate/release
+	public static final int DBG_PKTSTATS    = 0x01000000; // Packet pool statistics
+	public static final int DBG_THREADPOOL  = 0x02000000; // Thread pool
+	public static final int DBG_BENCHMARK	= 0x04000000; // Benchmarking
 
 	// Server session object factory
 
 	private static SrvSessionFactory m_factory = new DefaultSrvSessionFactory();
 
-	// Packet handler used to send/receive SMB packets over a particular
-	// protocol
+	// Packet handler used to send/receive SMB packets over a particular protocol
 
 	private PacketHandler m_pktHandler;
 
-	// Protocol handler for this session, depends upon the negotiated SMB
-	// dialect
+	// Protocol handler for this session, depends upon the negotiated SMB dialect
 
 	private ProtocolHandler m_handler;
 
@@ -162,8 +155,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	private NotifyRequestList m_notifyList;
 	private boolean m_notifyPending;
 
-	// Default SMB/CIFS flags and flags2, ORed with the SMB packet flags/flags2
-	// before sending a
+	// Default SMB/CIFS flags and flags2, ORed with the SMB packet flags/flags2 before sending a
 	// response
 	// to the client.
 
@@ -172,10 +164,8 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 	// Asynchronous response packet queue
 	//
-	// Contains SMB response packets that could not be sent due to SMB requests
-	// being processed. The
-	// asynchronous responses must be sent after any pending requests have been
-	// processed as the client may
+	// Contains SMB response packets that could not be sent due to SMB requests being processed. The
+	// asynchronous responses must be sent after any pending requests have been processed as the client may
 	// disconnect the session.
 
 	private Vector<SMBSrvPacket> m_asynchQueue;
@@ -193,15 +183,14 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 	private VirtualCircuitList m_vcircuits;
 
-	// Setup objects used during two stage session setup before the virtual
-	// circuit is allocated
+	// Setup objects used during two stage session setup before the virtual circuit is allocated
 
 	private Hashtable m_setupObjects;
 
 	// Flag to indicate an asynchronous read has been queued/is being processed
-
+	
 	private boolean m_asyncRead;
-
+	
 	/**
 	 * Class constructor.
 	 * 
@@ -215,12 +204,10 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		m_pktHandler = handler;
 
-		// If this is a TCPIP SMB or Win32 NetBIOS session then bypass the
-		// NetBIOS session setup
+		// If this is a TCPIP SMB or Win32 NetBIOS session then bypass the NetBIOS session setup
 		// phase.
 
-		if (isProtocol() == SMBSrvPacket.PROTOCOL_TCPIP ||
-			isProtocol() == SMBSrvPacket.PROTOCOL_WIN32NETBIOS) {
+		if ( isProtocol() == SMBSrvPacket.PROTOCOL_TCPIP || isProtocol() == SMBSrvPacket.PROTOCOL_WIN32NETBIOS) {
 
 			// Advance to the SMB negotiate dialect phase
 
@@ -228,7 +215,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 			// Check if the client name is available
 
-			if (handler.hasClientName())
+			if ( handler.hasClientName())
 				m_callerNBName = handler.getClientName();
 		}
 
@@ -259,7 +246,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		TreeConnection tree = null;
 		VirtualCircuit vc = findVirtualCircuit(smbPkt.getUserId());
 
-		if (vc != null) {
+		if ( vc != null) {
 
 			// Find the tree connection
 
@@ -295,16 +282,15 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		// Find the virtual circuit with the specified UID
 
 		VirtualCircuit vc = m_vcircuits.findCircuit(uid);
-		if (vc != null) {
+		if ( vc != null) {
 
 			// Set the session client information from the virtual circuit
 
 			setClientInformation(vc.getClientInformation());
-
+			
 			// Setup any authentication context
-
-			getSMBServer().getCifsAuthenticator().setCurrentUser(
-				getClientInformation());
+			
+			getSMBServer().getCifsAuthenticator().setCurrentUser( getClientInformation());
 		}
 
 		// Return the virtual circuit
@@ -332,23 +318,22 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public final int numberOfVirtualCircuits() {
 		return (m_vcircuits != null ? m_vcircuits.getCircuitCount() : 0);
 	}
-
+	
 	/**
-	 * Cleanup any resources owned by this session, close virtual circuits and
-	 * change notification requests.
+	 * Cleanup any resources owned by this session, close virtual circuits and change notification
+	 * requests.
 	 */
 	protected final void cleanupSession() {
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_STATE))
-			debugPrintln("Cleanup session, vcircuits=" +
-				m_vcircuits.getCircuitCount() + ", changeNotify=" +
-				getNotifyChangeCount());
+		if ( Debug.EnableInfo && hasDebug(DBG_STATE))
+			debugPrintln("Cleanup session, vcircuits=" + m_vcircuits.getCircuitCount() + ", changeNotify="
+					+ getNotifyChangeCount());
 
 		// Close the virtual circuits
 
-		if (m_vcircuits.getCircuitCount() > 0) {
+		if ( m_vcircuits.getCircuitCount() > 0) {
 
 			// Enumerate the virtual circuits and close all circuits
 
@@ -363,11 +348,11 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 				// Close the virtual circuit
 
 				VirtualCircuit vc = m_vcircuits.findCircuit(uid);
-				if (vc != null) {
+				if ( vc != null) {
 
 					// DEBUG
 
-					if (Debug.EnableInfo && hasDebug(DBG_STATE))
+					if ( Debug.EnableInfo && hasDebug(DBG_STATE))
 						debugPrintln("  Cleanup vc=" + vc);
 
 					vc.closeCircuit(this);
@@ -381,32 +366,28 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if there are active change notification requests
 
-		if (m_notifyList != null && m_notifyList.numberOfRequests() > 0) {
+		if ( m_notifyList != null && m_notifyList.numberOfRequests() > 0) {
 
-			// Remove the notify requests from the associated device context
-			// notify list
+			// Remove the notify requests from the associated device context notify list
 
 			for (int i = 0; i < m_notifyList.numberOfRequests(); i++) {
 
-				// Get the current change notification request and remove from
-				// the global notify
+				// Get the current change notification request and remove from the global notify
 				// list
 
 				NotifyRequest curReq = m_notifyList.getRequest(i);
-				if (curReq.getDiskContext().hasChangeHandler())
-					curReq.getDiskContext().getChangeHandler().removeNotifyRequests(
-						this);
+				if ( curReq.getDiskContext().hasChangeHandler())
+					curReq.getDiskContext().getChangeHandler().removeNotifyRequests(this);
 			}
 		}
 
 		// Delete any temporary shares that were created for this session
 
 		getSMBServer().deleteTemporaryShares(this);
-
-		// Commit any outstanding transaction that may have been started during
-		// cleanup
-
-		if (hasTransaction())
+		
+		// Commit any outstanding transaction that may have been started during cleanup
+		
+		if ( hasTransaction())
 			endTransaction();
 	}
 
@@ -425,7 +406,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			m_pktHandler.closeHandler();
 		}
 		catch (Exception ex) {
-			Debug.println(ex);
+			Debug.println( ex);
 		}
 	}
 
@@ -435,9 +416,9 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public final void closeSession() {
 
 		// Cleanup the session (open files/virtual circuits/searches)
-
+		
 		cleanupSession();
-
+		
 		// Call the base class
 
 		super.closeSession();
@@ -449,7 +430,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			setState(SMBSrvSessionState.NBHANGUP);
 
 			// Close the socket
-
+			
 			closeSocket();
 		}
 		catch (Exception ex) {
@@ -458,8 +439,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	}
 
 	/**
-	 * Finalize, object is about to be garbage collected. Make sure resources
-	 * are released.
+	 * Finalize, object is about to be garbage collected. Make sure resources are released.
 	 */
 	public void finalize() {
 
@@ -496,7 +476,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @return int
 	 */
 	public final int getNotifyChangeCount() {
-		if (m_notifyList == null)
+		if ( m_notifyList == null)
 			return 0;
 		return m_notifyList.numberOfRequests();
 	}
@@ -535,7 +515,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @return boolean
 	 */
 	public final boolean hasClientCapability(int cap) {
-		if ((m_clientCaps & cap) != 0)
+		if ( (m_clientCaps & cap) != 0)
 			return true;
 		return false;
 	}
@@ -566,7 +546,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public final CIFSPacketPool getPacketPool() {
 		return m_pktHandler.getPacketPool();
 	}
-
+	
 	/**
 	 * Return the thread pool
 	 * 
@@ -575,7 +555,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public final ThreadRequestPool getThreadPool() {
 		return getSMBServer().getThreadPool();
 	}
-
+	
 	/**
 	 * Return the remote NetBIOS name that was used to create the session.
 	 * 
@@ -647,7 +627,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public final int getState() {
 		return m_state;
 	}
-
+	
 	/**
 	 * Hangup the session.
 	 * 
@@ -657,7 +637,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_STATE)) {
+		if ( Debug.EnableInfo && hasDebug(DBG_STATE)) {
 			debugPrint("## Session closing. ");
 			debugPrintln(reason);
 		}
@@ -692,7 +672,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @return boolean
 	 */
 	public final boolean hasSetupObject(int pid) {
-		if (m_setupObjects == null)
+		if ( m_setupObjects == null)
 			return false;
 		return m_setupObjects.get(new Integer(pid)) != null ? true : false;
 	}
@@ -704,7 +684,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @return Object
 	 */
 	public final Object getSetupObject(int pid) {
-		if (m_setupObjects == null)
+		if ( m_setupObjects == null)
 			return null;
 		return m_setupObjects.get(new Integer(pid));
 	}
@@ -716,7 +696,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @param obj Object
 	 */
 	public final void setSetupObject(int pid, Object obj) {
-		if (m_setupObjects == null)
+		if ( m_setupObjects == null)
 			m_setupObjects = new Hashtable();
 		m_setupObjects.put(new Integer(pid), obj);
 	}
@@ -728,7 +708,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @return Object
 	 */
 	public final Object removeSetupObject(int pid) {
-		if (m_setupObjects == null)
+		if ( m_setupObjects == null)
 			return null;
 		return m_setupObjects.remove(new Integer(pid));
 	}
@@ -770,8 +750,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	}
 
 	/**
-	 * Set the default flags value to be ORed with outgoing response packet
-	 * flags
+	 * Set the default flags value to be ORed with outgoing response packet flags
 	 * 
 	 * @param flags int
 	 */
@@ -780,8 +759,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	}
 
 	/**
-	 * Set the default flags2 value to be ORed with outgoing response packet
-	 * flags2 field
+	 * Set the default flags2 value to be ORed with outgoing response packet flags2 field
 	 * 
 	 * @param flags int
 	 */
@@ -798,9 +776,8 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_STATE))
-			debugPrintln("State changed to " +
-				SMBSrvSessionState.getStateAsString(state));
+		if ( Debug.EnableInfo && hasDebug(DBG_STATE))
+			debugPrintln("State changed to " + SMBSrvSessionState.getStateAsString(state));
 
 		// Change the session state
 
@@ -808,83 +785,73 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	}
 
 	/**
-	 * Process the NetBIOS session request message, either accept the session
-	 * request and send back a NetBIOS accept or reject the session and send
-	 * back a NetBIOS reject and hangup the session. 2param smbPkt SMBSrvPacket
+	 * Process the NetBIOS session request message, either accept the session request and send back
+	 * a NetBIOS accept or reject the session and send back a NetBIOS reject and hangup the session.
+	 * 
+	 * 2param smbPkt SMBSrvPacket
 	 */
-	protected void procNetBIOSSessionRequest(SMBSrvPacket smbPkt)
+	protected void procNetBIOSSessionRequest( SMBSrvPacket smbPkt)
 		throws IOException, NetBIOSException {
 
-		// Check if the received packet contains enough data for a NetBIOS
-		// session request packet.
+		// Check if the received packet contains enough data for a NetBIOS session request packet.
 
-		if (smbPkt.getReceivedLength() < RFCNetBIOSProtocol.SESSREQ_LEN ||
-			smbPkt.getHeaderType() != RFCNetBIOSProtocol.SESSION_REQUEST) {
-
+		if ( smbPkt.getReceivedLength() < RFCNetBIOSProtocol.SESSREQ_LEN || smbPkt.getHeaderType() != RFCNetBIOSProtocol.SESSION_REQUEST) {
+			
 			// Debug
-
-			if (Debug.EnableInfo && hasDebug(DBG_NETBIOS)) {
-				Debug.println("NBREQ invalid packet len=" +
-					smbPkt.getReceivedLength() + ", header=0x" +
-					Integer.toHexString(smbPkt.getHeaderType()));
-				HexDump.Dump(
-					smbPkt.getBuffer(), smbPkt.getReceivedLength(), 0,
-					Debug.getDebugInterface());
+			
+			if ( Debug.EnableInfo && hasDebug(DBG_NETBIOS)) {
+				Debug.println("NBREQ invalid packet len=" + smbPkt.getReceivedLength() + ", header=0x" + Integer.toHexString(smbPkt.getHeaderType()));
+				HexDump.Dump( smbPkt.getBuffer(), smbPkt.getReceivedLength(), 0, Debug.getDebugInterface());
 			}
-
-			throw new NetBIOSException("NBREQ Invalid packet len=" +
-				smbPkt.getReceivedLength());
+		
+			throw new NetBIOSException("NBREQ Invalid packet len=" + smbPkt.getReceivedLength());
 		}
 
 		// Do a few sanity checks on the received packet
 
 		byte[] buf = smbPkt.getBuffer();
-
-		if (buf[4] != (byte) 32 || buf[38] != (byte) 32)
+		
+		if ( buf[4] != (byte) 32 || buf[38] != (byte) 32)
 			throw new NetBIOSException("NBREQ Invalid NetBIOS name data");
 
-		// Extract the from/to NetBIOS encoded names, and convert to normal
-		// strings.
+		// Extract the from/to NetBIOS encoded names, and convert to normal strings.
 
 		StringBuffer nbName = new StringBuffer(32);
 		for (int i = 0; i < 32; i++)
 			nbName.append((char) buf[5 + i]);
-
+		
 		String toName = NetBIOSSession.DecodeName(nbName.toString());
 		toName = toName.trim();
 
 		nbName.setLength(0);
 		for (int i = 0; i < 32; i++)
 			nbName.append((char) buf[39 + i]);
-
+		
 		String fromName = NetBIOSSession.DecodeName(nbName.toString());
 		fromName = fromName.trim();
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_NETBIOS))
+		if ( Debug.EnableInfo && hasDebug(DBG_NETBIOS))
 			debugPrintln("NetBIOS CALL From " + fromName + " to " + toName);
 
 		// Check that the request is for this server
 
 		boolean forThisServer = false;
 
-		if (toName.compareTo(getServerName()) == 0 ||
-			toName.compareTo(NetBIOSName.SMBServer) == 0 ||
-			toName.compareTo(NetBIOSName.SMBServer2) == 0 ||
-			toName.compareTo("*") == 0) {
+		if ( toName.compareTo(getServerName()) == 0 || toName.compareTo(NetBIOSName.SMBServer) == 0
+				|| toName.compareTo(NetBIOSName.SMBServer2) == 0 || toName.compareTo("*") == 0) {
 
 			// Request is for this server
 
 			forThisServer = true;
 		}
-		else if (getSMBServer().getCIFSConfiguration().hasAliasNames() == true) {
+		else if ( getSMBServer().getCIFSConfiguration().hasAliasNames() == true) {
 
 			// Check for a connection to one of the alias server names
 
-			StringList aliasNames =
-				getSMBServer().getCIFSConfiguration().getAliasNames();
-			if (aliasNames.containsString(toName))
+			StringList aliasNames = getSMBServer().getCIFSConfiguration().getAliasNames();
+			if ( aliasNames.containsString(toName))
 				forThisServer = true;
 		}
 		else {
@@ -892,7 +859,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			// Check if the caller is using an IP address
 
 			InetAddress[] srvAddr = getSMBServer().getServerAddresses();
-			if (srvAddr != null) {
+			if ( srvAddr != null) {
 
 				// Check for an address match
 
@@ -902,7 +869,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 					// Check the current IP address
 
-					if (srvAddr[idx++].getHostAddress().compareTo(toName) == 0)
+					if ( srvAddr[idx++].getHostAddress().compareTo(toName) == 0)
 						forThisServer = true;
 				}
 			}
@@ -910,13 +877,12 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// If we did not find an address match then reject the session request
 
-		if (forThisServer == false)
-			throw new NetBIOSException(
-				"NBREQ Called name is not this server (" + toName + ")");
+		if ( forThisServer == false)
+			throw new NetBIOSException("NBREQ Called name is not this server (" + toName + ")");
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_NETBIOS))
+		if ( Debug.EnableInfo && hasDebug(DBG_NETBIOS))
 			debugPrintln("NetBIOS session request from " + fromName);
 
 		// Save the callers name and target name
@@ -927,7 +893,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		// Move the session to the SMB negotiate state
 
 		setState(SMBSrvSessionState.SMBNEGOTIATE);
-
+		
 		// Set the remote client name
 
 		setRemoteName(fromName);
@@ -940,7 +906,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Output the NetBIOS session accept packet
 
-		m_pktHandler.writePacket(smbPkt, 4, true);
+		m_pktHandler.writePacket( smbPkt, 4, true);
 	}
 
 	/**
@@ -948,7 +914,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 */
-	protected void procSMBNegotiate(SMBSrvPacket smbPkt)
+	protected void procSMBNegotiate( SMBSrvPacket smbPkt)
 		throws SMBSrvException, IOException {
 
 		// Initialize the NetBIOS header
@@ -958,10 +924,8 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if the received packet looks like a valid SMB
 
-		if (smbPkt.getCommand() != PacketType.Negotiate ||
-			smbPkt.checkPacketIsValid(0, 2) == false) {
-			sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( smbPkt.getCommand() != PacketType.Negotiate || smbPkt.checkPacketIsValid(0, 2) == false) {
+			sendErrorResponseSMB( smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -975,25 +939,20 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		while (dataLen > 0) {
 
-			// Decode an SMB dialect string from the data block, always ASCII
-			// strings
+			// Decode an SMB dialect string from the data block, always ASCII strings
 
-			diaStr =
-				DataPacker.getDataString(
-					DataType.Dialect, buf, dataPos, dataLen, false);
-			if (diaStr != null) {
-
+			diaStr = DataPacker.getDataString(DataType.Dialect, buf, dataPos, dataLen, false);
+			if ( diaStr != null) {
+				
 				// Add the dialect string to the list of requested dialects
 
 				dialects.addString(diaStr);
 			}
 			else {
-				// Invalid dialect block in the negotiate packet, send an error
-				// response and hangup
+				// Invalid dialect block in the negotiate packet, send an error response and hangup
 				// the session.
 
-				sendErrorResponseSMB(
-					smbPkt, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+				sendErrorResponseSMB( smbPkt, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 				setState(SMBSrvSessionState.NBHANGUP);
 				return;
 			}
@@ -1004,38 +963,31 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			dataLen -= diaStr.length() + 2;
 		}
 
-		// Find the highest level SMB dialect that the server and client both
-		// support
+		// Find the highest level SMB dialect that the server and client both support
 
-		DialectSelector dia =
-			getSMBServer().getCIFSConfiguration().getEnabledDialects();
+		DialectSelector dia = getSMBServer().getCIFSConfiguration().getEnabledDialects();
 		int diaIdx = -1;
 
 		for (int i = 0; i < Dialect.Max; i++) {
 
 			// Check if the current dialect is supported by the server
 
-			if (dia.hasDialect(i)) {
+			if ( dia.hasDialect(i)) {
 
-				// Check if the client supports the current dialect. If the
-				// current dialect is a
-				// higher level dialect than the currently nominated dialect,
-				// update the nominated
+				// Check if the client supports the current dialect. If the current dialect is a
+				// higher level dialect than the currently nominated dialect, update the nominated
 				// dialect index.
 
 				for (int j = 0; j < Dialect.SMB_PROT_MAXSTRING; j++) {
 
-					// Check if the dialect string maps to the current dialect
-					// index
+					// Check if the dialect string maps to the current dialect index
 
-					if (Dialect.DialectType(j) == i &&
-						dialects.containsString(Dialect.DialectString(j))) {
+					if ( Dialect.DialectType(j) == i && dialects.containsString(Dialect.DialectString(j))) {
 
-						// Update the selected dialect type, if the current
-						// dialect is a newer
+						// Update the selected dialect type, if the current dialect is a newer
 						// dialect
 
-						if (i > diaIdx)
+						if ( i > diaIdx)
 							diaIdx = i;
 					}
 				}
@@ -1044,39 +996,35 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_NEGOTIATE)) {
-			if (diaIdx == -1)
+		if ( Debug.EnableInfo && hasDebug(DBG_NEGOTIATE)) {
+			if ( diaIdx == -1)
 				debugPrintln("Failed to negotiate SMB dialect");
 			else
-				debugPrintln("Negotiated SMB dialect - " +
-					Dialect.DialectTypeString(diaIdx));
+				debugPrintln("Negotiated SMB dialect - " + Dialect.DialectTypeString(diaIdx));
 		}
 
 		// Check if we successfully negotiated an SMB dialect with the client
 
-		if (diaIdx != -1) {
+		if ( diaIdx != -1) {
 
 			// Store the negotiated SMB diialect type
 
 			m_dialect = diaIdx;
 
-			// Convert the dialect type to an index within the clients SMB
-			// dialect list
+			// Convert the dialect type to an index within the clients SMB dialect list
 
 			diaIdx = dialects.findString(Dialect.DialectTypeString(diaIdx));
 
-			// Allocate a protocol handler for the negotiated dialect, if we
-			// cannot get a protocol
+			// Allocate a protocol handler for the negotiated dialect, if we cannot get a protocol
 			// handler then bounce the request.
 
 			m_handler = ProtocolFactory.getHandler(m_dialect);
-			if (m_handler != null) {
+			if ( m_handler != null) {
 
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug(DBG_NEGOTIATE))
-					debugPrintln("Assigned protocol handler - " +
-						m_handler.getClass().getName());
+				if ( Debug.EnableInfo && hasDebug(DBG_NEGOTIATE))
+					debugPrintln("Assigned protocol handler - " + m_handler.getClass().getName());
 
 				// Set the protocol handlers associated session
 
@@ -1084,8 +1032,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			}
 			else {
 
-				// Could not get a protocol handler for the selected SMB
-				// dialect, indicate to the
+				// Could not get a protocol handler for the selected SMB dialect, indicate to the
 				// client that no suitable dialect available.
 
 				diaIdx = -1;
@@ -1094,13 +1041,11 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if the extended security flag has been set by the client
 
-		boolean extendedSecurity =
-			(smbPkt.getFlags2() & SMBSrvPacket.FLG2_EXTENDEDSECURITY) != 0
-				? true : false;
+		boolean extendedSecurity = (smbPkt.getFlags2() & SMBSrvPacket.FLG2_EXTENDEDSECURITY) != 0 ? true : false;
 
 		// Build the negotiate response SMB for Core dialect
 
-		if (m_dialect == -1 || m_dialect <= Dialect.CorePlus) {
+		if ( m_dialect == -1 || m_dialect <= Dialect.CorePlus) {
 
 			// Core dialect negotiate response, or no valid dialect response
 
@@ -1111,15 +1056,14 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			smbPkt.setTreeId(0);
 			smbPkt.setUserId(0);
 		}
-		else if (m_dialect <= Dialect.LanMan2_1) {
+		else if ( m_dialect <= Dialect.LanMan2_1) {
 
 			// We are using case sensitive pathnames and long file names
 
 			smbPkt.setFlags(SMBSrvPacket.FLG_CASELESS);
 			smbPkt.setFlags2(SMBSrvPacket.FLG2_LONGFILENAMES);
 
-			// Access the authenticator for this server and determine if the
-			// server is in share or
+			// Access the authenticator for this server and determine if the server is in share or
 			// user level security mode.
 
 			ICifsAuthenticator auth = getSMBServer().getCifsAuthenticator();
@@ -1130,16 +1074,13 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			smbPkt.setParameter(0, diaIdx);
 			smbPkt.setParameter(1, auth.getSecurityMode());
 			smbPkt.setParameter(2, LanManBufferSize);
-			smbPkt.setParameter(3, LanManMaxMultiplexed); // maximum multiplexed
-															// requests
-			smbPkt.setParameter(4, MaxVirtualCircuits); // maximum number of
-														// virtual circuits
+			smbPkt.setParameter(3, LanManMaxMultiplexed); // maximum multiplexed requests
+			smbPkt.setParameter(4, MaxVirtualCircuits); // maximum number of virtual circuits
 			smbPkt.setParameter(5, 0); // read/write raw mode support
 
 			// Create a session token, using the system clock
 
-			smbPkt.setParameterLong(
-				6, (int) (System.currentTimeMillis() & 0xFFFFFFFF));
+			smbPkt.setParameterLong(6, (int) (System.currentTimeMillis() & 0xFFFFFFFF));
 
 			// Return the current server date/time
 
@@ -1149,8 +1090,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 			// Server timezone offset from UTC
 
-			smbPkt.setParameter(
-				10, getServer().getGlobalConfiguration().getTimeZoneOffset());
+			smbPkt.setParameter(10, getServer().getGlobalConfiguration().getTimeZoneOffset());
 
 			// Encryption key length
 
@@ -1160,8 +1100,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			smbPkt.setTreeId(0);
 			smbPkt.setUserId(0);
 
-			// Let the authenticator pack any remaining fields in the negotiate
-			// response
+			// Let the authenticator pack any remaining fields in the negotiate response
 
 			try {
 
@@ -1173,7 +1112,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug(DBG_NEGOTIATE))
+				if ( Debug.EnableError && hasDebug(DBG_NEGOTIATE))
 					debugPrintln("Negotiate error - " + ex.getMessage());
 
 				// Close the session
@@ -1182,77 +1121,65 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 				return;
 			}
 		}
-		else if (m_dialect == Dialect.NT) {
+		else if ( m_dialect == Dialect.NT) {
 
 			// We are using case sensitive pathnames and long file names
 
 			setDefaultFlags(SMBSrvPacket.FLG_CASELESS);
-			setDefaultFlags2(SMBSrvPacket.FLG2_LONGFILENAMES +
-				SMBSrvPacket.FLG2_UNICODE);
+			setDefaultFlags2(SMBSrvPacket.FLG2_LONGFILENAMES + SMBSrvPacket.FLG2_UNICODE);
 
-			// Access the authenticator for this server and determine if the
-			// server is in share or
+			// Access the authenticator for this server and determine if the server is in share or
 			// user level security mode.
 
-			ICifsAuthenticator auth =
-				getSMBServer().getCIFSConfiguration().getAuthenticator();
+			ICifsAuthenticator auth = getSMBServer().getCIFSConfiguration().getAuthenticator();
 
-			// Check if the authenticator supports extended security, override
-			// the client setting
-
-			if (auth.hasExtendedSecurity() == false)
+			// Check if the authenticator supports extended security, override the client setting
+			
+			if ( auth.hasExtendedSecurity() == false)
 				extendedSecurity = false;
-
+			
 			// NT dialect negotiate response
 
-			NTParameterPacker nt = new NTParameterPacker(smbPkt.getBuffer());
+			NTParameterPacker nt = new NTParameterPacker( smbPkt.getBuffer());
 
 			smbPkt.setParameterCount(17);
-			nt.packWord(diaIdx); // selected dialect index
+			nt.packWord(diaIdx); 				// selected dialect index
 			nt.packByte(auth.getSecurityMode());
-			nt.packWord(NTMaxMultiplexed); // maximum multiplexed requests
-			// setting to 1 will disable change notify requests from the client
-			nt.packWord(MaxVirtualCircuits); // maximum number of virtual
-												// circuits
+			nt.packWord(NTMaxMultiplexed); 		// maximum multiplexed requests
+												// setting to 1 will disable change notify requests from the client
+			nt.packWord(MaxVirtualCircuits); 	// maximum number of virtual circuits
 
-			int maxBufSize =
-				getSMBServer().getPacketPool().getLargestSize() -
-					RFCNetBIOSProtocol.HEADER_LEN;
+			int maxBufSize = getSMBServer().getPacketPool().getLargestSize() - RFCNetBIOSProtocol.HEADER_LEN;
 			nt.packInt(maxBufSize);
 
 			nt.packInt(0); // maximum raw size
 
 			// Create a session token, using the system clock
 
-			if (auth.hasExtendedSecurity() == false ||
-				extendedSecurity == false)
+			if ( auth.hasExtendedSecurity() == false || extendedSecurity == false)
 				nt.packInt((int) (System.currentTimeMillis() & 0xFFFFFFFFL));
 			else
 				nt.packInt(0);
 
-			// Set server capabilities, switch off extended security if the
-			// client does not support
+			// Set server capabilities, switch off extended security if the client does not support
 			// it
 
 			int srvCapabs = auth.getServerCapabilities();
-			if (auth.hasExtendedSecurity() == false ||
-				extendedSecurity == false)
+			if ( auth.hasExtendedSecurity() == false || extendedSecurity == false)
 				srvCapabs &= ~Capability.ExtendedSecurity;
 
 			nt.packInt(srvCapabs);
 
 			// Return the current server date/time, and timezone offset
 
-			long srvTime =
-				NTTime.toNTTime(new java.util.Date(System.currentTimeMillis()));
+			long srvTime = NTTime.toNTTime(new java.util.Date(System.currentTimeMillis()));
 
 			nt.packLong(srvTime);
 			nt.packWord(getServer().getGlobalConfiguration().getTimeZoneOffset());
 
 			// Encryption key length
 
-			if (auth.hasExtendedSecurity() == false ||
-				extendedSecurity == false)
+			if ( auth.hasExtendedSecurity() == false || extendedSecurity == false)
 				nt.packByte(auth.getEncryptionKeyLength());
 			else
 				nt.packByte(0);
@@ -1263,8 +1190,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			smbPkt.setTreeId(0);
 			smbPkt.setUserId(0);
 
-			// Let the authenticator pack any remaining fields in the negotiate
-			// response
+			// Let the authenticator pack any remaining fields in the negotiate response
 
 			try {
 
@@ -1276,7 +1202,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug(DBG_NEGOTIATE))
+				if ( Debug.EnableError && hasDebug(DBG_NEGOTIATE))
 					debugPrintln("Negotiate error - " + ex.getMessage());
 
 				// Close the session
@@ -1288,29 +1214,26 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Make sure the response flag is set
 
-		if (smbPkt.isResponse() == false)
-			smbPkt.setFlags(smbPkt.getFlags() + SMBPacket.FLG_RESPONSE);
+		if ( smbPkt.isResponse() == false)
+			smbPkt.setFlags( smbPkt.getFlags() + SMBPacket.FLG_RESPONSE);
 
 		// Send the negotiate response
 
-		m_pktHandler.writePacket(smbPkt, smbPkt.getLength());
+		m_pktHandler.writePacket( smbPkt, smbPkt.getLength());
 
-		// Check if the negotiated SMB dialect supports the session setup
-		// command, if not then
+		// Check if the negotiated SMB dialect supports the session setup command, if not then
 		// bypass the session setup phase.
 
-		if (m_dialect == -1)
+		if ( m_dialect == -1)
 			setState(SMBSrvSessionState.NBHANGUP);
-		else if (Dialect.DialectSupportsCommand(
-			m_dialect, PacketType.SessionSetupAndX))
+		else if ( Dialect.DialectSupportsCommand(m_dialect, PacketType.SessionSetupAndX))
 			setState(SMBSrvSessionState.SMBSESSSETUP);
 		else
 			setState(SMBSrvSessionState.SMBSESSION);
 
-		// If a dialect was selected inform the server that the session has been
-		// opened
+		// If a dialect was selected inform the server that the session has been opened
 
-		if (m_dialect != -1)
+		if ( m_dialect != -1)
 			getSMBServer().sessionOpened(this);
 	}
 
@@ -1320,14 +1243,14 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public void run() {
 
 		// Server packet allocated from the pool
-
+		
 		SMBSrvPacket smbPkt = null;
-
+		
 		try {
 
 			// Debug
 
-			if (Debug.EnableInfo && hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+			if ( Debug.EnableInfo && hasDebug(SMBSrvSession.DBG_NEGOTIATE))
 				debugPrintln("Server session started");
 
 			// The server session loops until the NetBIOS hangup state is set.
@@ -1335,54 +1258,53 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			while (m_state != SMBSrvSessionState.NBHANGUP) {
 
 				try {
-
+					
 					// Wait for a request packet
-
+	
 					smbPkt = m_pktHandler.readPacket();
 				}
 				catch (SocketTimeoutException ex) {
-
+					
 					// Debug
 
-					if (Debug.EnableInfo && hasDebug(SMBSrvSession.DBG_SOCKET))
+					if ( Debug.EnableInfo && hasDebug(SMBSrvSession.DBG_SOCKET))
 						debugPrintln("Socket read timed out, closing session");
-
+					
 					// Socket read timed out
-
+					
 					hangupSession("Socket read timeout");
-
+					
 					// Clear the request packet
-
+					
 					smbPkt = null;
 				}
 				catch (IOException ex) {
-
-					// Check if there is no more data, the other side has
-					// dropped the connection
+					
+					// Check if there is no more data, the other side has dropped the connection
 
 					hangupSession("Remote disconnect");
-
+					
 					// Clear the request packet
-
+					
 					smbPkt = null;
 				}
 
 				// Check for an empty packet
 
-				if (smbPkt == null)
+				if ( smbPkt == null)
 					continue;
 
 				// Check the packet signature if we are in an SMB state
 
-				if (m_state > SMBSrvSessionState.NBSESSREQ) {
+				if ( m_state > SMBSrvSessionState.NBSESSREQ) {
 
 					// Check for an SMB2 packet signature
 
-					if (smbPkt.isSMB2()) {
+					if ( smbPkt.isSMB2()) {
 
 						// Debug
 
-						if (Debug.EnableInfo && hasDebug(DBG_PKTTYPE))
+						if ( Debug.EnableInfo && hasDebug(DBG_PKTTYPE))
 							debugPrintln("SMB2 request received, ignoring");
 
 						continue;
@@ -1390,102 +1312,93 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 					// Check the packet signature
 
-					if (smbPkt.checkPacketSignature() == false) {
+					if ( smbPkt.checkPacketSignature() == false) {
 
 						// Debug
 
-						if (Debug.EnableInfo && hasDebug(DBG_PKTTYPE))
-							debugPrintln("Invalid SMB packet signature " +
-									"received, packet ignored");
+						if ( Debug.EnableInfo && hasDebug(DBG_PKTTYPE))
+							debugPrintln("Invalid SMB packet signature received, packet ignored");
 
 						continue;
 					}
 				}
 
 				// Queue the request to the thread pool for processing
-
-				getThreadPool().queueRequest(
-					new CIFSThreadRequest(this, smbPkt));
+				
+				getThreadPool().queueRequest( new CIFSThreadRequest( this, smbPkt));
 				smbPkt = null;
 			}
-
+			
 			// Cleanup the session, then close the session/socket
-
+			
 			closeSession();
 		}
 		catch (Exception ex) {
 
 			// Output the exception details
 
-			if (isShutdown() == false) {
+			if ( isShutdown() == false) {
 				debugPrintln("Closing session due to exception");
 				debugPrintln(ex);
-				Debug.println(ex);
+				Debug.println( ex);
 			}
 		}
 		catch (Throwable ex) {
 			debugPrintln("Closing session due to throwable");
 			debugPrintln(ex.toString());
-			Debug.println(ex);
+			Debug.println( ex);
 		}
 		finally {
-
+			
 			// Release any allocated request packet back to the pool
-
-			if (smbPkt != null)
-				getSMBServer().getPacketPool().releasePacket(smbPkt);
+			
+			if ( smbPkt != null)
+				getSMBServer().getPacketPool().releasePacket( smbPkt);
 		}
 	}
 
 	/**
-	 * Handle a session message, receive all data and run the SMB protocol
-	 * handler.
+	 * Handle a session message, receive all data and run the SMB protocol handler.
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 */
-	protected final void runHandler(SMBSrvPacket smbPkt)
+	protected final void runHandler( SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException, TooManyConnectionsException {
 
 		// DEBUG
 
-		if (Debug.EnableInfo && hasDebug(DBG_PKTTYPE))
-			debugPrintln("Rx packet type - " + smbPkt.getPacketTypeString() +
-				", SID=" + smbPkt.getSID());
+		if ( Debug.EnableInfo && hasDebug(DBG_PKTTYPE))
+			debugPrintln("Rx packet type - " + smbPkt.getPacketTypeString() + ", SID=" + smbPkt.getSID());
 
 		// Call the protocol handler
 
-		if (m_handler.runProtocol(smbPkt) == false) {
+		if ( m_handler.runProtocol( smbPkt) == false) {
 
-			// The sessions protocol handler did not process the request, return
-			// an unsupported
+			// The sessions protocol handler did not process the request, return an unsupported
 			// SMB error status.
 
-			sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+			sendErrorResponseSMB( smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
 		}
 
 		// Commit/rollback any active transaction
-
-		if (hasTransaction())
+		
+		if ( hasTransaction())
 			endTransaction();
-
+		
 		// Check if there are any pending asynchronous response packets
 
 		while (hasAsynchResponse()) {
 
-			// Remove the current asynchronous response SMB packet and send to
-			// the client
+			// Remove the current asynchronous response SMB packet and send to the client
 
 			SMBSrvPacket asynchPkt = removeFirstAsynchResponse();
 			sendResponseSMB(asynchPkt, asynchPkt.getLength());
 
 			// DEBUG
 
-			if (Debug.EnableInfo && hasDebug(DBG_NOTIFY)) {
-				debugPrintln("Sent queued asynch response type=" +
-					asynchPkt.getPacketTypeString() + ", mid=" +
-					asynchPkt.getMultiplexId() + ", pid=" +
-					asynchPkt.getProcessId());
+			if ( Debug.EnableInfo && hasDebug(DBG_NOTIFY)) {
+				debugPrintln("Sent queued asynch response type=" + asynchPkt.getPacketTypeString() + ", mid="
+						+ asynchPkt.getMultiplexId() + ", pid=" + asynchPkt.getProcessId());
 				debugPrintln("  Async queue len=" + m_asynchQueue.size());
 			}
 		}
@@ -1496,169 +1409,160 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * 
 	 * @param smbPkt SMBSrvPacket
 	 */
-	public final void processPacket(SMBSrvPacket smbPkt) {
-
+	public final void processPacket( SMBSrvPacket smbPkt) {
+		
 		// Process the packet, if valid
-
-		if (smbPkt != null) {
-
+		
+		if ( smbPkt != null) {
+			
 			try {
-
+	
 				// Start/end times if timing debug is enabled
-
+	
 				long startTime = 0L;
 				long endTime = 0L;
-
+	
 				// Debug
-
-				if (Debug.EnableInfo && hasDebug(DBG_TIMING))
+	
+				if ( Debug.EnableInfo && hasDebug(DBG_TIMING))
 					startTime = System.currentTimeMillis();
-
+	
 				// Debug
-
-				if (Debug.EnableInfo && hasDebug(DBG_RXDATA)) {
+	
+				if ( Debug.EnableInfo && hasDebug(DBG_RXDATA)) {
 					debugPrintln("Rx Data len=" + smbPkt.getReceivedLength());
-					HexDump.Dump(
-						smbPkt.getBuffer(), smbPkt.getReceivedLength(), 0,
-						Debug.getDebugInterface());
+					HexDump.Dump( smbPkt.getBuffer(), smbPkt.getReceivedLength(), 0, Debug.getDebugInterface());
 				}
-
+	
 				// Process the received packet
-
-				if (smbPkt.getReceivedLength() > 0) {
-
+				
+				if ( smbPkt.getReceivedLength() > 0) {
+					
 					switch (m_state) {
-
-					// NetBIOS session request pending
-
-					case SMBSrvSessionState.NBSESSREQ:
-						procNetBIOSSessionRequest(smbPkt);
-						break;
-
-					// SMB dialect negotiate
-
-					case SMBSrvSessionState.SMBNEGOTIATE:
-						procSMBNegotiate(smbPkt);
-						break;
-
-					// SMB session setup
-
-					case SMBSrvSessionState.SMBSESSSETUP:
-						m_handler.runProtocol(smbPkt);
-						break;
-
-					// SMB session main request processing
-
-					case SMBSrvSessionState.SMBSESSION:
-
-						// Run the main protocol handler
-
-						runHandler(smbPkt);
-
-						// Debug
-
-						if (Debug.EnableInfo && hasDebug(DBG_TIMING)) {
-							endTime = System.currentTimeMillis();
-							long duration = endTime - startTime;
-							if (duration > 20)
-								debugPrintln("Processed packet " +
-									PacketType.getCommandName(
-										smbPkt.getCommand()) +
-									" (0x" +
-									Integer.toHexString(smbPkt.getCommand()) +
-									") in " + duration + "ms, MID=" +
-									smbPkt.getMultiplexId());
-						}
-						break;
+		
+						// NetBIOS session request pending
+		
+						case SMBSrvSessionState.NBSESSREQ:
+							procNetBIOSSessionRequest( smbPkt);
+							break;
+		
+						// SMB dialect negotiate
+		
+						case SMBSrvSessionState.SMBNEGOTIATE:
+							procSMBNegotiate( smbPkt);
+							break;
+		
+						// SMB session setup
+		
+						case SMBSrvSessionState.SMBSESSSETUP:
+							m_handler.runProtocol( smbPkt);
+							break;
+		
+						// SMB session main request processing
+		
+						case SMBSrvSessionState.SMBSESSION:
+		
+							// Run the main protocol handler
+		
+							runHandler( smbPkt);
+		
+							// Debug
+		
+							if ( Debug.EnableInfo && hasDebug(DBG_TIMING)) {
+								endTime = System.currentTimeMillis();
+								long duration = endTime - startTime;
+								if ( duration > 20)
+									debugPrintln("Processed packet " + PacketType.getCommandName( smbPkt.getCommand()) + " (0x"
+											+ Integer.toHexString( smbPkt.getCommand()) + ") in " + duration + "ms, MID=" + smbPkt.getMultiplexId());
+							}
+							break;
 					}
 				}
-
+				
 				// Release the current packet back to the pool
-
-				getPacketPool().releasePacket(smbPkt);
+				
+				getPacketPool().releasePacket( smbPkt);
 				smbPkt = null;
-
+				
 				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug(DBG_PKTSTATS))
+				
+				if ( Debug.EnableInfo && hasDebug(DBG_PKTSTATS))
 					Debug.println("[SMB] Packet pool stats: " + getPacketPool());
-
+	
 			}
 			catch (SocketException ex) {
-
+	
 				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug(DBG_STATE))
+	
+				if ( Debug.EnableInfo && hasDebug(DBG_STATE))
 					debugPrintln("Socket closed by remote client");
 			}
 			catch (Exception ex) {
-
+	
 				// Output the exception details
-
-				if (isShutdown() == false) {
+	
+				if ( isShutdown() == false) {
 					debugPrintln("Closing session due to exception");
 					debugPrintln(ex);
-					Debug.println(ex);
+					Debug.println( ex);
 				}
 			}
 			catch (Throwable ex) {
 				debugPrintln("Closing session due to throwable");
 				debugPrintln(ex.toString());
-				Debug.println(ex);
+				Debug.println( ex);
 			}
 			finally {
-
+				
 				// Release any allocated request packet back to the pool
-
-				if (smbPkt != null)
-					getSMBServer().getPacketPool().releasePacket(smbPkt);
+				
+				if ( smbPkt != null)
+					getSMBServer().getPacketPool().releasePacket( smbPkt);
 			}
 		}
-
+		
 		// Check if there is an active transaction
-
-		if (hasTransaction()) {
-
+		
+		if ( hasTransaction()) {
+		
 			// DEBUG
-
-			if (Debug.EnableError)
-				debugPrintln("** Active transaction after packet processing, " +
-						"cleaning up **");
-
+			
+			if ( Debug.EnableError)
+				debugPrintln("** Active transaction after packet processing, cleaning up **");
+			
 			// Close the active transaction
-
+			
 			endTransaction();
 		}
-
-		// Check if the session has been closed, either cleanly or due to an
-		// exception
-
-		if (m_state == SMBSrvSessionState.NBHANGUP) {
-
+		
+		// Check if the session has been closed, either cleanly or due to an exception
+		
+		if ( m_state == SMBSrvSessionState.NBHANGUP) {
+			
 			// Cleanup the session, make sure all resources are released
-
+	
 			cleanupSession();
-
+	
 			// Debug
-
-			if (Debug.EnableInfo && hasDebug(DBG_STATE))
+	
+			if ( Debug.EnableInfo && hasDebug(DBG_STATE))
 				debugPrintln("Server session closed");
-
+	
 			// Close the session
-
+	
 			closeSocket();
-
+	
 			// Notify the server that the session has closed
-
+	
 			getSMBServer().sessionClosed(this);
 		}
-
+		
 		// Clear any user context
-
-		if (hasClientInformation())
-			getSMBServer().getCifsAuthenticator().setCurrentUser(null);
+		
+		if ( hasClientInformation())
+			getSMBServer().getCifsAuthenticator().setCurrentUser( null);
 	}
-
+	
 	/**
 	 * Send an SMB response
 	 * 
@@ -1681,33 +1585,32 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		throws IOException {
 
 		// Commit/rollback any active transactions before sending the response
-
-		if (hasTransaction()) {
-
+		
+		if ( hasTransaction()) {
+			
 			// DEBUG
-
+			
 			long startTime = 0L;
-
-			if (Debug.EnableInfo && hasDebug(DBG_BENCHMARK))
+			
+			if ( Debug.EnableInfo && hasDebug( DBG_BENCHMARK))
 				startTime = System.currentTimeMillis();
-
+		
 			// Commit or rollback the transaction
-
+			
 			endTransaction();
-
+			
 			// DEBUG
-
-			if (Debug.EnableInfo && hasDebug(DBG_BENCHMARK)) {
+			
+			if ( Debug.EnableInfo && hasDebug( DBG_BENCHMARK)) {
 				long elapsedTime = System.currentTimeMillis() - startTime;
-				if (elapsedTime > 5L)
-					Debug.println("Benchmark: End transaction took " +
-						elapsedTime + "ms");
+				if ( elapsedTime > 5L)
+					Debug.println("Benchmark: End transaction took " + elapsedTime + "ms");
 			}
-		}
-
+		}			
+		
 		// Make sure the response flag is set
 
-		if (pkt.isResponse() == false)
+		if ( pkt.isResponse() == false)
 			pkt.setFlags(pkt.getFlags() + SMBSrvPacket.FLG_RESPONSE);
 
 		// Add default flags/flags2 values
@@ -1717,9 +1620,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		// Mask out certain flags that the client may have sent
 
 		int flags2 = pkt.getFlags2() | getDefaultFlags2();
-		flags2 &=
-			~(SMBSrvPacket.FLG2_EXTENDEDATTRIB + SMBSrvPacket.FLG2_DFSRESOLVE +
-							SMBSrvPacket.FLG2_SECURITYSIGS);
+		flags2 &= ~(SMBSrvPacket.FLG2_EXTENDEDATTRIB + SMBSrvPacket.FLG2_DFSRESOLVE + SMBSrvPacket.FLG2_SECURITYSIGS);
 
 		pkt.setFlags2(flags2);
 
@@ -1730,7 +1631,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_TXDATA)) {
+		if ( Debug.EnableInfo && hasDebug(DBG_TXDATA)) {
 			debugPrintln("Tx Data len=" + len);
 			HexDump.Dump(pkt.getBuffer(), 64, 0, Debug.getDebugInterface());
 		}
@@ -1738,29 +1639,29 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 	/**
 	 * Send a success response SMB
-	 * 
+	 *
 	 * @param smbPkt SMBSrvPacket
 	 * @exception IOException If a network error occurs
 	 */
-	public final void sendSuccessResponseSMB(SMBSrvPacket smbPkt)
+	public final void sendSuccessResponseSMB( SMBSrvPacket smbPkt)
 		throws IOException {
 
 		// Make sure the response flag is set
 
-		if (smbPkt.isResponse() == false)
-			smbPkt.setFlags(smbPkt.getFlags() + SMBSrvPacket.FLG_RESPONSE);
+		if ( smbPkt.isResponse() == false)
+			smbPkt.setFlags( smbPkt.getFlags() + SMBSrvPacket.FLG_RESPONSE);
 
 		// Add default flags/flags2 values
 
-		smbPkt.setFlags(smbPkt.getFlags() | getDefaultFlags());
-		smbPkt.setFlags2(smbPkt.getFlags2() | getDefaultFlags2());
+		smbPkt.setFlags( smbPkt.getFlags() | getDefaultFlags());
+		smbPkt.setFlags2( smbPkt.getFlags2() | getDefaultFlags2());
 
 		// Clear the parameter and byte counts
 
 		smbPkt.setParameterCount(0);
 		smbPkt.setByteCount(0);
 
-		if (smbPkt.isLongErrorCode())
+		if ( smbPkt.isLongErrorCode())
 			smbPkt.setLongErrorCode(SMBStatus.NTSuccess);
 		else {
 			smbPkt.setErrorClass(SMBStatus.Success);
@@ -1769,51 +1670,50 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Return the success response to the client
 
-		sendResponseSMB(smbPkt, smbPkt.getLength());
+		sendResponseSMB( smbPkt, smbPkt.getLength());
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_TXDATA))
+		if ( Debug.EnableInfo && hasDebug(DBG_TXDATA))
 			debugPrintln("Tx Data len=" + smbPkt.getLength() + ", success SMB");
 	}
 
 	/**
-	 * Send an error response SMB. The returned code depends on the client long
-	 * error code flag setting.
+	 * Send an error response SMB. The returned code depends on the client long error code flag
+	 * setting.
 	 * 
-	 * @param smbPkt SMBSrvPacket
+	 * @param smbPkt SMBSrvPacket 
 	 * @param ntCode 32bit error code
 	 * @param stdCode Standard error code
 	 * @param stdClass Standard error class
 	 */
-	public final void sendErrorResponseSMB(
-		SMBSrvPacket smbPkt, int ntCode, int stdCode, int stdClass)
+	public final void sendErrorResponseSMB( SMBSrvPacket smbPkt, int ntCode, int stdCode, int stdClass)
 		throws java.io.IOException {
 
 		// Check if long error codes are required by the client
 
-		if (smbPkt.isLongErrorCode()) {
+		if ( smbPkt.isLongErrorCode()) {
 
 			// Return the long/NT status code
 
-			if (ntCode != -1) {
+			if ( ntCode != -1) {
 
 				// Use the 32bit NT error code
 
-				sendErrorResponseSMB(smbPkt, ntCode, SMBStatus.NTErr);
+				sendErrorResponseSMB( smbPkt, ntCode, SMBStatus.NTErr);
 			}
 			else {
 
 				// Use the DOS error code
 
-				sendErrorResponseSMB(smbPkt, stdCode, stdClass);
+				sendErrorResponseSMB( smbPkt, stdCode, stdClass);
 			}
 		}
 		else {
 
 			// Return the standard/DOS error code
 
-			sendErrorResponseSMB(smbPkt, stdCode, stdClass);
+			sendErrorResponseSMB( smbPkt, stdCode, stdClass);
 		}
 	}
 
@@ -1824,14 +1724,13 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @param errCode int Error code.
 	 * @param errClass int Error class.
 	 */
-	public final void sendErrorResponseSMB(
-		SMBSrvPacket smbPkt, int errCode, int errClass)
+	public final void sendErrorResponseSMB( SMBSrvPacket smbPkt, int errCode, int errClass)
 		throws java.io.IOException {
 
 		// Make sure the response flag is set
 
-		if (smbPkt.isResponse() == false)
-			smbPkt.setFlags(smbPkt.getFlags() + SMBSrvPacket.FLG_RESPONSE);
+		if ( smbPkt.isResponse() == false)
+			smbPkt.setFlags( smbPkt.getFlags() + SMBSrvPacket.FLG_RESPONSE);
 
 		// Set the error code and error class in the response packet
 
@@ -1840,18 +1739,17 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Add default flags/flags2 values
 
-		smbPkt.setFlags(smbPkt.getFlags() | getDefaultFlags());
-		smbPkt.setFlags2(smbPkt.getFlags2() | getDefaultFlags2());
+		smbPkt.setFlags( smbPkt.getFlags() | getDefaultFlags());
+		smbPkt.setFlags2( smbPkt.getFlags2() | getDefaultFlags2());
 
 		// Check if the error is a NT 32bit error status
 
-		if (errClass == SMBStatus.NTErr) {
+		if ( errClass == SMBStatus.NTErr) {
 
 			// Enable the long error status flag
 
-			if (smbPkt.isLongErrorCode() == false)
-				smbPkt.setFlags2(smbPkt.getFlags2() +
-					SMBSrvPacket.FLG2_LONGERRORCODE);
+			if ( smbPkt.isLongErrorCode() == false)
+				smbPkt.setFlags2( smbPkt.getFlags2() + SMBSrvPacket.FLG2_LONGERRORCODE);
 
 			// Set the NT status code
 
@@ -1861,9 +1759,8 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 			// Disable the long error status flag
 
-			if (smbPkt.isLongErrorCode() == true)
-				smbPkt.setFlags2(smbPkt.getFlags2() -
-					SMBSrvPacket.FLG2_LONGERRORCODE);
+			if ( smbPkt.isLongErrorCode() == true)
+				smbPkt.setFlags2(smbPkt.getFlags2() - SMBSrvPacket.FLG2_LONGERRORCODE);
 
 			// Set the error status/class
 
@@ -1873,13 +1770,12 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Return the error response to the client
 
-		sendResponseSMB(smbPkt, smbPkt.getLength());
+		sendResponseSMB( smbPkt, smbPkt.getLength());
 
 		// Debug
 
-		if (Debug.EnableInfo && hasDebug(DBG_ERROR))
-			debugPrintln("Error : Cmd = " + smbPkt.getPacketTypeString() +
-				" - " + SMBErrorText.ErrorString(errClass, errCode));
+		if ( Debug.EnableInfo && hasDebug(DBG_ERROR))
+			debugPrintln("Error : Cmd = " + smbPkt.getPacketTypeString() + " - " + SMBErrorText.ErrorString(errClass, errCode));
 	}
 
 	/**
@@ -1897,7 +1793,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		boolean sts = false;
 
-		if (m_pktHandler.availableBytes() == 0) {
+		if ( m_pktHandler.availableBytes() == 0) {
 
 			// Send the asynchronous response immediately
 
@@ -1910,8 +1806,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		}
 		else {
 
-			// Queue the packet to send out when current SMB requests have been
-			// processed
+			// Queue the packet to send out when current SMB requests have been processed
 
 			queueAsynchResponseSMB(pkt);
 		}
@@ -1922,8 +1817,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	}
 
 	/**
-	 * Queue an asynchronous response SMB for sending when current SMB requests
-	 * have been processed.
+	 * Queue an asynchronous response SMB for sending when current SMB requests have been processed.
 	 * 
 	 * @param pkt SMBSrvPacket
 	 */
@@ -1931,7 +1825,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if the asynchronous response queue has been allocated
 
-		if (m_asynchQueue == null) {
+		if ( m_asynchQueue == null) {
 
 			// Allocate the asynchronous response queue
 
@@ -1952,7 +1846,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if the queue is valid
 
-		if (m_asynchQueue != null && m_asynchQueue.size() > 0)
+		if ( m_asynchQueue != null && m_asynchQueue.size() > 0)
 			return true;
 		return false;
 	}
@@ -1966,7 +1860,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if there are asynchronous response packets queued
 
-		if (m_asynchQueue == null || m_asynchQueue.size() == 0)
+		if ( m_asynchQueue == null || m_asynchQueue.size() == 0)
 			return null;
 
 		// Return the SMB packet from the head of the queue
@@ -1985,12 +1879,11 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @param pid int
 	 * @return NotifyRequest
 	 */
-	public final NotifyRequest findNotifyRequest(
-		int mid, int tid, int uid, int pid) {
+	public final NotifyRequest findNotifyRequest(int mid, int tid, int uid, int pid) {
 
 		// Check if the local notify list is valid
 
-		if (m_notifyList == null)
+		if ( m_notifyList == null)
 			return null;
 
 		// Find the matching notify request
@@ -2006,12 +1899,11 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @param watchTree boolean
 	 * @return NotifyRequest
 	 */
-	public final NotifyRequest findNotifyRequest(
-		NetworkFile dir, int filter, boolean watchTree) {
+	public final NotifyRequest findNotifyRequest(NetworkFile dir, int filter, boolean watchTree) {
 
 		// Check if the local notify list is valid
 
-		if (m_notifyList == null)
+		if ( m_notifyList == null)
 			return null;
 
 		// Find the matching notify request
@@ -2029,7 +1921,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if the local notify list has been allocated
 
-		if (m_notifyList == null)
+		if ( m_notifyList == null)
 			m_notifyList = new NotifyRequestList();
 
 		// Add the request to the local list and the shares global list
@@ -2047,13 +1939,13 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Check if the local notify list has been allocated
 
-		if (m_notifyList == null)
+		if ( m_notifyList == null)
 			return;
 
 		// Remove the request from the local list and the shares global list
 
 		m_notifyList.removeRequest(req);
-		if (req.getDiskContext() != null)
+		if ( req.getDiskContext() != null)
 			req.getDiskContext().removeNotifyRequest(req);
 	}
 
@@ -2083,11 +1975,10 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @param sessId int
 	 * @return SMBSrvSession
 	 */
-	public static final SMBSrvSession createSession(
-		PacketHandler handler, SMBServer server, int sessId) {
+	public static final SMBSrvSession createSession(PacketHandler handler, SMBServer server, int sessId) {
 		return m_factory.createSession(handler, server, sessId);
 	}
-
+	
 	/**
 	 * Check if an asynchronous read is queued/being processed by this session
 	 * 
@@ -2096,7 +1987,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public final boolean hasReadInProgress() {
 		return m_asyncRead;
 	}
-
+	
 	/**
 	 * Set/clear the read in progress flag
 	 * 
@@ -2105,5 +1996,4 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public final void setReadInProgress(boolean inProgress) {
 		m_asyncRead = inProgress;
 	}
-
 }

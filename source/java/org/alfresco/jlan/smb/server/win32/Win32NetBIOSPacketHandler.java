@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -36,8 +36,11 @@ import org.alfresco.jlan.smb.server.PacketHandler;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
 
 /**
- * Win32 NetBIOS Packet Handler Class <p> Uses the Win32 Netbios() call to
- * provide the low level session layer for better integration with Windows.
+ * Win32 NetBIOS Packet Handler Class
+ * 
+ * <p>
+ * Uses the Win32 Netbios() call to provide the low level session layer for better integration with
+ * Windows.
  * 
  * @author gkspencer
  */
@@ -47,7 +50,7 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 	//
 	// Receive error encoding and length masks
 
-	private static final int ReceiveErrorMask = 0xFF000000;
+	private static final int ReceiveErrorMask  = 0xFF000000;
 	private static final int ReceiveLengthMask = 0x0000FFFF;
 
 	// Network LAN adapter to use
@@ -66,11 +69,8 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 	 * @param callerName String
 	 * @param packetPool CIFSPacketPool
 	 */
-	public Win32NetBIOSPacketHandler(
-		int lana, int lsn, String callerName, CIFSPacketPool packetPool) {
-
-		super(SMBSrvPacket.PROTOCOL_WIN32NETBIOS, "Win32NB", "WNB", 
-			callerName, packetPool);
+	public Win32NetBIOSPacketHandler(int lana, int lsn, String callerName, CIFSPacketPool packetPool) {
+		super(SMBSrvPacket.PROTOCOL_WIN32NETBIOS, "Win32NB", "WNB", callerName, packetPool);
 
 		m_lana = lana;
 		m_lsn = lsn;
@@ -117,90 +117,73 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 	public SMBSrvPacket readPacket()
 		throws IOException {
 
-		// As we cannot find the length of the incoming packet we must allocate
-		// a full length packet
-
-		SMBSrvPacket pkt = getPacketPool().allocatePacket(
-			getPacketPool().getLargestSize());
-
+		// As we cannot find the length of the incoming packet we must allocate a full length packet
+		
+		SMBSrvPacket pkt = getPacketPool().allocatePacket( getPacketPool().getLargestSize());
+		
 		// Wait for a packet on the Win32 NetBIOS session
 		//
-		// As Windows is handling the NetBIOS session layer we only receive the
-		// SMB packet. In order
-		// to be compatible with the other packet handlers we allow for the 4
-		// byte header.
+		// As Windows is handling the NetBIOS session layer we only receive the SMB packet. In order
+		// to be compatible with the other packet handlers we allow for the 4 byte header.
 
 		int pktLen = pkt.getBuffer().length;
-		if (pktLen > NetBIOS.MaxReceiveSize)
+		if ( pktLen > NetBIOS.MaxReceiveSize)
 			pktLen = NetBIOS.MaxReceiveSize;
 
-		int rxLen =
-			Win32NetBIOS.Receive(m_lana, m_lsn, pkt.getBuffer(), 4, pktLen - 4);
+		int rxLen = Win32NetBIOS.Receive(m_lana, m_lsn, pkt.getBuffer(), 4, pktLen - 4);
 
-		if ((rxLen & ReceiveErrorMask) != 0) {
+		if ( (rxLen & ReceiveErrorMask) != 0) {
 
 			// Check for an incomplete message status code
 
 			int sts = (rxLen & ReceiveErrorMask) >> 24;
 
-			if (sts == NetBIOS.NRC_Incomp) {
+			if ( sts == NetBIOS.NRC_Incomp) {
 
 				// DEBUG
 
-				if (hasDebug())
-					Debug.println(
-						"Win32NetBIOSPacketHandle: readPacket() " +
-						"NRC_Incomp error");
+				if ( hasDebug())
+					Debug.println("Win32NetBIOSPacketHandle: readPacket() NRC_Incomp error");
+				
+				// Check if the packet buffer is already at the maximum size (we assume the maximum
+				// size is the maximum that RFC NetBIOS can send which is 17bits)
 
-				// Check if the packet buffer is already at the maximum size (we
-				// assume the maximum
-				// size is the maximum that RFC NetBIOS can send which is
-				// 17bits)
-
-				if (pkt.getBuffer().length < getPacketPool()
-								.getMaximumOverSizedAllocation()) {
+				if ( pkt.getBuffer().length < getPacketPool().getMaximumOverSizedAllocation()) {
 
 					// Allocate a new buffer
 
-					SMBSrvPacket pkt2 = null;
+                    SMBSrvPacket pkt2 = null;
+                    
+                    try {
+                        
+                        // Allocate the maximum over sized packet available, usually 128K
+                        
+                        pkt2 = getPacketPool().allocatePacket( getPacketPool().getMaximumOverSizedAllocation());
+                    }
+                    catch ( NoPooledMemoryException ex) {
+                        
+                        // Release the original buffer back to the pool
+                        
+                        getPacketPool().releasePacket( pkt);
+                        
+                        // Rethrow the pooled memory exception
+                        
+                        throw ex;
+                    }
 
-					try {
+					// Copy the first part of the received data to the new buffer
 
-						// Allocate the maximum over sized packet available,
-						// usually 128K
+					System.arraycopy(pkt.getBuffer(), 4, pkt2.getBuffer(), 4, pktLen - 4);
 
-						pkt2 = getPacketPool().allocatePacket(
-							getPacketPool().getMaximumOverSizedAllocation());
-					}
-					catch (NoPooledMemoryException ex) {
-
-						// Release the original buffer back to the pool
-
-						getPacketPool().releasePacket(pkt);
-
-						// Rethrow the pooled memory exception
-
-						throw ex;
-					}
-
-					// Copy the first part of the received data to the new
-					// buffer
-
-					System.arraycopy(
-						pkt.getBuffer(), 4, pkt2.getBuffer(), 4, pktLen - 4);
-
-					// Move the new buffer in as the main packet buffer, release
-					// the original buffer
-
-					getPacketPool().releasePacket(pkt);
-					pkt = pkt2;
+					// Move the new buffer in as the main packet buffer, release the original buffer
+                    
+                    getPacketPool().releasePacket( pkt);
+                    pkt = pkt2;
 
 					// DEBUG
 
-					if (hasDebug())
-						Debug.println(
-							"readPacket() extended buffer to " +
-							pkt.getBuffer().length);
+                    if ( hasDebug())
+                    	Debug.println("readPacket() extended buffer to " + pkt.getBuffer().length);
 				}
 
 				// Set the original receive size
@@ -209,25 +192,21 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 
 				// Receive the remaining data
 				//
-				// Note: If the second read request is issued with a size of 64K
-				// or 64K-4 it returns
+				// Note: If the second read request is issued with a size of 64K or 64K-4 it returns
 				// with another incomplete status and returns no data.
 
-				int rxLen2 = Win32NetBIOS.Receive(
-					m_lana, m_lsn, pkt.getBuffer(), rxLen + 4, 32768);
+				int rxLen2 = Win32NetBIOS.Receive(m_lana, m_lsn, pkt.getBuffer(), rxLen + 4, 32768);
 
-				if ((rxLen2 & ReceiveErrorMask) != 0) {
+				if ( (rxLen2 & ReceiveErrorMask) != 0) {
 					sts = (rxLen2 & ReceiveErrorMask) >> 24;
-					throw new IOException(
-						"Win32 NetBIOS multi-part receive failed, sts=0x" +
-							sts + ", err=" + NetBIOS.getErrorString(sts));
+					throw new IOException("Win32 NetBIOS multi-part receive failed, sts=0x" + sts + ", err="
+							+ NetBIOS.getErrorString(sts));
 				}
 
 				// DEBUG
 
-				if (hasDebug())
-					Debug.println("readPacket() rxlen2=" + rxLen2 +
-						", total read len = " + (rxLen + rxLen2));
+				if ( hasDebug())
+					Debug.println("readPacket() rxlen2=" + rxLen2 + ", total read len = " + (rxLen + rxLen2));
 
 				// Set the total received data length
 
@@ -235,21 +214,21 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 			}
 			else {
 
-				// Release the packet buffer back to the pool
-
-				getPacketPool().releasePacket(pkt);
-
+                // Release the packet buffer back to the pool
+                
+                getPacketPool().releasePacket( pkt);
+                
 				// Indicate that the session has closed
 
 				return null;
 			}
 		}
-
+		
 		// Set the received packet length
-
-		if (pkt != null)
-			pkt.setReceivedLength(rxLen);
-
+		
+		if ( pkt != null)
+			pkt.setReceivedLength( rxLen);
+		
 		// Return the received packet
 
 		return pkt;
@@ -268,14 +247,12 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 
 		// Output the packet on the Win32 NetBIOS session
 		//
-		// As Windows is handling the NetBIOS session layer we do not send the 4
-		// byte header that is
+		// As Windows is handling the NetBIOS session layer we do not send the 4 byte header that is
 		// used by the NetBIOS over TCP/IP and native SMB packet handlers.
 
 		Win32NetBIOS.Send(m_lana, m_lsn, pkt.getBuffer(), 4, len);
 
-		// Do not check the status, if the session has been closed the next
-		// receive will fail
+		// Do not check the status, if the session has been closed the next receive will fail
 	}
 
 	/**
@@ -299,5 +276,4 @@ public class Win32NetBIOSPacketHandler extends PacketHandler {
 
 		Win32NetBIOS.Hangup(m_lana, m_lsn);
 	}
-
 }

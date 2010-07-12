@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -76,8 +76,7 @@ public class EncApRepPart {
 	 * @param byte[] blob
 	 * @exception IOException
 	 */
-	public EncApRepPart(byte[] blob)
-		throws IOException {
+	public EncApRepPart(byte[] blob) throws IOException {
 		parseApRep(blob);
 	}
 
@@ -136,98 +135,93 @@ public class EncApRepPart {
 	 */
 	public final void parseApRep(byte[] apRep)
 		throws IOException {
-
+		
 		// Create a stream to parse the ASN.1 encoded blob
 
 		DERBuffer derBuf = new DERBuffer(apRep);
 
 		DERObject derObj = derBuf.unpackObject();
-		if (derObj instanceof DERSequence) {
-
+		if ( derObj instanceof DERSequence) {
+			
 			// Enumerate the AP-REP objects
 
 			DERSequence derSeq = (DERSequence) derObj;
 
 			for (int idx = 0; idx < derSeq.numberOfObjects(); idx++) {
-
+				
 				// Read an object
 
 				derObj = (DERObject) derSeq.getObjectAt(idx);
 
-				if (derObj != null && derObj.isTagged()) {
+				if ( derObj != null && derObj.isTagged()) {
 					switch (derObj.getTagNo()) {
+						
+						// Timestamp
 
-					// Timestamp
+						case 0:
+							if ( derObj  instanceof DERGeneralizedTime) {
+								DERGeneralizedTime derTime = (DERGeneralizedTime) derObj;
+								m_timestamp = derTime.getValue();
+							}
+							break;
 
-					case 0:
-						if (derObj instanceof DERGeneralizedTime) {
-							DERGeneralizedTime derTime =
-								(DERGeneralizedTime) derObj;
-							m_timestamp = derTime.getValue();
-						}
-						break;
+						// Microseconds
 
-					// Microseconds
+						case 1:
+							if ( derObj instanceof DERInteger) {
+								DERInteger derInt = (DERInteger) derObj;
+								m_microseconds = (int) derInt.getValue();
+							}
+							break;
 
-					case 1:
-						if (derObj instanceof DERInteger) {
-							DERInteger derInt = (DERInteger) derObj;
-							m_microseconds = (int) derInt.getValue();
-						}
-						break;
+						// Sub-key
 
-					// Sub-key
+						case 2:
+							if ( derObj instanceof DERSequence) {
+								DERSequence derEncSeq = (DERSequence) derObj;
 
-					case 2:
-						if (derObj instanceof DERSequence) {
-							DERSequence derEncSeq = (DERSequence) derObj;
+								// Enumerate the sequence
 
-							// Enumerate the sequence
+								for (int i = 0; i < derEncSeq.numberOfObjects(); i++) {
+									
+									// Get the current sequence element
 
-							for (int i = 0; i < derEncSeq.numberOfObjects(); 
-								i++) {
+									derObj = (DERObject) derEncSeq.getObjectAt(i);
 
-								// Get the current sequence element
+									if ( derObj != null && derObj.isTagged()) {
+										switch (derObj.getTagNo()) {
+											
+											// Encryption key type
 
-								derObj = (DERObject) derEncSeq.getObjectAt(i);
+											case 0:
+												if ( derObj instanceof DERInteger) {
+													DERInteger derInt = (DERInteger) derObj;
+													m_subKeyType = (int) derInt.getValue();
+												}
+												break;
 
-								if (derObj != null && derObj.isTagged()) {
-									switch (derObj.getTagNo()) {
+											// Encryption key
 
-									// Encryption key type
-
-									case 0:
-										if (derObj instanceof DERInteger) {
-											DERInteger derInt =
-												(DERInteger) derObj;
-											m_subKeyType =
-												(int) derInt.getValue();
+											case 1:
+												if ( derObj instanceof DEROctetString) {
+													DEROctetString derOct = (DEROctetString) derObj;
+													m_subKey = derOct.getValue();
+												}
+												break;
 										}
-										break;
-
-									// Encryption key
-
-									case 1:
-										if (derObj instanceof DEROctetString) {
-											DEROctetString derOct =
-												(DEROctetString) derObj;
-											m_subKey = derOct.getValue();
-										}
-										break;
 									}
 								}
 							}
-						}
-						break;
+							break;
 
-					// Sequence number
+						// Sequence number
 
-					case 3:
-						if (derObj instanceof DERInteger) {
-							DERInteger derInt = (DERInteger) derObj;
-							m_seqNo = (int) derInt.getValue();
-						}
-						break;
+						case 3:
+							if ( derObj instanceof DERInteger) {
+								DERInteger derInt = (DERInteger) derObj;
+								m_seqNo = (int) derInt.getValue();
+							}
+							break;
 					}
 				}
 			}
@@ -242,7 +236,7 @@ public class EncApRepPart {
 	 */
 	public final byte[] encodeApRep()
 		throws IOException {
-
+		
 		// Build the sequence of tagged objects
 
 		DERSequence derList = new DERSequence();
@@ -250,42 +244,42 @@ public class EncApRepPart {
 		// Add the Kerberos time
 
 		DERGeneralizedTime derTime = new DERGeneralizedTime(getTimestamp());
-		derTime.setTagNo(0);
-		derList.addObject(derTime);
+		derTime.setTagNo( 0);
+		derList.addObject( derTime);
 
 		// Add the microseconds
 
 		DERInteger derInt = new DERInteger(m_microseconds);
-		derInt.setTagNo(1);
-		derList.addObject(derInt);
+		derInt.setTagNo( 1);
+		derList.addObject( derInt);
 
 		// Create the encryption key value
 
-		DERSequence derSeq = new DERSequence(2);
+		DERSequence derSeq = new DERSequence( 2);
 
-		DERObject derObj = new DERInteger(m_subKeyType);
-		derObj.setTagNo(0);
-		derSeq.addObject(derObj);
-
-		derObj = new DEROctetString(m_subKey);
-		derObj.setTagNo(1);
-		derSeq.addObject(derObj);
+		DERObject derObj = new DERInteger( m_subKeyType);
+		derObj.setTagNo( 0);
+		derSeq.addObject( derObj);
+		
+		derObj = new DEROctetString( m_subKey);
+		derObj.setTagNo( 1);
+		derSeq.addObject( derObj);
 
 		// Add the sub-key
 
-		derSeq.setTagNo(2);
-		derList.addObject(derSeq);
+		derSeq.setTagNo( 2);
+		derList.addObject( derSeq);
 
 		// Add the sequence number
 
 		DERInteger derIntSeq = new DERInteger(m_seqNo);
-		derIntSeq.setTagNo(3);
-		derList.addObject(derIntSeq);
+		derIntSeq.setTagNo( 3);
+		derList.addObject( derIntSeq);
 
 		// Pack the objects
 
 		DERBuffer derBuf = new DERBuffer(256);
-		derBuf.packApplicationSpecific(27, derList);
+		derBuf.packApplicationSpecific( 27, derList);
 
 		// Return the packed encrypted part AP-REP blob
 
@@ -307,13 +301,11 @@ public class EncApRepPart {
 		str.append(",SubKey=Type=");
 		str.append(getSubKeyType());
 		str.append(",Key=");
-		str.append(getSubKey() != null
-			? HexDump.hexString(getSubKey()) : "null");
+		str.append(getSubKey() != null ? HexDump.hexString(getSubKey()) : "null");
 		str.append(",SeqNo=");
 		str.append(getSequenceNumber());
 		str.append("]");
 
 		return str.toString();
 	}
-
 }

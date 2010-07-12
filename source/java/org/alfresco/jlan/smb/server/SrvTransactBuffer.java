@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -31,8 +31,9 @@ import org.alfresco.jlan.util.DataBuffer;
 import org.alfresco.jlan.util.DataPacker;
 
 /**
- * Transact Buffer Class <p>Contains the parameters and data for a transaction,
- * transaction2 or NT transaction request.
+ * Transact Buffer Class
+ * 
+ * <p>Contains the parameters and data for a transaction, transaction2 or NT transaction request.
  * 
  * @author gkspencer
  */
@@ -50,20 +51,19 @@ class SrvTransactBuffer extends TransactBuffer {
 	}
 
 	/**
-	 * Class constructor <p>Construct a TransactBuffer using the maximum size
-	 * settings from the specified transaction buffer
+	 * Class constructor
+	 * 
+	 * <p>Construct a TransactBuffer using the maximum size settings from the specified transaction
+	 * buffer
 	 * 
 	 * @param tbuf SrvTransactBuffer
 	 */
 	public SrvTransactBuffer(SrvTransactBuffer tbuf) {
-		super(tbuf.getReturnSetupLimit(), tbuf.getReturnParameterLimit(),
-			tbuf.getReturnDataLimit());
+		super(tbuf.getReturnSetupLimit(), tbuf.getReturnParameterLimit(), tbuf.getReturnDataLimit());
 
 		// Save the return limits for this transaction buffer
 
-		setReturnLimits(
-			tbuf.getReturnSetupLimit(), tbuf.getReturnParameterLimit(),
-			tbuf.getReturnDataLimit());
+		setReturnLimits(tbuf.getReturnSetupLimit(), tbuf.getReturnParameterLimit(), tbuf.getReturnDataLimit());
 
 		// Set the transaction reply type
 
@@ -92,25 +92,20 @@ class SrvTransactBuffer extends TransactBuffer {
 		// Set the setup block and size
 
 		int slen = ntpkt.getSetupCount() * 2;
-		if (slen > 0)
-			m_setupBuf =
-				new DataBuffer(ntpkt.getBuffer(), ntpkt.getSetupOffset(), slen);
+		if ( slen > 0)
+			m_setupBuf = new DataBuffer(ntpkt.getBuffer(), ntpkt.getSetupOffset(), slen);
 
 		// Set the parameter block and size
 
 		int plen = ntpkt.getTotalParameterCount();
-		if (plen > 0)
-			m_paramBuf =
-				new DataBuffer(
-					ntpkt.getBuffer(), ntpkt.getParameterBlockOffset(), plen);
+		if ( plen > 0)
+			m_paramBuf = new DataBuffer(ntpkt.getBuffer(), ntpkt.getParameterBlockOffset(), plen);
 
 		// Set the data block and size
 
 		int dlen = ntpkt.getDataBlockCount();
-		if (dlen > 0)
-			m_dataBuf =
-				new DataBuffer(
-					ntpkt.getBuffer(), ntpkt.getDataBlockOffset(), dlen);
+		if ( dlen > 0)
+			m_dataBuf = new DataBuffer(ntpkt.getBuffer(), ntpkt.getDataBlockOffset(), dlen);
 
 		// Set the transaction type and sub-function
 
@@ -149,30 +144,26 @@ class SrvTransactBuffer extends TransactBuffer {
 		// Set the setup block and size
 
 		int slen = tpkt.getSetupCount() * 2;
-		if (slen > 0)
-			m_setupBuf =
-				new DataBuffer(tpkt.getBuffer(), tpkt.getSetupOffset(), slen);
+		if ( slen > 0)
+			m_setupBuf = new DataBuffer(tpkt.getBuffer(), tpkt.getSetupOffset(), slen);
 
 		// Set the parameter block and size
 
 		int plen = tpkt.getTotalParameterCount();
-		if (plen > 0)
-			m_paramBuf =
-				new DataBuffer(
-					tpkt.getBuffer(), tpkt.getRxParameterBlock(), plen);
+		if ( plen > 0)
+			m_paramBuf = new DataBuffer(tpkt.getBuffer(), tpkt.getRxParameterBlock(), plen);
 
 		// Set the data block and size
 
 		int dlen = tpkt.getRxDataBlockLength();
-		if (dlen > 0)
-			m_dataBuf =
-				new DataBuffer(tpkt.getBuffer(), tpkt.getRxDataBlock(), dlen);
+		if ( dlen > 0)
+			m_dataBuf = new DataBuffer(tpkt.getBuffer(), tpkt.getRxDataBlock(), dlen);
 
 		// Set the transaction type and sub-function
 
 		setType(tpkt.getCommand());
 
-		if (tpkt.getSetupCount() > 0)
+		if ( tpkt.getSetupCount() > 0)
 			setFunction(tpkt.getSetupParameter(0));
 
 		// Set the Unicode flag
@@ -181,14 +172,14 @@ class SrvTransactBuffer extends TransactBuffer {
 
 		// Get the transaction name, if used
 
-		if (isType() == PacketType.Transaction) {
+		if ( isType() == PacketType.Transaction) {
 
 			// Unpack the transaction name string
 
 			int pos = tpkt.getByteOffset();
 			byte[] buf = tpkt.getBuffer();
 
-			if (isUnicode())
+			if ( isUnicode())
 				pos = DataPacker.wordAlign(pos);
 
 			setName(DataPacker.getString(buf, pos, 64, isUnicode()));
@@ -200,5 +191,4 @@ class SrvTransactBuffer extends TransactBuffer {
 
 		m_multi = false;
 	}
-
 }

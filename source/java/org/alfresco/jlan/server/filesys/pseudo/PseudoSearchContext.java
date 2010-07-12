@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -29,266 +29,264 @@ import org.alfresco.jlan.server.filesys.FileInfo;
 import org.alfresco.jlan.server.filesys.SearchContext;
 
 /**
- * Pseudo File Search Context Class <p> Search context implementation that
- * blends a list of pseudo files/folders into a folder search.
+ * Pseudo File Search Context Class
  * 
+ * <p>
+ * Search context implementation that blends a list of pseudo files/folders into a folder search.
+ *
  * @author gkspencer
  */
 public abstract class PseudoSearchContext extends SearchContext {
 
-	// Index of current file being returned
+  // Index of current file being returned
+
+  protected int m_index;
+
+  // Pseudo file list blended into a wildcard folder search
+
+  private PseudoFileList m_pseudoList;
+
+  private boolean m_donePseudoFiles = false;
+
+  // Resume id
+
+  private int m_resumeId;
+
+  // Relative path being searched
+
+  private String m_relPath;
+
+  /**
+   * Class constructor
+   * 
+   * @param relPath String
+   */
+  public PseudoSearchContext( String relPath) {
+    m_relPath = relPath;
+  }
+
+  /**
+   * Check if there are pseudo files to be blended into the search results
+   * 
+   * @return boolean
+   */
+  public final boolean hasPseudoFiles() {
+    if ( m_pseudoList != null && m_pseudoList.numberOfFiles() > 0)
+      return true;
+    return false;
+  }
+  
+  /**
+   * Set the pseudo file list for the search
+   * 
+   * @param pseudoList PseudoFileList
+   */
+  public final void setPseudoFileList( PseudoFileList pseudoList) {
+    m_pseudoList = pseudoList;
+  }
+  
+  /**
+   * Return the resume id for the current file/directory in the search.
+   * 
+   * @return int
+   */
+  public int getResumeId() {
+    return m_resumeId;
+  }
 
-	protected int m_index;
+  /**
+   * Determine if there are more files for the active search.
+   * 
+   * @return boolean
+   */
+  public boolean hasMorePseudoFiles() {
+
+    // Pseudo files are returned first
+
+    if (m_donePseudoFiles == false && m_pseudoList != null && m_index < (m_pseudoList.numberOfFiles() - 1))
+      return true;
+    return false;
+  }
+
+  /**
+   * Return file information for the next pseudo file in the active search. Returns false if there are no
+   * more pseudo files/folders to be returned
+   * 
+   * @param info FileInfo to return the file information.
+   * @return true if the file information is valid, else false
+   */
+  public boolean nextPseudoFileInfo(FileInfo info) {
+
+    // Check if there is anything else to return
+
+    if ( hasMorePseudoFiles() == false)
+      return false;
 
-	// Pseudo file list blended into a wildcard folder search
+    // Increment the index and resume id
+
+    m_index++;
+    m_resumeId++;
 
-	private PseudoFileList m_pseudoList;
+    // If the pseudo file list is valid return the pseudo files first
+
+    if (m_donePseudoFiles == false && m_pseudoList != null) {
+      
+      if (m_index < m_pseudoList.numberOfFiles()) {
+        
+        PseudoFile pfile = m_pseudoList.getFileAt( m_index);
+        if (pfile != null) {
+          
+          // Get the file information for the pseudo file
 
-	private boolean m_donePseudoFiles = false;
+          FileInfo pinfo = pfile.getFileInfo();
 
-	// Resume id
+          // Copy the file information to the callers file info
 
-	private int m_resumeId;
+          info.copyFrom(pinfo);
 
-	// Relative path being searched
+          // Generate a file id for the current file
 
-	private String m_relPath;
+          if (info != null && info.getFileId() == -1) {
+            StringBuilder pathStr = new StringBuilder(m_relPath);
+            pathStr.append(info.getFileName());
 
-	/**
-	 * Class constructor
-	 * 
-	 * @param relPath String
-	 */
-	public PseudoSearchContext(String relPath) {
-		m_relPath = relPath;
-	}
+            info.setFileId(pathStr.toString().hashCode());
+          }
 
-	/**
-	 * Check if there are pseudo files to be blended into the search results
-	 * 
-	 * @return boolean
-	 */
-	public final boolean hasPseudoFiles() {
-		if (m_pseudoList != null && m_pseudoList.numberOfFiles() > 0)
-			return true;
-		return false;
-	}
+          // Check if we have finished with the pseudo file list, switch to the normal file list
 
-	/**
-	 * Set the pseudo file list for the search
-	 * 
-	 * @param pseudoList PseudoFileList
-	 */
-	public final void setPseudoFileList(PseudoFileList pseudoList) {
-		m_pseudoList = pseudoList;
-	}
+          if ( m_index == (m_pseudoList.numberOfFiles() - 1)) {
+            
+            // Switch to the main file list
 
-	/**
-	 * Return the resume id for the current file/directory in the search.
-	 * 
-	 * @return int
-	 */
-	public int getResumeId() {
-		return m_resumeId;
-	}
+            m_donePseudoFiles = true;
+            m_index = -1;
+          }
 
-	/**
-	 * Determine if there are more files for the active search.
-	 * 
-	 * @return boolean
-	 */
-	public boolean hasMorePseudoFiles() {
+          // Indicate that the file information is valid
 
-		// Pseudo files are returned first
+          return true;
+        }
+      }
+    }
 
-		if (m_donePseudoFiles == false && m_pseudoList != null &&
-			m_index < (m_pseudoList.numberOfFiles() - 1))
-			return true;
-		return false;
-	}
+    // File information is not valid, end of pseudo file list
 
-	/**
-	 * Return file information for the next pseudo file in the active search.
-	 * Returns false if there are no more pseudo files/folders to be returned
-	 * 
-	 * @param info FileInfo to return the file information.
-	 * @return true if the file information is valid, else false
-	 */
-	public boolean nextPseudoFileInfo(FileInfo info) {
+    return false;
+  }
 
-		// Check if there is anything else to return
+  /**
+   * Return the file name of the next pseudo file in the active search. Returns null is there are no
+   * more pseudo file names to return
+   * 
+   * @return String
+   */
+  public String nextPseudoFileName() {
 
-		if (hasMorePseudoFiles() == false)
-			return false;
+    // Check if there is anything else to return
 
-		// Increment the index and resume id
+    if ( hasMorePseudoFiles() == false)
+      return null;
 
-		m_index++;
-		m_resumeId++;
+    // Increment the index and resume id
 
-		// If the pseudo file list is valid return the pseudo files first
+    m_index++;
+    m_resumeId++;
 
-		if (m_donePseudoFiles == false && m_pseudoList != null) {
+    // If the pseudo file list is valid return the pseudo files first
 
-			if (m_index < m_pseudoList.numberOfFiles()) {
+    if (m_donePseudoFiles == false && m_pseudoList != null) {
+      
+      if (m_index < m_pseudoList.numberOfFiles()) {
+        
+        PseudoFile pfile = m_pseudoList.getFileAt( m_index);
+        if (pfile != null) {
+          
+          // Get the file information for the pseudo file
 
-				PseudoFile pfile = m_pseudoList.getFileAt(m_index);
-				if (pfile != null) {
+          FileInfo pinfo = pfile.getFileInfo();
 
-					// Get the file information for the pseudo file
+          // Copy the file information to the callers file info
 
-					FileInfo pinfo = pfile.getFileInfo();
+          return pinfo.getFileName();
+        }
+      } else {
+        
+        // Switch to the main file list
 
-					// Copy the file information to the callers file info
+        m_donePseudoFiles = true;
+        m_index = -1;
+      }
+    }
 
-					info.copyFrom(pinfo);
+    // No more pseudo files
 
-					// Generate a file id for the current file
+    return null;
+  }
 
-					if (info != null && info.getFileId() == -1) {
-						StringBuilder pathStr = new StringBuilder(m_relPath);
-						pathStr.append(info.getFileName());
+  /**
+   * Restart a search at the specified pseudo file resume point.
+   * 
+   * @param info FileInfo
+   * @return true if the search can be restarted, else false.
+   */
+  public boolean restartAtPseudoFile(FileInfo info) {
 
-						info.setFileId(pathStr.toString().hashCode());
-					}
+    // Check if the resume point is in the pseudo file list
 
-					// Check if we have finished with the pseudo file list,
-					// switch to the normal file list
+    int resId = 0;
 
-					if (m_index == (m_pseudoList.numberOfFiles() - 1)) {
+    if (m_pseudoList != null) {
+      
+      while (resId < m_pseudoList.numberOfFiles()) {
+        
+        // Check if the current pseudo file matches the resume file name
 
-						// Switch to the main file list
+        PseudoFile pfile = m_pseudoList.getFileAt(resId);
+        if (pfile.getFileName().equals(info.getFileName())) {
+          
+          // Found the restart point
 
-						m_donePseudoFiles = true;
-						m_index = -1;
-					}
+          m_donePseudoFiles = false;
+          m_index = resId - 1;
 
-					// Indicate that the file information is valid
+          return true;
+        }
+        else
+          resId++;
+      }
+    }
 
-					return true;
-				}
-			}
-		}
+    // Failed to find resume file
 
-		// File information is not valid, end of pseudo file list
+    return false;
+  }
 
-		return false;
-	}
+  /**
+   * Restart the current search at the specified pseudo file.
+   * 
+   * @param resumeId int
+   * @return true if the search can be restarted, else false.
+   */
+  public boolean restartAtPseudoFile(int resumeId) {
 
-	/**
-	 * Return the file name of the next pseudo file in the active search.
-	 * Returns null is there are no more pseudo file names to return
-	 * 
-	 * @return String
-	 */
-	public String nextPseudoFileName() {
+    // Check if the resume point is in the pseudo file list
 
-		// Check if there is anything else to return
+    if (m_pseudoList != null) {
+      
+      if (resumeId < m_pseudoList.numberOfFiles()) {
+        
+        // Resume at a pseudo file
 
-		if (hasMorePseudoFiles() == false)
-			return null;
+        m_index = resumeId;
+        m_donePseudoFiles = false;
 
-		// Increment the index and resume id
+        return true;
+      }
+    }
 
-		m_index++;
-		m_resumeId++;
+    // Invalid pseudo file resume point
 
-		// If the pseudo file list is valid return the pseudo files first
-
-		if (m_donePseudoFiles == false && m_pseudoList != null) {
-
-			if (m_index < m_pseudoList.numberOfFiles()) {
-
-				PseudoFile pfile = m_pseudoList.getFileAt(m_index);
-				if (pfile != null) {
-
-					// Get the file information for the pseudo file
-
-					FileInfo pinfo = pfile.getFileInfo();
-
-					// Copy the file information to the callers file info
-
-					return pinfo.getFileName();
-				}
-			}
-			else {
-
-				// Switch to the main file list
-
-				m_donePseudoFiles = true;
-				m_index = -1;
-			}
-		}
-
-		// No more pseudo files
-
-		return null;
-	}
-
-	/**
-	 * Restart a search at the specified pseudo file resume point.
-	 * 
-	 * @param info FileInfo
-	 * @return true if the search can be restarted, else false.
-	 */
-	public boolean restartAtPseudoFile(FileInfo info) {
-
-		// Check if the resume point is in the pseudo file list
-
-		int resId = 0;
-
-		if (m_pseudoList != null) {
-
-			while (resId < m_pseudoList.numberOfFiles()) {
-
-				// Check if the current pseudo file matches the resume file name
-
-				PseudoFile pfile = m_pseudoList.getFileAt(resId);
-				if (pfile.getFileName().equals(info.getFileName())) {
-
-					// Found the restart point
-
-					m_donePseudoFiles = false;
-					m_index = resId - 1;
-
-					return true;
-				}
-				else
-					resId++;
-			}
-		}
-
-		// Failed to find resume file
-
-		return false;
-	}
-
-	/**
-	 * Restart the current search at the specified pseudo file.
-	 * 
-	 * @param resumeId int
-	 * @return true if the search can be restarted, else false.
-	 */
-	public boolean restartAtPseudoFile(int resumeId) {
-
-		// Check if the resume point is in the pseudo file list
-
-		if (m_pseudoList != null) {
-
-			if (resumeId < m_pseudoList.numberOfFiles()) {
-
-				// Resume at a pseudo file
-
-				m_index = resumeId;
-				m_donePseudoFiles = false;
-
-				return true;
-			}
-		}
-
-		// Invalid pseudo file resume point
-
-		return false;
-	}
-
+    return false;
+  }
 }

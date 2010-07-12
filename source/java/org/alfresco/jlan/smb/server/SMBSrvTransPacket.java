@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -46,8 +46,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 	// Offset to the setup response paramaters
 
-	protected static final int SetupOffsetResponse =
-		PARAMWORDS + (StandardParamsResponse * 2);
+	protected static final int SetupOffsetResponse = PARAMWORDS + (StandardParamsResponse * 2);
 
 	/**
 	 * Construct an SMB transaction packet
@@ -92,8 +91,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 	 * @param dataCnt Count of returned data bytes.
 	 * @param dataPos Starting offset to the data block.
 	 */
-	public final static void initTransactReply(
-		SMBSrvPacket pkt, int prmCnt, int prmPos, int dataCnt, int dataPos) {
+	public final static void initTransactReply(SMBSrvPacket pkt, int prmCnt, int prmPos, int dataCnt, int dataPos) {
 
 		// Set the total parameter words
 
@@ -153,14 +151,13 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 			// Check if a data length has been specified
 
-			if (pos < desc.length() && Character.isDigit(desc.charAt(pos))) {
+			if ( pos < desc.length() && Character.isDigit(desc.charAt(pos))) {
 
 				// Convert the data length string
 
 				int numlen = 1;
 				int numpos = pos + 1;
-				while (numpos < desc.length() &&
-					Character.isDigit(desc.charAt(numpos++)))
+				while (numpos < desc.length() && Character.isDigit(desc.charAt(numpos++)))
 					numlen++;
 
 				// Set the data length
@@ -176,41 +173,41 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 			switch (dtype) {
 
-			// Word (16 bit) data type
+				// Word (16 bit) data type
 
-			case 'W':
-				len += 2;
-				break;
+				case 'W':
+					len += 2;
+					break;
 
-			// Integer (32 bit) data type
+				// Integer (32 bit) data type
 
-			case 'D':
-				len += 4;
-				break;
+				case 'D':
+					len += 4;
+					break;
 
-			// Byte data type, may be multiple bytes if 'B<n>'
+				// Byte data type, may be multiple bytes if 'B<n>'
 
-			case 'B':
-				len += dlen;
-				break;
+				case 'B':
+					len += dlen;
+					break;
 
-			// Null terminated string data type, offset into buffer only
+				// Null terminated string data type, offset into buffer only
 
-			case 'z':
-				len += 4;
-				break;
+				case 'z':
+					len += 4;
+					break;
 
-			// Skip 'n' bytes in the buffer
+				// Skip 'n' bytes in the buffer
 
-			case '.':
-				len += dlen;
-				break;
+				case '.':
+					len += dlen;
+					break;
 
-			// Integer (32 bit) data type converted to a date/time value
+				// Integer (32 bit) data type converted to a date/time value
 
-			case 'T':
-				len += 4;
-				break;
+				case 'T':
+					len += 4;
+					break;
 
 			} // end switch data type
 
@@ -222,9 +219,9 @@ class SMBSrvTransPacket extends SMBTransPacket {
 	}
 
 	/**
-	 * Return the offset to the data block within the SMB packet. The data block
-	 * is word aligned within the byte buffer area of the SMB packet. This
-	 * method must be called after the parameter count has been set.
+	 * Return the offset to the data block within the SMB packet. The data block is word aligned
+	 * within the byte buffer area of the SMB packet. This method must be called after the parameter
+	 * count has been set.
 	 * 
 	 * @param prmLen Parameter block length, in bytes.
 	 * @return int Offset to the data block area.
@@ -234,7 +231,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 		// Get the position of the parameter block
 
 		int pos = getParameterBlockOffset() + prmLen;
-		if ((pos & 0x01) != 0)
+		if ( (pos & 0x01) != 0)
 			pos++;
 		return pos;
 	}
@@ -374,7 +371,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		// Check if the transaction has a name
 
-		if (getCommand() == PacketType.Transaction2)
+		if ( getCommand() == PacketType.Transaction2)
 			return "";
 
 		// Unpack the transaction name string
@@ -412,7 +409,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		// Check if the setup parameter index is valid
 
-		if (idx >= getRxParameterCount())
+		if ( idx >= getRxParameterCount())
 			throw new java.lang.ArrayIndexOutOfBoundsException();
 
 		// Get the setup parameter
@@ -458,7 +455,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		// Check if the setup parameter index is valid
 
-		if (idx >= getRxParameterCount())
+		if ( idx >= getRxParameterCount())
 			throw new java.lang.ArrayIndexOutOfBoundsException();
 
 		// Get the setup parameter
@@ -545,15 +542,14 @@ class SMBSrvTransPacket extends SMBTransPacket {
 	 * @param tbuf TransactBuffer
 	 * @exception java.io.IOException If an I/O error occurs.
 	 */
-	protected final void doTransactionResponse(
-		SMBSrvSession sess, TransactBuffer tbuf)
+	protected final void doTransactionResponse(SMBSrvSession sess, TransactBuffer tbuf)
 		throws IOException {
-
+		
 		// Call the main trnasaction method
-
+		
 		doTransactionResponse(sess, tbuf, this);
 	}
-
+	
 	/**
 	 * Send one or more transaction response SMBs to the client
 	 * 
@@ -562,8 +558,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 	 * @param smbPkt SMBSrvPacket
 	 * @exception java.io.IOException If an I/O error occurs.
 	 */
-	protected final void doTransactionResponse(
-		SMBSrvSession sess, TransactBuffer tbuf, SMBSrvPacket smbPkt)
+	protected final void doTransactionResponse(SMBSrvSession sess, TransactBuffer tbuf, SMBSrvPacket smbPkt)
 		throws IOException {
 
 		// Initialize the transaction response packet
@@ -580,9 +575,8 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		// Set the parameter count
 
-		if (tbuf.hasSetupBuffer())
-			setParameterCount(StandardParamsResponse +
-				setupBuf.getLengthInWords());
+		if ( tbuf.hasSetupBuffer())
+			setParameterCount(StandardParamsResponse + setupBuf.getLengthInWords());
 		else
 			setParameterCount(StandardParamsResponse);
 
@@ -595,29 +589,25 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		int availBuf = getAvailableLength();
 		int clientLen = getAvailableLength(sess.getClientMaximumBufferSize());
-
+		
 		// Check if a new buffer should be allocated for the response
-
-		if (clientLen > availBuf) {
-
+		
+		if ( clientLen > availBuf) {
+			
 			// Allocate a larger buffer for the response
+			
+			SMBSrvPacket respPkt = sess.getPacketPool().allocatePacket( sess.getClientMaximumBufferSize(), smbPkt, getByteOffset());
 
-			SMBSrvPacket respPkt =
-				sess.getPacketPool().allocatePacket(
-					sess.getClientMaximumBufferSize(), smbPkt, getByteOffset());
-
-			// Reset the packet buffer to use the newly allocated buffer.
-			// Existing packet header was copied
+			// Reset the packet buffer to use the newly allocated buffer. Existing packet header was copied
 			// when the new packet was allocated from the pool.
-
-			setBuffer(respPkt.getBuffer());
-
+			
+			setBuffer( respPkt.getBuffer());
+			
 			// Recalcualte the available length
-
-			availBuf = getAvailableLength() - 4; // allow for some
-													// padding/alignment
+			
+			availBuf = getAvailableLength() - 4;  // allow for some padding/alignment
 		}
-		else if (availBuf > clientLen)
+		else if ( availBuf > clientLen)
 			availBuf = clientLen;
 
 		// Get the total parameter/data block lengths
@@ -630,27 +620,24 @@ class SMBSrvTransPacket extends SMBTransPacket {
 		setTotalParameterCount(totParamLen);
 		setTotalDataCount(totDataLen);
 
-		// Check if the transaction parameter block and data block will fit
-		// within a single request packet
+		// Check if the transaction parameter block and data block will fit within a single request packet
 
 		int plen = totParamLen;
 		int dlen = totDataLen;
 
-		if ((plen + dlen) > availBuf) {
+		if ( (plen + dlen) > availBuf) {
 
-			// Calculate the parameter/data block sizes to send in the first
-			// request packet
+			// Calculate the parameter/data block sizes to send in the first request packet
 
-			if (plen > 0) {
+			if ( plen > 0) {
 
 				// Check if the parameter block can fit into the packet
 
-				if (plen <= availBuf) {
+				if ( plen <= availBuf) {
 
-					// Pack all of the parameter block and fill the remaining
-					// buffer with the data block
+					// Pack all of the parameter block and fill the remaining buffer with the data block
 
-					if (dlen > 0)
+					if ( dlen > 0)
 						dlen = availBuf - plen;
 				}
 				else {
@@ -661,7 +648,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 					dlen = plen;
 				}
 			}
-			else if (dlen > availBuf) {
+			else if ( dlen > availBuf) {
 
 				// Fill the packet with the first section of the data block
 
@@ -676,7 +663,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		// Pack the setup bytes
 
-		if (setupBuf != null)
+		if ( setupBuf != null)
 			setupBuf.copyData(getBuffer(), SetupOffsetResponse);
 
 		// Pack the parameter block
@@ -691,7 +678,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		int packLen = -1;
 
-		if (paramBuf != null) {
+		if ( paramBuf != null) {
 
 			// Pack the parameter block
 
@@ -710,7 +697,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		// Pack the data block
 
-		if (dataBuf != null) {
+		if ( dataBuf != null) {
 
 			// Pack the data block
 
@@ -729,22 +716,19 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 		sess.sendResponseSMB(this);
 
-		// Get the available parameter/data block buffer space for the secondary
-		// packet
+		// Get the available parameter/data block buffer space for the secondary packet
 
 		availBuf = getAvailableLength();
-		if (availBuf > clientLen)
+		if ( availBuf > clientLen)
 			availBuf = clientLen;
 
 		// Loop until all parameter/data block data has been sent to the server
 
 		TransactBuffer rxBuf = null;
 
-		while ((paramBuf != null && paramBuf.getAvailableLength() > 0) ||
-			(dataBuf != null && dataBuf.getAvailableLength() > 0)) {
+		while ((paramBuf != null && paramBuf.getAvailableLength() > 0) || (dataBuf != null && dataBuf.getAvailableLength() > 0)) {
 
-			// Setup the NT transaction secondary packet to send the remaining
-			// parameter/data blocks
+			// Setup the NT transaction secondary packet to send the remaining parameter/data blocks
 
 			setCommand(tbuf.isType());
 
@@ -753,23 +737,20 @@ class SMBSrvTransPacket extends SMBTransPacket {
 			plen = paramBuf != null ? paramBuf.getAvailableLength() : 0;
 			dlen = dataBuf != null ? dataBuf.getAvailableLength() : 0;
 
-			if ((plen + dlen) > availBuf) {
+			if ( (plen + dlen) > availBuf) {
 
-				// Calculate the parameter/data block sizes to send in the first
-				// request packet
+				// Calculate the parameter/data block sizes to send in the first request packet
 
-				if (plen > 0) {
+				if ( plen > 0) {
 
-					// Check if the remaining parameter block can fit into the
-					// packet
+					// Check if the remaining parameter block can fit into the packet
 
-					if (plen <= availBuf) {
+					if ( plen <= availBuf) {
 
-						// Pack all of the parameter block and fill the
-						// remaining buffer with the
+						// Pack all of the parameter block and fill the remaining buffer with the
 						// data block
 
-						if (dlen > 0)
+						if ( dlen > 0)
 							dlen = availBuf - plen;
 					}
 					else {
@@ -780,7 +761,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 						dlen = plen;
 					}
 				}
-				else if (dlen > availBuf) {
+				else if ( dlen > availBuf) {
 
 					// Fill the packet with the first section of the data block
 
@@ -795,10 +776,9 @@ class SMBSrvTransPacket extends SMBTransPacket {
 			packLen = -1;
 			pos = getPosition();
 
-			if (plen > 0 && paramBuf != null) {
+			if ( plen > 0 && paramBuf != null) {
 
-				// Set the parameter block offset, from the start of the SMB
-				// packet
+				// Set the parameter block offset, from the start of the SMB packet
 
 				setParameterBlockOffset(pos);
 				setParameterBlockCount(plen);
@@ -823,7 +803,7 @@ class SMBSrvTransPacket extends SMBTransPacket {
 
 			// Pack the data block, if any
 
-			if (dlen > 0 && dataBuf != null) {
+			if ( dlen > 0 && dataBuf != null) {
 
 				// Set the data block offset
 
@@ -856,5 +836,4 @@ class SMBSrvTransPacket extends SMBTransPacket {
 			sess.sendResponseSMB(this);
 		}
 	}
-
 }

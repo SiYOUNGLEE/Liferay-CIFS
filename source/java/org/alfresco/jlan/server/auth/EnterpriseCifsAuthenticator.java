@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -76,13 +76,14 @@ import org.springframework.extensions.config.ConfigElement;
 import org.ietf.jgss.Oid;
 
 /**
- * Enterprise CIFS Authenticator Class <p> CIFS authenticator that supports
- * NTLMSSP and Kerberos logins.
+ * Enterprise CIFS Authenticator Class
+ * 
+ * <p>
+ * CIFS authenticator that supports NTLMSSP and Kerberos logins.
  * 
  * @author gkspencer
  */
-public class EnterpriseCifsAuthenticator extends CifsAuthenticator
-	implements CallbackHandler {
+public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements CallbackHandler {
 
 	// Constants
 	//
@@ -92,10 +93,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 	// NTLM flags mask, used to mask out features that are not supported
 
-	private static final int NTLM_FLAGS =
-		NTLM.Flag56Bit + NTLM.Flag128Bit + NTLM.FlagLanManKey +
-			NTLM.FlagNegotiateNTLM + NTLM.FlagNTLM2Key +
-			NTLM.FlagNegotiateUnicode;
+	private static final int NTLM_FLAGS = NTLM.Flag56Bit + NTLM.Flag128Bit + NTLM.FlagLanManKey + NTLM.FlagNegotiateNTLM
+			+ NTLM.FlagNTLM2Key + NTLM.FlagNegotiateUnicode;
 
 	// Use NTLMSSP or SPNEGO
 
@@ -109,8 +108,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	//
 	// Account name and password for server ticket
 	//
-	// The account name must be built from the CIFS server name, in the format
-	// :-
+	// The account name must be built from the CIFS server name, in the format :-
 	//
 	// cifs/<server_name>@<realm>
 
@@ -130,8 +128,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 	private LoginContext m_loginContext;
 
-	// SPNEGO NegTokenInit blob, sent to the client in the SMB negotiate
-	// response
+	// SPNEGO NegTokenInit blob, sent to the client in the SMB negotiate response
 
 	private byte[] m_negTokenInit;
 
@@ -156,28 +153,25 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		super.initialize(config, params);
 
-		// Check if Java API Kerberos debug output should be enabled
+        // Check if Java API Kerberos debug output should be enabled
+        
+        if ( params.getChild("kerberosDebug") != null) {
 
-		if (params.getChild("kerberosDebug") != null) {
-
-			// Enable Kerberos API debug output
-
-			System.setProperty("sun.security.jgss.debug", "true");
-			System.setProperty("sun.security.krb5.debug", "true");
-		}
-
-		// Access the CIFS server configuration
-
-		CIFSConfigSection cifsConfig =
-			(CIFSConfigSection) config.getConfigSection(
-				CIFSConfigSection.SectionName);
-
+        	// Enable Kerberos API debug output
+        	
+        	System.setProperty( "sun.security.jgss.debug", "true");
+        	System.setProperty( "sun.security.krb5.debug", "true");
+        }
+        
+        // Access the CIFS server configuration
+        
+        CIFSConfigSection cifsConfig = (CIFSConfigSection) config.getConfigSection(CIFSConfigSection.SectionName);
+        
 		// Check if Kerberos is enabled, get the Kerberos KDC address
 
 		ConfigElement kdcAddress = params.getChild("KDC");
 
-		if (kdcAddress != null && kdcAddress.getValue() != null &&
-			kdcAddress.getValue().length() > 0) {
+		if ( kdcAddress != null && kdcAddress.getValue() != null && kdcAddress.getValue().length() > 0) {
 
 			// Set the Kerberos KDC address
 
@@ -186,53 +180,47 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 			// Get the Kerberos realm
 
 			ConfigElement krbRealm = params.getChild("Realm");
-			if (krbRealm != null && krbRealm.getValue() != null &&
-				krbRealm.getValue().length() > 0) {
+			if ( krbRealm != null && krbRealm.getValue() != null && krbRealm.getValue().length() > 0) {
 
 				// Set the Kerberos realm
 
 				m_krbRealm = krbRealm.getValue();
 			}
 			else
-				throw new InvalidConfigurationException(
-					"Kerberos realm not specified");
+				throw new InvalidConfigurationException("Kerberos realm not specified");
 
 			// Get the CIFS service account password
 
 			ConfigElement srvPassword = params.getChild("Password");
-			if (srvPassword != null && srvPassword.getValue() != null &&
-				srvPassword.getValue().length() > 0) {
+			if ( srvPassword != null && srvPassword.getValue() != null && srvPassword.getValue().length() > 0) {
 
 				// Set the CIFS service account password
 
 				m_password = srvPassword.getValue();
 			}
 			else
-				throw new InvalidConfigurationException(
-					"CIFS service account password not specified");
+				throw new InvalidConfigurationException("CIFS service account password not specified");
 
 			// Get the login configuration entry name
 
 			ConfigElement loginEntry = params.getChild("LoginEntry");
 
-			if (loginEntry != null) {
-				if (loginEntry.getValue() != null &&
-					loginEntry.getValue().length() > 0) {
+			if ( loginEntry != null) {
+				if ( loginEntry.getValue() != null && loginEntry.getValue().length() > 0) {
 
 					// Set the login configuration entry name to use
 
 					m_loginEntryName = loginEntry.getValue();
 				}
 				else
-					throw new InvalidConfigurationException(
-						"Invalid login entry specified");
+					throw new InvalidConfigurationException("Invalid login entry specified");
 			}
 
 			// Get the server principal name
 
 			ConfigElement principal = params.getChild("Principal");
 
-			if (principal != null) {
+			if ( principal != null) {
 
 				// Use the supplied principal name to build the account name
 
@@ -260,7 +248,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Debug
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] Using principal - " + m_accountName);
 
 			// Create a login context for the CIFS server service
@@ -276,39 +264,36 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println(
-						"[SMB] CIFS Kerberos authenticator error - " +
-						ex.getMessage());
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] CIFS Kerberos authenticator error - " + ex.getMessage());
 
-				throw new InvalidConfigurationException(
-					"Failed to login CIFS server service");
+				throw new InvalidConfigurationException("Failed to login CIFS server service");
 			}
 
-			// DEBUG
-
-			if (Debug.EnableDbg && hasDebug()) {
-				Debug.println("[SMB] Enabling mechTypes :-");
-				Debug.println("       Kerberos5");
-				Debug.println("       MS-Kerberos5");
-			}
-
-			// Create the Oid list for the SPNEGO NegTokenInit, include NTLMSSP
-			// for fallback
+            // DEBUG
+            
+            if ( Debug.EnableDbg && hasDebug()) {
+            	Debug.println("[SMB] Enabling mechTypes :-");
+            	Debug.println("       Kerberos5");
+            	Debug.println("       MS-Kerberos5");
+            }
+            
+			// Create the Oid list for the SPNEGO NegTokenInit, include NTLMSSP for fallback
 
 			Vector<Oid> mechTypes = new Vector<Oid>();
 
 			mechTypes.add(OID.KERBEROS5);
 			mechTypes.add(OID.MSKERBEROS5);
-
-			if (params.getChild("disableNTLM") == null) {
-				mechTypes.add(OID.NTLMSSP);
-
-				// DEBUG
-
-				if (Debug.EnableDbg && hasDebug())
-					Debug.println("       NTLMSSP");
-			}
+			
+            if ( params.getChild("disableNTLM") == null)
+            {
+            	mechTypes.add(OID.NTLMSSP);
+            	
+            	// DEBUG
+            	
+            	if ( Debug.EnableDbg && hasDebug())
+            		Debug.println("       NTLMSSP");
+            }
 
 			// Build the SPNEGO NegTokenInit blob
 
@@ -316,13 +301,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Build the mechListMIC principle
 				//
-				// Note: This field is not as specified, only seem sto be used
-				// by Samba clients (Linux/Mac/Unix)
+				// Note: This field is not as specified, only seem sto be used by Samba clients (Linux/Mac/Unix)
 
 				String mecListMIC = null;
 
 				StringBuffer mic = new StringBuffer();
-
+				
 				mic.append("cifs/");
 				mic.append(cifsConfig.getServerName().toLowerCase());
 				mic.append("@");
@@ -330,12 +314,10 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				mecListMIC = mic.toString();
 
-				// Build the SPNEGO NegTokenInit that contains the
-				// authentication types that the
+				// Build the SPNEGO NegTokenInit that contains the authentication types that the
 				// CIFS server accepts
 
-				NegTokenInit negTokenInit =
-					new NegTokenInit(mechTypes, mecListMIC);
+				NegTokenInit negTokenInit = new NegTokenInit(mechTypes, mecListMIC);
 
 				// Encode the NegTokenInit blob
 
@@ -345,13 +327,10 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println(
-						"[SMB] Error creating SPNEGO NegTokenInit blob - " +
-						ex.getMessage());
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] Error creating SPNEGO NegTokenInit blob - " + ex.getMessage());
 
-				throw new InvalidConfigurationException(
-					"Failed to create SPNEGO NegTokenInit blob");
+				throw new InvalidConfigurationException("Failed to create SPNEGO NegTokenInit blob");
 			}
 
 			// Indicate that SPNEGO security blobs are being used
@@ -364,7 +343,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			ConfigElement useSpnego = params.getChild("useSPNEGO");
 
-			if (useSpnego != null) {
+			if ( useSpnego != null) {
 
 				// Create the Oid list for the SPNEGO NegTokenInit
 
@@ -376,12 +355,10 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				try {
 
-					// Build the SPNEGO NegTokenInit that contains the
-					// authentication types that the
+					// Build the SPNEGO NegTokenInit that contains the authentication types that the
 					// CIFS server accepts
 
-					NegTokenInit negTokenInit =
-						new NegTokenInit(mechTypes, null);
+					NegTokenInit negTokenInit = new NegTokenInit(mechTypes, null);
 
 					// Encode the NegTokenInit blob
 
@@ -391,13 +368,10 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 					// Debug
 
-					if (Debug.EnableInfo && hasDebug())
-						Debug.println(
-							"[SMB] Error creating SPNEGO NegTokenInit blob - " +
-							ex.getMessage());
+					if ( Debug.EnableInfo && hasDebug())
+						Debug.println("[SMB] Error creating SPNEGO NegTokenInit blob - " + ex.getMessage());
 
-					throw new InvalidConfigurationException(
-						"Failed to create SPNEGO NegTokenInit blob");
+					throw new InvalidConfigurationException("Failed to create SPNEGO NegTokenInit blob");
 				}
 
 				// Indicate that SPNEGO security blobs are being used
@@ -453,21 +427,21 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Request for user name
 
-			if (callbacks[i] instanceof NameCallback) {
+			if ( callbacks[i] instanceof NameCallback) {
 				NameCallback cb = (NameCallback) callbacks[i];
 				cb.setName(m_accountName);
 			}
 
 			// Request for password
 
-			else if (callbacks[i] instanceof PasswordCallback) {
+			else if ( callbacks[i] instanceof PasswordCallback) {
 				PasswordCallback cb = (PasswordCallback) callbacks[i];
 				cb.setPassword(m_password.toCharArray());
 			}
 
 			// Request for realm
 
-			else if (callbacks[i] instanceof RealmCallback) {
+			else if ( callbacks[i] instanceof RealmCallback) {
 				RealmCallback cb = (RealmCallback) callbacks[i];
 				cb.setText(m_krbRealm);
 			}
@@ -492,31 +466,27 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @return int
 	 */
 	public int getServerCapabilities() {
-		return Capability.Unicode + Capability.RemoteAPIs + Capability.NTSMBs +
-			Capability.NTFind + Capability.NTStatus + Capability.LargeFiles +
-			Capability.LargeRead + Capability.LargeWrite +
-			Capability.ExtendedSecurity;
+		return Capability.Unicode + Capability.RemoteAPIs + Capability.NTSMBs + Capability.NTFind + Capability.NTStatus
+				+ Capability.LargeFiles + Capability.LargeRead + Capability.LargeWrite + Capability.ExtendedSecurity;
 	}
 
 	/**
-	 * Generate the CIFS negotiate response packet, the authenticator should add
-	 * authentication specific fields to the response.
+	 * Generate the CIFS negotiate response packet, the authenticator should add authentication
+	 * specific fields to the response.
 	 * 
 	 * @param sess SMBSrvSession
 	 * @param respPkt SMBSrvPacket
 	 * @param extendedSecurity boolean
 	 * @exception AuthenticatorException
 	 */
-	public void generateNegotiateResponse(
-		SMBSrvSession sess, SMBSrvPacket respPkt, boolean extendedSecurity)
+	public void generateNegotiateResponse(SMBSrvSession sess, SMBSrvPacket respPkt, boolean extendedSecurity)
 		throws AuthenticatorException {
 
-		// If the client does not support extended security then return a
-		// standard negotiate
+		// If the client does not support extended security then return a standard negotiate
 		// response
 		// with an 8 byte challenge
 
-		if (extendedSecurity == false) {
+		if ( extendedSecurity == false) {
 			super.generateNegotiateResponse(sess, respPkt, extendedSecurity);
 			return;
 		}
@@ -524,9 +494,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		// Make sure the extended security negotiation flag is set
 
 		int flags2 = respPkt.getFlags2();
-		flags2 |=
-			SMBSrvPacket.FLG2_EXTENDEDSECURITY +
-				SMBSrvPacket.FLG2_LONGERRORCODE;
+		flags2 |= SMBSrvPacket.FLG2_EXTENDEDSECURITY + SMBSrvPacket.FLG2_LONGERRORCODE;
 
 		respPkt.setFlags2(flags2);
 
@@ -544,9 +512,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// If SPNEGO is enabled then pack the NegTokenInit blob
 
-		if (useRawNTLMSSP() == false) {
-			System.arraycopy(
-				m_negTokenInit, 0, buf, pos, m_negTokenInit.length);
+		if ( useRawNTLMSSP() == false) {
+			System.arraycopy(m_negTokenInit, 0, buf, pos, m_negTokenInit.length);
 			pos += m_negTokenInit.length;
 		}
 
@@ -556,8 +523,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	}
 
 	/**
-	 * Process the CIFS session setup request packet and build the session setup
-	 * response
+	 * Process the CIFS session setup request packet and build the session setup response
 	 * 
 	 * @param sess SMBSrvSession
 	 * @param reqPkt SMBSrvPacket
@@ -566,18 +532,14 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	public void processSessionSetup(SMBSrvSession sess, SMBSrvPacket reqPkt)
 		throws SMBSrvException {
 
-		// Check that the received packet looks like a valid NT session setup
-		// andX request
+		// Check that the received packet looks like a valid NT session setup andX request
 
-		if (reqPkt.checkPacketIsValid(12, 0) == false)
-			throw new SMBSrvException(
-				SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError,
-				SMBStatus.ErrSrv);
+		if ( reqPkt.checkPacketIsValid(12, 0) == false)
+			throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 
-		// Check if the request is using security blobs or the older hashed
-		// password format
+		// Check if the request is using security blobs or the older hashed password format
 
-		if (reqPkt.getParameterCount() == 13) {
+		if ( reqPkt.getParameterCount() == 13) {
 
 			try {
 
@@ -622,49 +584,40 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		String domain = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers domain name
 
 			domain = reqPkt.unpackString(isUni);
 
-			if (domain == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter,
-					SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+			if ( domain == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 		}
 
 		// Extract the clients native operating system
 
 		String clientOS = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers operating system name
 
 			clientOS = reqPkt.unpackString(isUni);
 
-			if (clientOS == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter,
-					SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+			if ( clientOS == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
 		}
 
 		// DEBUG
 
-		if (Debug.EnableInfo && hasDebug())
-			Debug.println(
-				"[SMB] NT Session setup " +
-				(useRawNTLMSSP() ? "NTLMSSP" : "SPNEGO") + ", MID=" +
-				reqPkt.getMultiplexId() + ", UID=" + reqPkt.getUserId() +
-				", PID=" + reqPkt.getProcessId());
+		if ( Debug.EnableInfo && hasDebug())
+			Debug.println("[SMB] NT Session setup " + (useRawNTLMSSP() ? "NTLMSSP" : "SPNEGO") + ", MID="
+					+ reqPkt.getMultiplexId() + ", UID=" + reqPkt.getUserId() + ", PID=" + reqPkt.getProcessId());
 
-		// Store the client maximum buffer size, maximum multiplexed requests
-		// count and client
+		// Store the client maximum buffer size, maximum multiplexed requests count and client
 		// capability flags
 
-		sess.setClientMaximumBufferSize(maxBufSize != 0
-			? maxBufSize : SMBSrvSession.DefaultBufferSize);
+		sess.setClientMaximumBufferSize(maxBufSize != 0 ? maxBufSize : SMBSrvSession.DefaultBufferSize);
 		sess.setClientMaximumMultiplex(maxMpx);
 		sess.setClientCapabilities(capabs);
 
@@ -678,7 +631,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// Set the remote address, if available
 
-		if (sess.hasRemoteAddress())
+		if ( sess.hasRemoteAddress())
 			client.setClientAddress(sess.getRemoteAddress().getHostAddress());
 
 		// Set the process id for this client, for multi-stage logons
@@ -698,34 +651,31 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Check if the blob has the NTLMSSP signature
 
-			if (secBlobLen >= NTLM.Signature.length) {
+			if ( secBlobLen >= NTLM.Signature.length) {
 
 				// Check for the NTLMSSP signature
 
 				int idx = 0;
-				while (idx < NTLM.Signature.length &&
-					buf[secBlobPos + idx] == NTLM.Signature[idx])
+				while (idx < NTLM.Signature.length && buf[secBlobPos + idx] == NTLM.Signature[idx])
 					idx++;
 
-				if (idx == NTLM.Signature.length)
+				if ( idx == NTLM.Signature.length)
 					isNTLMSSP = true;
 			}
 
 			// Process the security blob
 
-			if (isNTLMSSP == true) {
+			if ( isNTLMSSP == true) {
 
 				// Process an NTLMSSP security blob
 
-				respBlob = doNtlmsspSessionSetup(
-					sess, client, buf, secBlobPos, secBlobLen, isUni);
+				respBlob = doNtlmsspSessionSetup(sess, client, buf, secBlobPos, secBlobLen, isUni);
 			}
 			else {
 
 				// Process an SPNEGO security blob
 
-				respBlob = doSpnegoSessionSetup(
-					sess, client, buf, secBlobPos, secBlobLen, isUni);
+				respBlob = doSpnegoSessionSetup(sess, client, buf, secBlobPos, secBlobLen, isUni);
 			}
 		}
 		catch (SMBSrvException ex) {
@@ -741,16 +691,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
-			if (respBlob == null)
-				Debug.println(
-					"[SMB] User " + client.getUserName() + " logged on " +
-					(client != null ? " (type " + client.getLogonTypeString() +
-						")" : ""));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
+			if ( respBlob == null)
+				Debug.println("[SMB] User " + client.getUserName() + " logged on "
+						+ (client != null ? " (type " + client.getLogonTypeString() + ")" : ""));
 			else
-				Debug.println(
-					"[SMB] Two stage logon (" +
-					(isNTLMSSP ? "NTLMSSP" : "SPNEGO") + ")");
+				Debug.println("[SMB] Two stage logon (" + (isNTLMSSP ? "NTLMSSP" : "SPNEGO") + ")");
 		}
 
 		// Get the response blob length, it can be null
@@ -761,20 +707,17 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		SMBSrvPacket respPkt = reqPkt;
 
-		// Check if there is/was a session setup object stored in the session,
-		// this indicates a
+		// Check if there is/was a session setup object stored in the session, this indicates a
 		// multi-stage session setup so set the status code accordingly
 
 		boolean loggedOn = false;
 
-		if (respBlob != null || sess.hasSetupObject(client.getProcessId()) ||
-			setupObj != null) {
+		if ( respBlob != null || sess.hasSetupObject(client.getProcessId()) || setupObj != null) {
 
-			// NTLMSSP has two stages, if there is a stored setup object then
-			// indicate more
+			// NTLMSSP has two stages, if there is a stored setup object then indicate more
 			// processing required
 
-			if (sess.hasSetupObject(client.getProcessId()))
+			if ( sess.hasSetupObject(client.getProcessId()))
 				respPkt.setLongErrorCode(SMBStatus.NTMoreProcessingRequired);
 			else {
 				respPkt.setLongErrorCode(SMBStatus.NTSuccess);
@@ -784,38 +727,31 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 				loggedOn = true;
 			}
 
-			// Set the parameter count then check if the security blob will fit
-			// into the current
+			// Set the parameter count then check if the security blob will fit into the current
 			// packet buffer
 
 			respPkt.setParameterCount(4);
 			int reqLen = respLen + 100; // allow for strings
 
-			if (reqLen > respPkt.getAvailableLength()) {
+			if ( reqLen > respPkt.getAvailableLength()) {
 
 				try {
 
 					// Allocate a new buffer for the response
 
-					respPkt =
-						sess.getPacketPool().allocatePacket(
-							respPkt.getByteOffset() + reqLen, reqPkt);
+					respPkt = sess.getPacketPool().allocatePacket(respPkt.getByteOffset() + reqLen, reqPkt);
 				}
 				catch (NoPooledMemoryException ex) {
 
 					// DEBUG
 
-					if (Debug.EnableDbg && hasDebug())
-						Debug.println(
-							"Authenticator failed to allocate " +
-								"packet from pool, reqSiz=" +
-							(respPkt.getByteOffset() + respLen));
+					if ( Debug.EnableDbg && hasDebug())
+						Debug.println("Authenticator failed to allocate packet from pool, reqSiz="
+								+ (respPkt.getByteOffset() + respLen));
 
 					// Return a server error to the client
 
-					throw new SMBSrvException(
-						SMBStatus.NTInvalidParameter, SMBStatus.SRVNoBuffers,
-						SMBStatus.ErrSrv);
+					throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.SRVNoBuffers, SMBStatus.ErrSrv);
 				}
 			}
 
@@ -857,7 +793,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		int uid = 0;
 
-		if (loggedOn == true) {
+		if ( loggedOn == true) {
 
 			// Clear any stored session setup object for the logon
 
@@ -868,24 +804,18 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 			VirtualCircuit vc = new VirtualCircuit(vcNum, client);
 			uid = sess.addVirtualCircuit(vc);
 
-			if (uid == VirtualCircuit.InvalidUID) {
+			if ( uid == VirtualCircuit.InvalidUID) {
 
 				// DEBUG
 
-				if (Debug.EnableInfo &&
-					sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
-					Debug.println(
-						"[SMB] Failed to allocate UID for virtual " +
-						"circuit, " + vc);
+				if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+					Debug.println("[SMB] Failed to allocate UID for virtual circuit, " + vc);
 
 				// Failed to allocate a UID
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.DOSAccessDenied,
-					SMBStatus.ErrDos);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			}
-			else if (Debug.EnableInfo &&
-				sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
+			else if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
 
 				// DEBUG
 
@@ -907,11 +837,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		flags &= ~SMBSrvPacket.FLG_CASELESS;
 		respPkt.setFlags(flags);
 
-		int flags2 =
-			SMBSrvPacket.FLG2_LONGFILENAMES +
-				SMBSrvPacket.FLG2_EXTENDEDSECURITY +
-				SMBSrvPacket.FLG2_LONGERRORCODE;
-		if (isUni)
+		int flags2 = SMBSrvPacket.FLG2_LONGFILENAMES + SMBSrvPacket.FLG2_EXTENDEDSECURITY + SMBSrvPacket.FLG2_LONGERRORCODE;
+		if ( isUni)
 			flags2 += SMBSrvPacket.FLG2_UNICODE;
 		respPkt.setFlags2(flags2);
 
@@ -920,25 +847,21 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		int pos = respPkt.getByteOffset();
 		buf = respPkt.getBuffer();
 
-		if (respBlob != null) {
+		if ( respBlob != null) {
 			System.arraycopy(respBlob, 0, buf, pos, respBlob.length);
 			pos += respBlob.length;
 		}
 
 		// Pack the OS, dialect and domain name strings
 
-		if (isUni)
+		if ( isUni)
 			pos = DataPacker.wordAlign(pos);
 
 		pos = DataPacker.putString("Java", buf, pos, true, isUni);
-		pos = DataPacker.putString(
-			"Alfresco CIFS Server " + sess.getServer().isVersion(), buf, pos, 
-			true, isUni);
+		pos = DataPacker.putString("Alfresco CIFS Server " + sess.getServer().isVersion(), buf, pos, true, isUni);
 
-		if (respBlob == null)
-			pos = DataPacker.putString(
-				sess.getSMBServer().getCIFSConfiguration().getDomainName(),
-				buf, pos, true, isUni);
+		if ( respBlob == null)
+			pos = DataPacker.putString(sess.getSMBServer().getCIFSConfiguration().getDomainName(), buf, pos, true, isUni);
 
 		respPkt.setByteCount(pos - respPkt.getByteOffset());
 		respPkt.setParameter(1, pos - RFCNetBIOSProtocol.HEADER_LEN);
@@ -955,9 +878,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @param unicode boolean
 	 * @exception SMBSrvException
 	 */
-	private final byte[] doNtlmsspSessionSetup(
-		SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos,
-		int seclen, boolean unicode)
+	private final byte[] doNtlmsspSessionSetup(SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos, int seclen,
+			boolean unicode)
 		throws SMBSrvException {
 
 		// Determine the NTLMSSP message type
@@ -965,37 +887,31 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		int msgType = NTLMMessage.isNTLMType(secbuf, secpos);
 		byte[] respBlob = null;
 
-		if (msgType == -1) {
+		if ( msgType == -1) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && hasDebug()) {
+			if ( Debug.EnableInfo && hasDebug()) {
 				Debug.println("[SMB] Invalid NTLMSSP token received");
-				Debug.println(
-					"[SMB]   Token=" +
-					HexDump.hexString(secbuf, secpos, seclen, " "));
+				Debug.println("[SMB]   Token=" + HexDump.hexString(secbuf, secpos, seclen, " "));
 			}
 
 			// Return a logon failure status
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Check for a type 1 NTLMSSP message
 
-		else if (msgType == NTLM.Type1) {
+		else if ( msgType == NTLM.Type1) {
 
 			// Create the type 1 NTLM message from the token
 
-			Type1NTLMMessage type1Msg =
-				new Type1NTLMMessage(secbuf, secpos, seclen);
+			Type1NTLMMessage type1Msg = new Type1NTLMMessage(secbuf, secpos, seclen);
 
 			// Build the type 2 NTLM response message
 			//
-			// Get the flags from the client request and mask out unsupported
-			// features
+			// Get the flags from the client request and mask out unsupported features
 
 			int ntlmFlags = type1Msg.getFlags() & NTLM_FLAGS;
 
@@ -1003,8 +919,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			NTLanManAuthContext ntlmCtx = new NTLanManAuthContext();
 
-			// Build a type2 message to send back to the client, containing the
-			// challenge
+			// Build a type2 message to send back to the client, containing the challenge
 
 			String domain = sess.getSMBServer().getServerName();
 
@@ -1015,22 +930,17 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 			tList.add(new TargetInfo(NTLM.TargetDNSDomain, domain.toLowerCase()));
 			tList.add(new TargetInfo(NTLM.TargetFullDNS, domain.toLowerCase()));
 
-			ntlmFlags =
-				NTLM.FlagChallengeAccept + NTLM.FlagRequestTarget +
-					NTLM.Flag128Bit + NTLM.FlagNegotiateNTLM +
-					NTLM.FlagNegotiateUnicode + NTLM.FlagNTLM2Key +
-					NTLM.FlagKeyExchange + NTLM.FlagTargetInfo;
+			ntlmFlags = NTLM.FlagChallengeAccept + NTLM.FlagRequestTarget + NTLM.Flag128Bit + NTLM.FlagNegotiateNTLM
+					+ NTLM.FlagNegotiateUnicode + NTLM.FlagNTLM2Key + NTLM.FlagKeyExchange + NTLM.FlagTargetInfo;
 
-			if (acceptNTLMv1Logon())
+			if ( acceptNTLMv1Logon())
 				ntlmFlags += NTLM.Flag56Bit;
 
 			Type2NTLMMessage type2Msg = new Type2NTLMMessage();
 
-			type2Msg.buildType2(
-				ntlmFlags, domain, ntlmCtx.getChallenge(), null, tList);
+			type2Msg.buildType2(ntlmFlags, domain, ntlmCtx.getChallenge(), null, tList);
 
-			// Store the type 2 message in the session until the session setup
-			// is complete
+			// Store the type 2 message in the session until the session setup is complete
 
 			sess.setSetupObject(client.getProcessId(), type2Msg);
 
@@ -1038,19 +948,16 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			respBlob = type2Msg.getBytes();
 		}
-		else if (msgType == NTLM.Type3) {
+		else if ( msgType == NTLM.Type3) {
 
 			// Create the type 3 NTLM message from the token
 
-			Type3NTLMMessage type3Msg = new Type3NTLMMessage(
-				secbuf, secpos, seclen, unicode);
+			Type3NTLMMessage type3Msg = new Type3NTLMMessage(secbuf, secpos, seclen, unicode);
 
-			// Make sure a type 2 message was stored in the first stage of the
-			// session setup
+			// Make sure a type 2 message was stored in the first stage of the session setup
 
-			if (sess.hasSetupObject(client.getProcessId()) == false ||
-				sess.getSetupObject(client.getProcessId()) instanceof 
-				Type2NTLMMessage == false) {
+			if ( sess.hasSetupObject(client.getProcessId()) == false
+					|| sess.getSetupObject(client.getProcessId()) instanceof Type2NTLMMessage == false) {
 
 				// Clear the setup object
 
@@ -1058,20 +965,16 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Return a logon failure
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
 			// Determine if the client sent us NTLMv1 or NTLMv2
 
-			if (type3Msg.hasFlag(NTLM.Flag128Bit) &&
-				type3Msg.hasFlag(NTLM.FlagNTLM2Key)) {
+			if ( type3Msg.hasFlag(NTLM.Flag128Bit) && type3Msg.hasFlag(NTLM.FlagNTLM2Key)) {
 
-				// Determine if the client sent us an NTLMv2 blob or an NTLMv2
-				// session key
+				// Determine if the client sent us an NTLMv2 blob or an NTLMv2 session key
 
-				if (type3Msg.getNTLMHashLength() > 24) {
+				if ( type3Msg.getNTLMHashLength() > 24) {
 
 					// Looks like an NTLMv2 blob
 
@@ -1079,7 +982,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 					// Debug
 
-					if (Debug.EnableInfo && hasDebug())
+					if ( Debug.EnableInfo && hasDebug())
 						Debug.println("[SMB] Logged on using NTLMSSP/NTLMv2");
 				}
 				else {
@@ -1090,9 +993,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 					// Debug
 
-					if (Debug.EnableInfo && hasDebug())
-						Debug.println(
-							"[SMB] Logged on using NTLMSSP/NTLMv2SessKey");
+					if ( Debug.EnableInfo && hasDebug())
+						Debug.println("[SMB] Logged on using NTLMSSP/NTLMv2SessKey");
 				}
 			}
 			else {
@@ -1103,7 +1005,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug())
+				if ( Debug.EnableInfo && hasDebug())
 					Debug.println("[SMB] Logged on using NTLMSSP/NTLMv1");
 			}
 		}
@@ -1124,13 +1026,11 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @param unicode boolean
 	 * @exception SMBSrvException
 	 */
-	private final byte[] doSpnegoSessionSetup(
-		SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos,
-		int seclen, boolean unicode)
+	private final byte[] doSpnegoSessionSetup(SMBSrvSession sess, ClientInfo client, byte[] secbuf, int secpos, int seclen,
+			boolean unicode)
 		throws SMBSrvException {
 
-		// Check the received token type, if it is a target token and there is a
-		// stored session
+		// Check the received token type, if it is a target token and there is a stored session
 		// setup object, this is the second
 		// stage of an NTLMSSP session setup that is wrapped with SPNEGO
 
@@ -1146,10 +1046,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		NegTokenTarg negTarg = null;
 
-		if (tokType == SPNEGO.NegTokenTarg &&
-			sess.hasSetupObject(client.getProcessId()) &&
-			sess.getSetupObject(client.getProcessId()) instanceof 
-			Type2NTLMMessage) {
+		if ( tokType == SPNEGO.NegTokenTarg && sess.hasSetupObject(client.getProcessId())
+				&& sess.getSetupObject(client.getProcessId()) instanceof Type2NTLMMessage) {
 
 			// Get the NTLMSSP blob from the NegTokenTarg blob
 
@@ -1165,14 +1063,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println(ex);
 
 				// Return a logon failure status
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
 			// Get the second stage NTLMSSP blob
@@ -1181,22 +1077,20 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Perform an NTLMSSP session setup
 
-			byte[] ntlmsspRespBlob =
-				doNtlmsspSessionSetup(
-					sess, client, ntlmsspBlob, 0, ntlmsspBlob.length, unicode);
+			byte[] ntlmsspRespBlob = doNtlmsspSessionSetup(sess, client, ntlmsspBlob, 0, ntlmsspBlob.length, unicode);
 
 			// NTLMSSP is a two stage process, set the SPNEGO status
 
 			int spnegoSts = SPNEGO.AcceptCompleted;
 
-			if (sess.hasSetupObject(client.getProcessId()))
+			if ( sess.hasSetupObject(client.getProcessId()))
 				spnegoSts = SPNEGO.AcceptIncomplete;
 
 			// Package the NTLMSSP response in an SPNEGO response
 
 			negTarg = new NegTokenTarg(spnegoSts, null, ntlmsspRespBlob);
 		}
-		else if (tokType == SPNEGO.NegTokenInit) {
+		else if ( tokType == SPNEGO.NegTokenInit) {
 
 			// Parse the SPNEGO security blob to get the Kerberos ticket
 
@@ -1212,50 +1106,42 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println(ex);
 
 				// Return a logon failure status
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
-			// Determine the authentication mechanism the client is using and
-			// logon
+			// Determine the authentication mechanism the client is using and logon
 
 			String oidStr = null;
-			if (negToken.numberOfOids() > 0)
+			if ( negToken.numberOfOids() > 0)
 				oidStr = negToken.getOidAt(0).toString();
 
-			if (oidStr != null && oidStr.equals(OID.ID_NTLMSSP)) {
+			if ( oidStr != null && oidStr.equals(OID.ID_NTLMSSP)) {
 
-				// NTLMSSP logon, get the NTLMSSP security blob that is inside
-				// the SPNEGO blob
+				// NTLMSSP logon, get the NTLMSSP security blob that is inside the SPNEGO blob
 
 				byte[] ntlmsspBlob = negToken.getMechtoken();
 
 				// Perform an NTLMSSP session setup
 
-				byte[] ntlmsspRespBlob = doNtlmsspSessionSetup(
-					sess, client, ntlmsspBlob, 0, ntlmsspBlob.length, unicode);
+				byte[] ntlmsspRespBlob = doNtlmsspSessionSetup(sess, client, ntlmsspBlob, 0, ntlmsspBlob.length, unicode);
 
 				// NTLMSSP is a two stage process, set the SPNEGO status
 
 				int spnegoSts = SPNEGO.AcceptCompleted;
 
-				if (sess.hasSetupObject(client.getProcessId()))
+				if ( sess.hasSetupObject(client.getProcessId()))
 					spnegoSts = SPNEGO.AcceptIncomplete;
 
 				// Package the NTLMSSP response in an SPNEGO response
 
-				negTarg =
-					new NegTokenTarg(spnegoSts, OID.NTLMSSP, ntlmsspRespBlob);
+				negTarg = new NegTokenTarg(spnegoSts, OID.NTLMSSP, ntlmsspRespBlob);
 			}
-			else if (oidStr != null &&
-				(oidStr.equals(OID.ID_MSKERBEROS5) || 
-								oidStr.equals(OID.ID_KERBEROS5))) {
+			else if ( oidStr != null && (oidStr.equals(OID.ID_MSKERBEROS5) || oidStr.equals(OID.ID_KERBEROS5))) {
 
 				// Kerberos logon
 
@@ -1264,30 +1150,26 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 			else {
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug()) {
+				if ( Debug.EnableInfo && hasDebug()) {
 					Debug.println("[SMB] No matching authentication OID found");
 					Debug.println("[SMB]   " + negToken.toString());
 				}
 
 				// No valid authentication mechanism
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 		}
 		else {
 
 			// Unknown SPNEGO token type
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] Unknown SPNEGO token type");
 
 			// Return a logon failure status
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Generate the NegTokenTarg blob
@@ -1304,16 +1186,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Debug
 
-			if (Debug.EnableInfo && hasDebug())
-				Debug.println(
-					"[SMB] Failed to encode NegTokenTarg - " +
-					ex.getMessage());
+			if ( Debug.EnableInfo && hasDebug())
+				Debug.println("[SMB] Failed to encode NegTokenTarg - " + ex.getMessage());
 
 			// Failed to build response blob
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Return the SPNEGO response blob
@@ -1330,231 +1208,210 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @return NegTokenTarg
 	 * @exception SMBSrvException
 	 */
-	private final NegTokenTarg doKerberosLogon(
-		SMBSrvSession sess, NegTokenInit negToken, ClientInfo client)
+	private final NegTokenTarg doKerberosLogon(SMBSrvSession sess, NegTokenInit negToken, ClientInfo client)
 		throws SMBSrvException {
 
-		// Authenticate the user
+        //  Authenticate the user
+        
+        KerberosDetails krbDetails = null;
+        NegTokenTarg negTokenTarg = null;
+        
+        try
+        {
+        	// Parse the mechToken to get the AP-REQ details
+        	
+        	KerberosApReq krbApReq = new KerberosApReq();
+        	krbApReq.parseMechToken( negToken.getMechtoken());
+        	
+        	if ( Debug.EnableDbg && hasDebug())
+        		Debug.println( "[SMB] Kerberos AP-REQ - " + krbApReq);
+        	
+        	// Check if mutual authentication is required
 
-		KerberosDetails krbDetails = null;
-		NegTokenTarg negTokenTarg = null;
+        	KrbAuthContext krbAuthCtx = null;
+        	
+        	if ( krbApReq.hasMutualAuthentication())
+        	{
+        		// Allocate the Kerberos authentication and parse the AP-REQ
+        		
+        		krbAuthCtx = new KrbAuthContext();
+        		krbAuthCtx.setDebug(hasDebug());
+        		
+        		// DEBUG
+        		
+        		if ( Debug.EnableDbg && hasDebug())
+        			Debug.println("[SMB] Kerberos mutual auth required, parsing AP-REQ");
+        		
+        		try {
+        			
+        			// Parse the AP-REQ
+        			
+        			krbAuthCtx.parseKerberosApReq( m_loginContext.getSubject(), krbApReq);
+        		}
+        		catch ( IOException ex)
+        		{
+        			// Failed to parse AP-REQ
+        			
+        			if ( Debug.EnableDbg && hasDebug())
+        				Debug.println("[SMB] Failed to parse AP-REQ, " + ex.toString());
+        			
+                    // Return a logon failure status
+                    
+                    throw new SMBSrvException( SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
+        		}
+        	}
+        	
+            //  Run the session setup as a privileged action
+            
+            SessionSetupPrivilegedAction sessSetupAction = new SessionSetupPrivilegedAction( m_accountName, negToken.getMechtoken());
+            Object result = Subject.doAs( m_loginContext.getSubject(), sessSetupAction);
+    
+            if ( result != null)
+            {
+                // Access the Kerberos response
+                
+                krbDetails = (KerberosDetails) result;
 
-		try {
-			// Parse the mechToken to get the AP-REQ details
+                // Determine the response OID
+                
+                Oid respOid = null;
+                
+                if ( negToken.hasOid( OID.MSKERBEROS5))
+                {
+                	respOid = OID.MSKERBEROS5;
+                	
+                	// DEBUG
+                	
+                	if ( Debug.EnableDbg && hasDebug())
+                		Debug.println("[SMB] Using OID MS Kerberos5 for NegTokenTarg");
+                }
+                else
+                {
+                	respOid = OID.KERBEROS5;
+                	
+                	// DEBUG
+                	
+                	if ( Debug.EnableDbg && hasDebug())
+                		Debug.println("[SMB] Using OID Kerberos5 for NegTokenTarg");
+                }
 
-			KerberosApReq krbApReq = new KerberosApReq();
-			krbApReq.parseMechToken(negToken.getMechtoken());
+                // If mutual authentication is required then we unpack the AP-REP and add in the missing
+                // subkey that the AD client requires
+                
+                if ( krbAuthCtx != null)
+                {
+	                try
+	                {
+	                	// Parse the AP-REP and add the missing subkey, return the updated response blob
+	                	
+	                	byte[] respToken = krbAuthCtx.parseKerberosApRep( krbDetails.getResponseToken());
+	                	krbDetails.setResponseToken(respToken);
+	                	
+	                	// Create the NegtokenTarg
+	                	
+		                negTokenTarg = new NegTokenTarg( SPNEGO.AcceptCompleted, respOid, krbDetails.getResponseToken());
+	                	
+	                	// DEBUG
+	                	
+	                	if ( Debug.EnableDbg && hasDebug())
+	                		Debug.println("[SMB] Created NegTokenTarg using updated AP-REP, added subkey");
+	                }
+	                catch (Exception ex)
+	                {
+	        			if ( Debug.EnableDbg && hasDebug()) {
+	        				Debug.println("[SMB] AP-REP Error:");
+	        				Debug.println( ex);
+	        			}
+	                }
+                }
+                else
+                {
+	                // Create the NegTokenTarg response blob
+	                
+	                negTokenTarg = new NegTokenTarg( SPNEGO.AcceptCompleted, respOid, krbDetails.getResponseToken());
+	                
+	                // DEBUG
+	                
+	                if ( Debug.EnableDbg && hasDebug())
+	                	Debug.println("[SMB] Created NegTokenTarg using standard Krb5 API response");
+                }
+                
+            	// Check if this is a null logon
+            	
+            	String userName = krbDetails.getUserName();
+            	
+            	if ( userName != null)
+            	{
+            		// Check for the machine account name
+            		
+            		if ( userName.endsWith( "$") && userName.equals( userName.toUpperCase()))
+            		{
+            			// Null logon
+            			
+                		client.setLogonType( ClientInfo.LogonNull);
 
-			if (Debug.EnableDbg && hasDebug())
-				Debug.println("[SMB] Kerberos AP-REQ - " + krbApReq);
-
-			// Check if mutual authentication is required
-
-			KrbAuthContext krbAuthCtx = null;
-
-			if (krbApReq.hasMutualAuthentication()) {
-				// Allocate the Kerberos authentication and parse the AP-REQ
-
-				krbAuthCtx = new KrbAuthContext();
-				krbAuthCtx.setDebug(hasDebug());
-
-				// DEBUG
-
-				if (Debug.EnableDbg && hasDebug())
-					Debug.println(
-						"[SMB] Kerberos mutual auth required, " +
-							"parsing AP-REQ");
-
-				try {
-
-					// Parse the AP-REQ
-
-					krbAuthCtx.parseKerberosApReq(
-						m_loginContext.getSubject(), krbApReq);
-				}
-				catch (IOException ex) {
-					// Failed to parse AP-REQ
-
-					if (Debug.EnableDbg && hasDebug())
-						Debug.println("[SMB] Failed to parse AP-REQ, " +
-							ex.toString());
-
-					// Return a logon failure status
-
-					throw new SMBSrvException(
-						SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-						SMBStatus.DOSAccessDenied);
-				}
-			}
-
-			// Run the session setup as a privileged action
-
-			SessionSetupPrivilegedAction sessSetupAction =
-				new SessionSetupPrivilegedAction(
-					m_accountName, negToken.getMechtoken());
-			Object result =
-				Subject.doAs(m_loginContext.getSubject(), sessSetupAction);
-
-			if (result != null) {
-				// Access the Kerberos response
-
-				krbDetails = (KerberosDetails) result;
-
-				// Determine the response OID
-
-				Oid respOid = null;
-
-				if (negToken.hasOid(OID.MSKERBEROS5)) {
-					respOid = OID.MSKERBEROS5;
-
-					// DEBUG
-
-					if (Debug.EnableDbg && hasDebug())
-						Debug.println(
-							"[SMB] Using OID MS Kerberos5 for " +
-								"NegTokenTarg");
-				}
-				else {
-					respOid = OID.KERBEROS5;
-
-					// DEBUG
-
-					if (Debug.EnableDbg && hasDebug())
-						Debug.println(
-							"[SMB] Using OID Kerberos5 for " +
-								"NegTokenTarg");
-				}
-
-				// If mutual authentication is required then we unpack the
-				// AP-REP and add in the missing
-				// subkey that the AD client requires
-
-				if (krbAuthCtx != null) {
-					try {
-						// Parse the AP-REP and add the missing subkey, return
-						// the updated response blob
-
-						byte[] respToken = krbAuthCtx.parseKerberosApRep(
-							krbDetails.getResponseToken());
-						krbDetails.setResponseToken(respToken);
-
-						// Create the NegtokenTarg
-
-						negTokenTarg = new NegTokenTarg(
-							SPNEGO.AcceptCompleted, respOid,
-							krbDetails.getResponseToken());
-
-						// DEBUG
-
-						if (Debug.EnableDbg && hasDebug())
-							Debug.println(
-								"[SMB] Created NegTokenTarg using " +
-								"updated AP-REP, added subkey");
-					}
-					catch (Exception ex) {
-						if (Debug.EnableDbg && hasDebug()) {
-							Debug.println("[SMB] AP-REP Error:");
-							Debug.println(ex);
-						}
-					}
-				}
-				else {
-					// Create the NegTokenTarg response blob
-
-					negTokenTarg =
-						new NegTokenTarg(
-							SPNEGO.AcceptCompleted, respOid,
-							krbDetails.getResponseToken());
-
-					// DEBUG
-
-					if (Debug.EnableDbg && hasDebug())
-						Debug.println(
-							"[SMB] Created NegTokenTarg using " +
-							"standard Krb5 API response");
-				}
-
-				// Check if this is a null logon
-
-				String userName = krbDetails.getUserName();
-
-				if (userName != null) {
-					// Check for the machine account name
-
-					if (userName.endsWith("$") &&
-						userName.equals(userName.toUpperCase())) {
-						// Null logon
-
-						client.setLogonType(ClientInfo.LogonNull);
-
-						// Debug
-
-						if (Debug.EnableDbg && hasDebug())
-							Debug.println(
-								"[SMB] Machine account logon, " +
-								userName + ", as null logon");
-					}
-					else {
-						// Store the full user name in the client information,
-						// indicate that this is not a guest logon
-
-						client.setUserName(krbDetails.getSourceName());
-						client.setGuest(false);
-
-						// Indicate that the session is logged on
-
-						sess.setLoggedOn(true);
-					}
-				}
-				else {
-					// Null logon
-
-					client.setLogonType(ClientInfo.LogonNull);
-				}
-
-				// Indicate that the session is logged on
-
-				sess.setLoggedOn(true);
-
-				// Debug
-
-				if (Debug.EnableDbg && hasDebug())
-					Debug.println(
-						"[SMB] Logged on using Kerberos, user " +
-						userName);
-			}
-			else {
-				// Debug
-
-				if (Debug.EnableDbg && hasDebug())
-					Debug.println(
-						"[SMB] No SPNEGO response, Kerberos logon failed");
-
-				// Return a logon failure status
-
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
-			}
-		}
-		catch (Exception ex) {
-			// Log the error
-
-			if (Debug.EnableError && hasDebug()) {
-				Debug.println("[SMB] Kerberos logon error");
-				Debug.println(ex);
-			}
-
-			// Return a logon failure status
-
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
-		}
-
-		// Return the response SPNEGO blob
-
-		return negTokenTarg;
+                		//  Debug
+                        
+                        if ( Debug.EnableDbg && hasDebug())
+                            Debug.println("[SMB] Machine account logon, " + userName + ", as null logon");
+            		}
+            		else
+            		{
+                        // Store the full user name in the client information, indicate that this is not a guest logon
+                        
+                        client.setUserName( krbDetails.getSourceName());
+                        client.setGuest( false);
+	                        
+                        // Indicate that the session is logged on
+                        
+                        sess.setLoggedOn(true);
+            		}
+            	}
+            	else
+            	{
+            		// Null logon
+            		
+            		client.setLogonType( ClientInfo.LogonNull);
+            	}
+            	
+                // Indicate that the session is logged on
+                
+                sess.setLoggedOn(true);
+                
+                //  Debug
+                
+                if ( Debug.EnableDbg && hasDebug())
+                	Debug.println("[SMB] Logged on using Kerberos, user " + userName);
+            }
+            else
+            {
+            	// Debug
+            	
+            	if ( Debug.EnableDbg && hasDebug())
+            		Debug.println( "[SMB] No SPNEGO response, Kerberos logon failed");
+            	
+                // Return a logon failure status
+                
+                throw new SMBSrvException( SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log the error
+            
+        	if ( Debug.EnableError && hasDebug()) {
+        		Debug.println("[SMB] Kerberos logon error");
+        		Debug.println(ex);
+        	}
+    
+            // Return a logon failure status
+            
+            throw new SMBSrvException( SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
+        }
+    
+        // Return the response SPNEGO blob
+        
+        return negTokenTarg;
 	}
 
 	/**
@@ -1565,32 +1422,26 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @param type3Msg Type3NTLMMessage
 	 * @exception SMBSrvException
 	 */
-	private final void doNTLMv1Logon(
-		SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
+	private final void doNTLMv1Logon(SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
 		throws SMBSrvException {
 
 		// Check if NTLMv1 logons are allowed
 
-		if (acceptNTLMv1Logon() == false) {
+		if ( acceptNTLMv1Logon() == false) {
 
 			// NTLMv1 password hashes not accepted
 
-			if (Debug.EnableWarn && hasDebug())
-				Debug.println(
-					"[SMB] NTLMv1 not accepted, client " +
-					sess.getRemoteName());
+			if ( Debug.EnableWarn && hasDebug())
+				Debug.println("[SMB] NTLMv1 not accepted, client " + sess.getRemoteName());
 
 			// Return a logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Get the type 2 message that contains the challenge sent to the client
 
-		Type2NTLMMessage type2Msg =
-			(Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
+		Type2NTLMMessage type2Msg = (Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
 		sess.removeSetupObject(client.getProcessId());
 
 		// Get the NTLM logon details
@@ -1599,11 +1450,11 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// Check for a null logon
 
-		if (userName.length() == 0) {
+		if ( userName.length() == 0) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] Null logon");
 
 			// Indicate a null logon in the client information
@@ -1616,23 +1467,20 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		UserAccount user = getUserDetails(userName);
 
-		if (user != null) {
+		if ( user != null) {
 
 			// Authenticate the user
 
 			int sts = authenticateUser(client, sess, NTLM1);
 
-			if (sts < 0) {
+			if ( sts < 0) {
 
 				// Logon failed
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
-			// Store the full user name in the client information, indicate that
-			// this is not a guest
+			// Store the full user name in the client information, indicate that this is not a guest
 			// logon
 
 			client.setUserName(userName);
@@ -1646,14 +1494,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Log a warning, user does not exist
 
-			if (Debug.EnableError && hasDebug())
+			if ( Debug.EnableError && hasDebug())
 				Debug.println("[SMB] User does not exist, " + userName);
 
 			// Return a logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 	}
 
@@ -1669,20 +1515,16 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// Check if NTLMv1 logons are allowed
 
-		if (acceptNTLMv1Logon() == false) {
+		if ( acceptNTLMv1Logon() == false) {
 
 			// NTLMv1 password hashes not accepted
 
-			if (Debug.EnableWarn && hasDebug())
-				Debug.println(
-					"[SMB] NTLMv1 not accepted, client " +
-					sess.getRemoteName());
+			if ( Debug.EnableWarn && hasDebug())
+				Debug.println("[SMB] NTLMv1 not accepted, client " + sess.getRemoteName());
 
 			// Return a logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 
 		// Get the user details
@@ -1690,23 +1532,20 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		String userName = client.getUserName();
 		UserAccount user = getUserDetails(userName);
 
-		if (user != null) {
+		if ( user != null) {
 
 			// Authenticate the user
 
 			int sts = authenticateUser(client, sess, NTLM1);
 
-			if (sts < 0) {
+			if ( sts < 0) {
 
 				// Logon failed
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
-			// Store the full user name in the client information, indicate that
-			// this is not a guest
+			// Store the full user name in the client information, indicate that this is not a guest
 			// logon
 
 			client.setUserName(userName);
@@ -1720,14 +1559,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Log a warning, user does not exist
 
-			if (Debug.EnableError && hasDebug())
+			if ( Debug.EnableError && hasDebug())
 				Debug.println("[SMB] User does not exist, " + userName);
 
 			// Return a logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 	}
 
@@ -1739,14 +1576,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @param type3Msg Type3NTLMMessage
 	 * @exception SMBSrvException
 	 */
-	private final void doNTLMv2Logon(
-		SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
+	private final void doNTLMv2Logon(SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
 		throws SMBSrvException {
 
 		// Get the type 2 message that contains the challenge sent to the client
 
-		Type2NTLMMessage type2Msg =
-			(Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
+		Type2NTLMMessage type2Msg = (Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
 		sess.removeSetupObject(client.getProcessId());
 
 		// Get the NTLM logon details
@@ -1755,11 +1590,11 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// Check for a null logon
 
-		if (userName.length() == 0) {
+		if ( userName.length() == 0) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] Null logon");
 
 			// Indicate a null logon in the client information
@@ -1772,7 +1607,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		UserAccount user = getUserDetails(userName);
 
-		if (user != null) {
+		if ( user != null) {
 
 			try {
 
@@ -1780,23 +1615,19 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				byte[] md4Pwd = null;
 
-				if (user.hasMD4Password())
+				if ( user.hasMD4Password())
 					md4Pwd = user.getMD4Password();
 				else {
-					md4Pwd = getEncryptor().generateEncryptedPassword(
-						user.getPassword(), type2Msg.getChallenge(),
-						PasswordEncryptor.MD4, null, null);
+					md4Pwd = getEncryptor().generateEncryptedPassword(user.getPassword(), type2Msg.getChallenge(),
+							PasswordEncryptor.MD4, null, null);
 					user.setMD4Password(md4Pwd);
 				}
 
-				// Generate the v2 hash using the challenge that was sent to the
-				// client
+				// Generate the v2 hash using the challenge that was sent to the client
 
-				byte[] v2hash = getEncryptor().doNTLM2Encryption(
-					md4Pwd, type3Msg.getUserName(), type3Msg.getDomain());
+				byte[] v2hash = getEncryptor().doNTLM2Encryption(md4Pwd, type3Msg.getUserName(), type3Msg.getDomain());
 
-				// Get the NTLMv2 blob sent by the client and the challenge that
-				// was sent by the
+				// Get the NTLMv2 blob sent by the client and the challenge that was sent by the
 				// server
 
 				NTLMv2Blob v2blob = new NTLMv2Blob(type3Msg.getNTLMHash());
@@ -1807,25 +1638,21 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 				byte[] srvHmac = v2blob.calculateHMAC(srvChallenge, v2hash);
 				byte[] clientHmac = v2blob.getHMAC();
 
-				if (clientHmac != null && srvHmac != null &&
-					clientHmac.length == srvHmac.length) {
+				if ( clientHmac != null && srvHmac != null && clientHmac.length == srvHmac.length) {
 					int i = 0;
 
 					while (i < clientHmac.length && clientHmac[i] == srvHmac[i])
 						i++;
 
-					if (i != clientHmac.length) {
+					if ( i != clientHmac.length) {
 
 						// Return a logon failure
 
-						throw new SMBSrvException(
-							SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-							SMBStatus.DOSAccessDenied);
+						throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 					}
 				}
 
-				// Store the full user name in the client information, indicate
-				// that this is not a
+				// Store the full user name in the client information, indicate that this is not a
 				// guest logon
 
 				client.setUserName(userName);
@@ -1839,28 +1666,24 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println(ex);
 
 				// Return a logon failure
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 		}
 		else {
 
 			// Log a warning, user does not exist
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] User does not exist, " + userName);
 
 			// Return a logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 	}
 
@@ -1876,11 +1699,11 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// Check for a null logon
 
-		if (client.getUserName().length() == 0) {
+		if ( client.getUserName().length() == 0) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] Null logon");
 
 			// Indicate a null logon in the client information
@@ -1893,19 +1716,17 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		UserAccount user = getUserDetails(client.getUserName());
 
-		if (user != null) {
+		if ( user != null) {
 
 			try {
 
-				// Get the challenge that was sent to the client during
-				// negotiation
+				// Get the challenge that was sent to the client during negotiation
 
 				byte[] srvChallenge = null;
-				if (sess.hasAuthenticationContext()) {
+				if ( sess.hasAuthenticationContext()) {
 					// Get the challenge from the authentication context
 
-					NTLanManAuthContext ntlmCtx =
-						(NTLanManAuthContext) sess.getAuthenticationContext();
+					NTLanManAuthContext ntlmCtx = (NTLanManAuthContext) sess.getAuthenticationContext();
 					srvChallenge = ntlmCtx.getChallenge();
 				}
 
@@ -1913,51 +1734,43 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				byte[] md4Pwd = null;
 
-				if (user.hasMD4Password())
+				if ( user.hasMD4Password())
 					md4Pwd = user.getMD4Password();
 				else {
-					md4Pwd = getEncryptor().generateEncryptedPassword(
-						user.getPassword(), srvChallenge,
-						PasswordEncryptor.MD4, null, null);
+					md4Pwd = getEncryptor().generateEncryptedPassword(user.getPassword(), srvChallenge, PasswordEncryptor.MD4,
+							null, null);
 					user.setMD4Password(md4Pwd);
 				}
 
-				// Create the NTLMv2 blob from the received hashed password
-				// bytes
+				// Create the NTLMv2 blob from the received hashed password bytes
 
 				NTLMv2Blob v2blob = new NTLMv2Blob(client.getPassword());
 
-				// Generate the v2 hash using the challenge that was sent to the
-				// client
+				// Generate the v2 hash using the challenge that was sent to the client
 
-				byte[] v2hash = getEncryptor().doNTLM2Encryption(
-					md4Pwd, client.getUserName(), client.getDomain());
+				byte[] v2hash = getEncryptor().doNTLM2Encryption(md4Pwd, client.getUserName(), client.getDomain());
 
 				// Calculate the HMAC of the received blob and compare
 
 				byte[] srvHmac = v2blob.calculateHMAC(srvChallenge, v2hash);
 				byte[] clientHmac = v2blob.getHMAC();
 
-				if (clientHmac != null && srvHmac != null &&
-					clientHmac.length == srvHmac.length) {
+				if ( clientHmac != null && srvHmac != null && clientHmac.length == srvHmac.length) {
 
 					int i = 0;
 
 					while (i < clientHmac.length && clientHmac[i] == srvHmac[i])
 						i++;
 
-					if (i != clientHmac.length) {
+					if ( i != clientHmac.length) {
 
 						// Return a logon failure
 
-						throw new SMBSrvException(
-							SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-							SMBStatus.DOSAccessDenied);
+						throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 					}
 				}
 
-				// Store the full user name in the client information, indicate
-				// that this is not a
+				// Store the full user name in the client information, indicate that this is not a
 				// guest logon
 
 				client.setGuest(false);
@@ -1970,29 +1783,24 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println(ex);
 
 				// Return a logon failure
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 		}
 		else {
 
 			// Log a warning, user does not exist
 
-			if (Debug.EnableInfo && hasDebug())
-				Debug.println("[SMB] User does not exist, " +
-					client.getUserName());
+			if ( Debug.EnableInfo && hasDebug())
+				Debug.println("[SMB] User does not exist, " + client.getUserName());
 
 			// Return a logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 	}
 
@@ -2004,14 +1812,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @param type3Msg Type3NTLMMessage
 	 * @exception SMBSrvException
 	 */
-	private final void doNTLMv2SessionKeyLogon(
-		SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
+	private final void doNTLMv2SessionKeyLogon(SMBSrvSession sess, ClientInfo client, Type3NTLMMessage type3Msg)
 		throws SMBSrvException {
 
 		// Get the type 2 message that contains the challenge sent to the client
 
-		Type2NTLMMessage type2Msg =
-			(Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
+		Type2NTLMMessage type2Msg = (Type2NTLMMessage) sess.getSetupObject(client.getProcessId());
 		sess.removeSetupObject(client.getProcessId());
 
 		// Get the NTLM logon details
@@ -2020,11 +1826,11 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		// Check for a null logon
 
-		if (userName.length() == 0) {
+		if ( userName.length() == 0) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] Null logon");
 
 			// Indicate a null logon in the client information
@@ -2037,10 +1843,9 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		UserAccount user = getUserDetails(userName);
 
-		if (user != null) {
+		if ( user != null) {
 
-			// Create the value to be encrypted by appending the server
-			// challenge and client
+			// Create the value to be encrypted by appending the server challenge and client
 			// challenge
 			// and applying an MD5 digest
 
@@ -2070,42 +1875,36 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println(ex);
 
 				// Return a logon failure
 
-				throw new SMBSrvException(
-					SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-					SMBStatus.DOSAccessDenied);
+				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 			}
 
-			// Generate the local encrypted password using the MD5 generated
-			// challenge
+			// Generate the local encrypted password using the MD5 generated challenge
 
 			byte[] p21 = new byte[21];
 			byte[] md4byts = null;
 
-			if (user.hasMD4Password())
+			if ( user.hasMD4Password())
 				md4byts = user.getMD4Password();
 			else {
 				try {
-					md4byts = getEncryptor().generateEncryptedPassword(
-						user.getPassword(), null, PasswordEncryptor.MD4,
-						null, null);
+					md4byts = getEncryptor().generateEncryptedPassword(user.getPassword(), null, PasswordEncryptor.MD4, null,
+							null);
 				}
 				catch (Exception ex) {
 
 					// DEBUG
 
-					if (Debug.EnableError && hasDebug())
+					if ( Debug.EnableError && hasDebug())
 						Debug.println(ex);
 
 					// Return a logon failure
 
-					throw new SMBSrvException(
-						SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-						SMBStatus.DOSAccessDenied);
+					throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 				}
 			}
 
@@ -2122,7 +1921,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Log the error
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println(ex);
 			}
 
@@ -2130,25 +1929,21 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			byte[] clientHash = type3Msg.getNTLMHash();
 
-			if (clientHash != null && localHash != null &&
-				clientHash.length == localHash.length) {
+			if ( clientHash != null && localHash != null && clientHash.length == localHash.length) {
 				int i = 0;
 
 				while (i < clientHash.length && clientHash[i] == localHash[i])
 					i++;
 
-				if (i != clientHash.length) {
+				if ( i != clientHash.length) {
 
 					// Return a logon failure
 
-					throw new SMBSrvException(
-						SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-						SMBStatus.DOSAccessDenied);
+					throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 				}
 			}
 
-			// Store the full user name in the client information, indicate that
-			// this is not a guest
+			// Store the full user name in the client information, indicate that this is not a guest
 			// logon
 
 			client.setUserName(userName);
@@ -2162,14 +1957,12 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// Log a warning, user does not exist
 
-			if (Debug.EnableInfo && hasDebug())
+			if ( Debug.EnableInfo && hasDebug())
 				Debug.println("[SMB] User does not exist, " + userName);
 
 			// Return a logon failure
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
 	}
 
@@ -2180,17 +1973,13 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 	 * @param reqPkt SMBSrvPacket
 	 * @exception SMBSrvException
 	 */
-	private final void doHashedPasswordLogon(
-		SMBSrvSession sess, SMBSrvPacket reqPkt)
+	private final void doHashedPasswordLogon(SMBSrvSession sess, SMBSrvPacket reqPkt)
 		throws SMBSrvException {
 
-		// Check that the received packet looks like a valid NT session setup
-		// andX request
+		// Check that the received packet looks like a valid NT session setup andX request
 
-		if (reqPkt.checkPacketIsValid(13, 0) == false)
-			throw new SMBSrvException(
-				SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-				SMBStatus.SRVNonSpecificError);
+		if ( reqPkt.checkPacketIsValid(13, 0) == false)
+			throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 
 		// Extract the session details
 
@@ -2218,66 +2007,52 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 		String user = reqPkt.unpackString(isUni);
 
-		if (user == null)
-			throw new SMBSrvException(
-				SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-				SMBStatus.SRVNonSpecificError);
+		if ( user == null)
+			throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 
 		// Extract the clients primary domain name string
 
 		String domain = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers domain name
 
 			domain = reqPkt.unpackString(isUni);
 
-			if (domain == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-					SMBStatus.SRVNonSpecificError);
+			if ( domain == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 		}
 
 		// Extract the clients native operating system
 
 		String clientOS = "";
 
-		if (reqPkt.hasMoreData()) {
+		if ( reqPkt.hasMoreData()) {
 
 			// Extract the callers operating system name
 
 			clientOS = reqPkt.unpackString(isUni);
 
-			if (clientOS == null)
-				throw new SMBSrvException(
-					SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv,
-					SMBStatus.SRVNonSpecificError);
+			if ( clientOS == null)
+				throw new SMBSrvException(SMBStatus.NTInvalidParameter, SMBStatus.ErrSrv, SMBStatus.SRVNonSpecificError);
 		}
 
 		// DEBUG
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
-			Debug.println(
-				"[SMB] NT Session setup from user=" + user +
-				", password=" +
-				(uniPwd != null ? HexDump.hexString(uniPwd) : "none") +
-				", ANSIpwd=" +
-				(ascPwd != null ? HexDump.hexString(ascPwd) : "none") +
-				", domain=" + domain + ", os=" + clientOS + ", VC=" + vcNum +
-				", maxBuf=" + maxBufSize + ", maxMpx=" + maxMpx + ", authCtx=" +
-				sess.getAuthenticationContext());
-			Debug.println(
-				"[SMB]   MID=" + reqPkt.getMultiplexId() + ", UID=" +
-				reqPkt.getUserId() + ", PID=" + reqPkt.getProcessId());
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
+			Debug.println("[SMB] NT Session setup from user=" + user + ", password="
+					+ (uniPwd != null ? HexDump.hexString(uniPwd) : "none") + ", ANSIpwd="
+					+ (ascPwd != null ? HexDump.hexString(ascPwd) : "none") + ", domain=" + domain + ", os=" + clientOS + ", VC="
+					+ vcNum + ", maxBuf=" + maxBufSize + ", maxMpx=" + maxMpx + ", authCtx=" + sess.getAuthenticationContext());
+			Debug.println("[SMB]   MID=" + reqPkt.getMultiplexId() + ", UID=" + reqPkt.getUserId() + ", PID="
+					+ reqPkt.getProcessId());
 		}
 
-		// Store the client maximum buffer size, maximum multiplexed requests
-		// count and client
+		// Store the client maximum buffer size, maximum multiplexed requests count and client
 		// capability flags
 
-		sess.setClientMaximumBufferSize(maxBufSize != 0
-			? maxBufSize : SMBSrvSession.DefaultBufferSize);
+		sess.setClientMaximumBufferSize(maxBufSize != 0 ? maxBufSize : SMBSrvSession.DefaultBufferSize);
 		sess.setClientMaximumMultiplex(maxMpx);
 		sess.setClientCapabilities(capabs);
 
@@ -2288,22 +2063,21 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		client.setDomain(domain);
 		client.setOperatingSystem(clientOS);
 
-		if (sess.hasRemoteAddress())
+		if ( sess.hasRemoteAddress())
 			client.setClientAddress(sess.getRemoteAddress().getHostAddress());
 
 		// Check if this is a null session logon
 
-		if (user.length() == 0 && domain.length() == 0 && uniPwdLen == 0)
+		if ( user.length() == 0 && domain.length() == 0 && uniPwdLen == 0)
 			client.setLogonType(ClientInfo.LogonNull);
 
-		// Authenticate the user using the Unicode password hash, this is either
-		// NTLMv1 or NTLMv2
+		// Authenticate the user using the Unicode password hash, this is either NTLMv1 or NTLMv2
 		// encoded
 
 		boolean isGuest = false;
 
-		if (uniPwd != null) {
-			if (uniPwd.length == 24) {
+		if ( uniPwd != null) {
+			if ( uniPwd.length == 24) {
 
 				// NTLMv1 hashed password
 
@@ -2311,10 +2085,10 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug())
+				if ( Debug.EnableInfo && hasDebug())
 					Debug.println("[SMB] Logged on using Hashed/NTLMv1");
 			}
-			else if (uniPwd.length > 0) {
+			else if ( uniPwd.length > 0) {
 
 				// NTLMv2 blob
 
@@ -2322,14 +2096,14 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 				// Debug
 
-				if (Debug.EnableInfo && hasDebug())
+				if ( Debug.EnableInfo && hasDebug())
 					Debug.println("[SMB] Logged on using Hashed/NTLMv2");
 			}
 		}
 
 		// Check if the user was logged on as guest
 
-		if (client.isGuest()) {
+		if ( client.isGuest()) {
 
 			// Guest logon
 
@@ -2337,7 +2111,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 
 			// DEBUG
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
 				Debug.println("[SMB] User " + user + ", logged on as guest");
 		}
 
@@ -2346,29 +2120,25 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		VirtualCircuit vc = new VirtualCircuit(vcNum, client);
 		int uid = sess.addVirtualCircuit(vc);
 
-		if (uid == VirtualCircuit.InvalidUID) {
+		if ( uid == VirtualCircuit.InvalidUID) {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
-				Debug.println(
-					"[SMB] Failed to allocate UID for virtual circuit, " + vc);
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+				Debug.println("[SMB] Failed to allocate UID for virtual circuit, " + vc);
 
 			// Failed to allocate a UID
 
-			throw new SMBSrvException(
-				SMBStatus.NTLogonFailure, SMBStatus.ErrDos,
-				SMBStatus.DOSAccessDenied);
+			throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.ErrDos, SMBStatus.DOSAccessDenied);
 		}
-		else if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
+		else if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
 
 			// DEBUG
 
 			Debug.println("[SMB] Allocated UID=" + uid + " for VC=" + vc);
 		}
 
-		// Set the guest flag for the client, indicate that the session is
-		// logged on
+		// Set the guest flag for the client, indicate that the session is logged on
 
 		client.setGuest(isGuest);
 		sess.setLoggedOn(true);
@@ -2391,7 +2161,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		reqPkt.setFlags(flags);
 
 		int flags2 = SMBSrvPacket.FLG2_LONGFILENAMES;
-		if (isUni)
+		if ( isUni)
 			flags2 += SMBSrvPacket.FLG2_UNICODE;
 		reqPkt.setFlags2(flags2);
 
@@ -2400,18 +2170,13 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator
 		int pos = reqPkt.getByteOffset();
 		buf = reqPkt.getBuffer();
 
-		if (isUni)
+		if ( isUni)
 			pos = DataPacker.wordAlign(pos);
 
 		pos = DataPacker.putString("Java", buf, pos, true, isUni);
-		pos = DataPacker.putString(
-			"Alfresco CIFS Server " +
-			sess.getServer().isVersion(), buf, pos, true, isUni);
-		pos = DataPacker.putString(
-			sess.getSMBServer().getCIFSConfiguration().getDomainName(),
-			buf, pos, true, isUni);
+		pos = DataPacker.putString("Alfresco CIFS Server " + sess.getServer().isVersion(), buf, pos, true, isUni);
+		pos = DataPacker.putString(sess.getSMBServer().getCIFSConfiguration().getDomainName(), buf, pos, true, isUni);
 
 		reqPkt.setByteCount(pos - reqPkt.getByteOffset());
 	}
-
 }

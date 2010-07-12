@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -61,19 +61,16 @@ public class DCERPCHandler {
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public static final void processDCERPCRequest(
-		SMBSrvSession sess, SMBSrvTransPacket srvTrans, SMBSrvPacket smbPkt)
+	public static final void processDCERPCRequest(SMBSrvSession sess, SMBSrvTransPacket srvTrans, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		TreeConnection conn = sess.findTreeConnection(srvTrans);
 
-		if (conn == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -85,28 +82,20 @@ public class DCERPCHandler {
 		// Get the IPC pipe file for the specified file id
 
 		DCEPipeFile pipeFile = (DCEPipeFile) conn.findFile(fid);
-		if (pipeFile == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( pipeFile == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Create a DCE/RPC buffer from the received data
 
-		DCEBuffer dceBuf =
-			new DCEBuffer(srvTrans.getBuffer(), srvTrans.getParameter(10) +
-				RFCNetBIOSProtocol.HEADER_LEN);
+		DCEBuffer dceBuf = new DCEBuffer(srvTrans.getBuffer(), srvTrans.getParameter(10) + RFCNetBIOSProtocol.HEADER_LEN);
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
-			sess.debugPrintln("TransactNmPipe pipeFile=" +
-				pipeFile.getName() +
-				", fid=" +
-				fid +
-				", dceCmd=0x" +
-				Integer.toHexString(
-					dceBuf.getHeaderValue(DCEBuffer.HDR_PDUTYPE)));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			sess.debugPrintln("TransactNmPipe pipeFile=" + pipeFile.getName() + ", fid=" + fid + ", dceCmd=0x"
+					+ Integer.toHexString(dceBuf.getHeaderValue(DCEBuffer.HDR_PDUTYPE)));
 
 		// Process the received DCE buffer
 
@@ -114,7 +103,7 @@ public class DCERPCHandler {
 
 		// Check if there is a reply buffer to return to the caller
 
-		if (pipeFile.hasBufferedData() == false)
+		if ( pipeFile.hasBufferedData() == false)
 			return;
 
 		DCEBuffer txBuf = pipeFile.getBufferedData();
@@ -123,10 +112,8 @@ public class DCERPCHandler {
 
 		DCESrvPacket dcePkt = new DCESrvPacket(smbPkt.getBuffer());
 
-		// Always only one fragment as the data either fits into the first reply
-		// fragment or the
-		// client will read the remaining data by issuing read requests on the
-		// pipe
+		// Always only one fragment as the data either fits into the first reply fragment or the
+		// client will read the remaining data by issuing read requests on the pipe
 
 		int flags = DCESrvPacket.FLG_ONLYFRAG;
 
@@ -148,7 +135,7 @@ public class DCERPCHandler {
 		int len = txBuf.getLength();
 		int sts = SMBStatus.NTSuccess;
 
-		if (len > maxData) {
+		if ( len > maxData) {
 
 			// Write the maximum transmit fragment to the reply
 
@@ -161,8 +148,7 @@ public class DCERPCHandler {
 		}
 		else {
 
-			// Clear the DCE/RPC pipe buffered data, the reply will fit into a
-			// single response
+			// Clear the DCE/RPC pipe buffered data, the reply will fit into a single response
 			// packet
 
 			pipeFile.setBufferedData(null);
@@ -170,10 +156,9 @@ public class DCERPCHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
-			sess.debugPrintln("Reply DCEbuf flags=0x" +
-				Integer.toHexString(flags) + ", len=" + len + ", status=0x" +
-				Integer.toHexString(sts));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			sess.debugPrintln("Reply DCEbuf flags=0x" + Integer.toHexString(flags) + ", len=" + len + ", status=0x"
+					+ Integer.toHexString(sts));
 
 		// Copy the reply data to the reply packet
 
@@ -181,8 +166,7 @@ public class DCERPCHandler {
 			pos += txBuf.copyData(buf, pos, len);
 		}
 		catch (DCEBufferException ex) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -208,29 +192,24 @@ public class DCERPCHandler {
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public static final void processDCERPCRequest(
-		SMBSrvSession sess, VirtualCircuit vc, TransactBuffer tbuf,
-		SMBSrvPacket smbPkt)
+	public static final void processDCERPCRequest(SMBSrvSession sess, VirtualCircuit vc, TransactBuffer tbuf, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
 		// Check if the transaction buffer has setup and data buffers
 
-		if (tbuf.hasSetupBuffer() == false || tbuf.hasDataBuffer() == false) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
+		if ( tbuf.hasSetupBuffer() == false || tbuf.hasDataBuffer() == false) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.SRVUnrecognizedCommand, SMBStatus.ErrSrv);
 			return;
 		}
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		int treeId = tbuf.getTreeId();
 		TreeConnection conn = vc.findConnection(treeId);
 
-		if (conn == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -245,9 +224,8 @@ public class DCERPCHandler {
 		// Get the IPC pipe file for the specified file id
 
 		DCEPipeFile pipeFile = (DCEPipeFile) conn.findFile(fid);
-		if (pipeFile == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( pipeFile == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -257,14 +235,9 @@ public class DCERPCHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
-			sess.debugPrintln("TransactNmPipe pipeFile=" +
-				pipeFile.getName() +
-				", fid=" +
-				fid +
-				", dceCmd=0x" +
-				Integer.toHexString(
-					dceBuf.getHeaderValue(DCEBuffer.HDR_PDUTYPE)));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			sess.debugPrintln("TransactNmPipe pipeFile=" + pipeFile.getName() + ", fid=" + fid + ", dceCmd=0x"
+					+ Integer.toHexString(dceBuf.getHeaderValue(DCEBuffer.HDR_PDUTYPE)));
 
 		// Process the received DCE buffer
 
@@ -272,7 +245,7 @@ public class DCERPCHandler {
 
 		// Check if there is a reply buffer to return to the caller
 
-		if (pipeFile.hasBufferedData() == false)
+		if ( pipeFile.hasBufferedData() == false)
 			return;
 
 		DCEBuffer txBuf = pipeFile.getBufferedData();
@@ -281,10 +254,8 @@ public class DCERPCHandler {
 
 		DCESrvPacket dcePkt = new DCESrvPacket(smbPkt.getBuffer());
 
-		// Always only one fragment as the data either fits into the first reply
-		// fragment or the
-		// client will read the remaining data by issuing read requests on the
-		// pipe
+		// Always only one fragment as the data either fits into the first reply fragment or the
+		// client will read the remaining data by issuing read requests on the pipe
 
 		int flags = DCESrvPacket.FLG_ONLYFRAG;
 
@@ -306,7 +277,7 @@ public class DCERPCHandler {
 		int len = txBuf.getLength();
 		int sts = SMBStatus.NTSuccess;
 
-		if (len > maxData) {
+		if ( len > maxData) {
 
 			// Write the maximum transmit fragment to the reply
 
@@ -319,37 +290,33 @@ public class DCERPCHandler {
 		}
 		else {
 
-			// Clear the DCE/RPC pipe buffered data, the reply will fit into a
-			// single response
+			// Clear the DCE/RPC pipe buffered data, the reply will fit into a single response
 			// packet
 
 			pipeFile.setBufferedData(null);
 		}
 
 		// Check if a new buffer needs to be allocated for the response
-
-		int pktLen = dcePkt.getByteOffset() + len + 4; // allow for alignment
-
-		if (smbPkt.getBufferLength() < pktLen) {
-
+		
+		int pktLen = dcePkt.getByteOffset() + len + 4;	// allow for alignment
+		
+		if ( smbPkt.getBufferLength() < pktLen) {
+			
 			// Allocate a new buffer for the response
-
-			SMBSrvPacket respPkt =
-				sess.getPacketPool().allocatePacket(
-					pktLen, smbPkt, dcePkt.getByteOffset());
-
+			
+			SMBSrvPacket respPkt = sess.getPacketPool().allocatePacket( pktLen, smbPkt, dcePkt.getByteOffset());
+			
 			// Switch the response to the new buffer
-
+			
 			buf = respPkt.getBuffer();
-			dcePkt.setBuffer(buf);
+			dcePkt.setBuffer( buf);
 		}
-
+		
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
-			sess.debugPrintln("Reply DCEbuf flags=0x" +
-				Integer.toHexString(flags) + ", len=" + len + ", status=0x" +
-				Integer.toHexString(sts));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			sess.debugPrintln("Reply DCEbuf flags=0x" + Integer.toHexString(flags) + ", len=" + len + ", status=0x"
+					+ Integer.toHexString(sts));
 
 		// Copy the reply data to the reply packet
 
@@ -357,8 +324,7 @@ public class DCERPCHandler {
 			pos += txBuf.copyData(buf, pos, len);
 		}
 		catch (DCEBufferException ex) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
 			return;
 		}
 
@@ -382,19 +348,16 @@ public class DCERPCHandler {
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public static final void processDCERPCRequest(
-		SMBSrvSession sess, SMBSrvPacket smbPkt)
+	public static final void processDCERPCRequest(SMBSrvSession sess, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		TreeConnection conn = sess.findTreeConnection(smbPkt);
 
-		if (conn == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -405,7 +368,7 @@ public class DCERPCHandler {
 		// Get the file id and validate
 
 		int fid = -1;
-		if (cmd == PacketType.WriteFile)
+		if ( cmd == PacketType.WriteFile)
 			fid = smbPkt.getParameter(0);
 		else
 			fid = smbPkt.getParameter(2);
@@ -413,9 +376,8 @@ public class DCERPCHandler {
 		// Get the IPC pipe file for the specified file id
 
 		DCEPipeFile pipeFile = (DCEPipeFile) conn.findFile(fid);
-		if (pipeFile == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( pipeFile == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -426,7 +388,7 @@ public class DCERPCHandler {
 		int pos = 0;
 		int len = 0;
 
-		if (cmd == PacketType.WriteFile) {
+		if ( cmd == PacketType.WriteFile) {
 
 			// Get the data offset
 
@@ -434,9 +396,8 @@ public class DCERPCHandler {
 
 			// Check that the received data is valid
 
-			if (buf[pos++] != DataType.DataBlock) {
-				sess.sendErrorResponseSMB(
-					smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
+			if ( buf[pos++] != DataType.DataBlock) {
+				sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidData, SMBStatus.ErrDos);
 				return;
 			}
 
@@ -458,14 +419,9 @@ public class DCERPCHandler {
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
-			sess.debugPrintln("Write pipeFile=" +
-				pipeFile.getName() +
-				", fid=" +
-				fid +
-				", dceCmd=0x" +
-				Integer.toHexString(
-					dceBuf.getHeaderValue(DCEBuffer.HDR_PDUTYPE)));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
+			sess.debugPrintln("Write pipeFile=" + pipeFile.getName() + ", fid=" + fid + ", dceCmd=0x"
+					+ Integer.toHexString(dceBuf.getHeaderValue(DCEBuffer.HDR_PDUTYPE)));
 
 		// Process the DCE buffer
 
@@ -474,12 +430,12 @@ public class DCERPCHandler {
 		// Check if there is a valid reply buffered
 
 		int bufLen = 0;
-		if (pipeFile.hasBufferedData())
+		if ( pipeFile.hasBufferedData())
 			bufLen = pipeFile.getBufferedData().getLength();
 
 		// Send the write/write andX reply
 
-		if (cmd == PacketType.WriteFile) {
+		if ( cmd == PacketType.WriteFile) {
 
 			// Build the write file reply
 
@@ -516,19 +472,16 @@ public class DCERPCHandler {
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public static final void processDCERPCRead(
-		SMBSrvSession sess, SMBSrvPacket smbPkt)
+	public static final void processDCERPCRead(SMBSrvSession sess, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
-		// Get the tree id from the received packet and validate that it is a
-		// valid
+		// Get the tree id from the received packet and validate that it is a valid
 		// connection id.
 
 		TreeConnection conn = sess.findTreeConnection(smbPkt);
 
-		if (conn == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
+		if ( conn == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidDrive, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -541,7 +494,7 @@ public class DCERPCHandler {
 		int fid = -1;
 		int rdLen = -1;
 
-		if (cmd == PacketType.ReadFile) {
+		if ( cmd == PacketType.ReadFile) {
 			fid = smbPkt.getParameter(0);
 			rdLen = smbPkt.getParameter(1);
 		}
@@ -553,21 +506,19 @@ public class DCERPCHandler {
 		// Get the IPC pipe file for the specified file id
 
 		DCEPipeFile pipeFile = (DCEPipeFile) conn.findFile(fid);
-		if (pipeFile == null) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
+		if ( pipeFile == null) {
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.DOSInvalidHandle, SMBStatus.ErrDos);
 			return;
 		}
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
-			sess.debugPrintln("Read pipeFile=" + pipeFile.getName() + ", fid=" +
-				fid + ", rdLen=" + rdLen);
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
+			sess.debugPrintln("Read pipeFile=" + pipeFile.getName() + ", fid=" + fid + ", rdLen=" + rdLen);
 
 		// Check if there is a valid reply buffered
 
-		if (pipeFile.hasBufferedData()) {
+		if ( pipeFile.hasBufferedData()) {
 
 			// Get the buffered data
 
@@ -576,17 +527,17 @@ public class DCERPCHandler {
 
 			// Debug
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
 				sess.debugPrintln("  Buffered data available=" + bufLen);
 
 			// Check if there is less data than the read size
 
-			if (rdLen > bufLen)
+			if ( rdLen > bufLen)
 				rdLen = bufLen;
 
 			// Build the read response
 
-			if (cmd == PacketType.ReadFile) {
+			if ( cmd == PacketType.ReadFile) {
 
 				// Build the read response
 
@@ -642,12 +593,12 @@ public class DCERPCHandler {
 
 			// Debug
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_IPC))
 				sess.debugPrintln("  No buffered data available");
 
 			// Return a zero length read response
 
-			if (cmd == PacketType.ReadFile) {
+			if ( cmd == PacketType.ReadFile) {
 
 				// Initialize the read response
 
@@ -689,9 +640,7 @@ public class DCERPCHandler {
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public static final void processDCEBuffer(
-		SMBSrvSession sess, DCEBuffer dceBuf, DCEPipeFile pipeFile,
-		SMBSrvPacket smbPkt)
+	public static final void processDCEBuffer(SMBSrvSession sess, DCEBuffer dceBuf, DCEPipeFile pipeFile, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
 		// Process the DCE/RPC request
@@ -711,8 +660,7 @@ public class DCERPCHandler {
 			break;
 
 		default:
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVNoAccessRights, SMBStatus.ErrSrv);
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.SRVNoAccessRights, SMBStatus.ErrSrv);
 			break;
 		}
 	}
@@ -727,16 +675,14 @@ public class DCERPCHandler {
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public static final void procDCEBind(
-		SMBSrvSession sess, DCEBuffer dceBuf, DCEPipeFile pipeFile,
-		SMBSrvPacket smbPkt)
+	public static final void procDCEBind(SMBSrvSession sess, DCEBuffer dceBuf, DCEPipeFile pipeFile, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
 		try {
 
 			// DEBUG
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
 				sess.debugPrintln("DCE Bind");
 
 			// Get the call id and skip the DCE header
@@ -758,11 +704,9 @@ public class DCERPCHandler {
 
 			// Debug
 
-			if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC)) {
-				sess.debugPrintln("Bind: maxTx=" + maxTxSize + ", maxRx=" +
-					maxRxSize + ", groupId=" + groupId + ", ctxElems=" +
-					ctxElems + ", presCtxId=" + presCtxId + ", trfSyntax=" +
-					trfSyntax);
+			if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC)) {
+				sess.debugPrintln("Bind: maxTx=" + maxTxSize + ", maxRx=" + maxRxSize + ", groupId=" + groupId + ", ctxElems="
+						+ ctxElems + ", presCtxId=" + presCtxId + ", trfSyntax=" + trfSyntax);
 				sess.debugPrintln("      uuid1=" + uuid1.toString());
 				sess.debugPrintln("      uuid2=" + uuid2.toString());
 			}
@@ -772,8 +716,7 @@ public class DCERPCHandler {
 			pipeFile.setMaxTransmitFragmentSize(maxTxSize);
 			pipeFile.setMaxReceiveFragmentSize(maxRxSize);
 
-			// Create an output DCE buffer for the reply and add the bind
-			// acknowledge header
+			// Create an output DCE buffer for the reply and add the bind acknowledge header
 
 			DCEBuffer txBuf = new DCEBuffer();
 			txBuf.putBindAckHeader(dceBuf.getHeaderValue(DCEBuffer.HDR_CALLID));
@@ -785,8 +728,7 @@ public class DCERPCHandler {
 			txBuf.putShort(maxRxSize);
 			txBuf.putInt(0x53F0);
 
-			String srvPipeName =
-				DCEPipeType.getServerPipeName(pipeFile.getPipeId());
+			String srvPipeName = DCEPipeType.getServerPipeName(pipeFile.getPipeId());
 			txBuf.putShort(srvPipeName.length() + 1);
 			txBuf.putASCIIString(srvPipeName, true, DCEBuffer.ALIGN_INT);
 			txBuf.putInt(1);
@@ -801,8 +743,7 @@ public class DCERPCHandler {
 			pipeFile.setBufferedData(txBuf);
 		}
 		catch (DCEBufferException ex) {
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
 			return;
 		}
 	}
@@ -817,26 +758,19 @@ public class DCERPCHandler {
 	 * @exception IOException
 	 * @exception SMBSrvException
 	 */
-	public static final void procDCERequest(
-		SMBSrvSession sess, DCEBuffer inBuf, DCEPipeFile pipeFile,
-		SMBSrvPacket smbPkt)
+	public static final void procDCERequest(SMBSrvSession sess, DCEBuffer inBuf, DCEPipeFile pipeFile, SMBSrvPacket smbPkt)
 		throws IOException, SMBSrvException {
 
 		// Debug
 
-		if (Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
-			sess.debugPrintln("DCE Request opNum=0x" +
-				Integer.toHexString(
-					inBuf.getHeaderValue(DCEBuffer.HDR_OPCODE)));
+		if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_DCERPC))
+			sess.debugPrintln("DCE Request opNum=0x" + Integer.toHexString(inBuf.getHeaderValue(DCEBuffer.HDR_OPCODE)));
 
 		// Pass the request to the DCE pipe request handler
 
-		if (pipeFile.hasRequestHandler())
-			pipeFile.getRequestHandler().processRequest(
-				sess, inBuf, pipeFile, smbPkt);
+		if ( pipeFile.hasRequestHandler())
+			pipeFile.getRequestHandler().processRequest(sess, inBuf, pipeFile, smbPkt);
 		else
-			sess.sendErrorResponseSMB(
-				smbPkt, SMBStatus.SRVNoAccessRights, SMBStatus.ErrSrv);
+			sess.sendErrorResponseSMB(smbPkt, SMBStatus.SRVNoAccessRights, SMBStatus.ErrSrv);
 	}
-
 }

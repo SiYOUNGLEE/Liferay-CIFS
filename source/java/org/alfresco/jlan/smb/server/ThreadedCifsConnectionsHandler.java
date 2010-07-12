@@ -1,18 +1,19 @@
 /*
  * Copyright (C) 2005-2008 Alfresco, Inc.
- * 
- * Licensed under the Mozilla Public License version 1.1 with a permitted
- * attribution clause. You may obtain a copy of the License at
- * 
- * http://www.alfresco.org/legal/license.txt
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ *
+ * Licensed under the Mozilla Public License version 1.1 
+ * with a permitted attribution clause. You may obtain a
+ * copy of the License at
+ *
+ *   http://www.alfresco.org/legal/license.txt
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the
+ * License.
  */
-
 package org.alfresco.jlan.smb.server;
 
 import java.io.IOException;
@@ -34,8 +35,9 @@ import org.alfresco.jlan.smb.server.win32.Win32NetBIOSLanaMonitor;
 import org.alfresco.jlan.smb.server.win32.Win32NetBIOSSessionSocketHandler;
 
 /**
- * Threaded CIFS Connectins Handler Class <p>Create a seperate thread for each
- * enabled CIFS session handler.
+ * Threaded CIFS Connectins Handler Class
+ * 
+ * <p>Create a seperate thread for each enabled CIFS session handler.
  * 
  * @author gkspencer
  */
@@ -46,31 +48,31 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 	// Default LANA offline polling interval
 
 	public static final long LANAPollingInterval = 5000; // 5 seconds
-
+	
 	// List of session handlers that are waiting for incoming requests
-
+	
 	private SessionHandlerList m_handlerList;
-
+	
 	// List of host announcers
-
+	
 	private Vector<HostAnnouncer> m_hostAnnouncers;
-
+	
 	// SMB server
-
+	
 	private SMBServer m_server;
-
+	
 	// Debug output
-
+	
 	private boolean m_debug;
-
+	
 	/**
 	 * Class constructor
 	 */
 	public ThreadedCifsConnectionsHandler() {
-		m_handlerList = new SessionHandlerList();
+		m_handlerList    = new SessionHandlerList();
 		m_hostAnnouncers = new Vector<HostAnnouncer>();
 	}
-
+	
 	/**
 	 * Check if debug output is enabled
 	 * 
@@ -79,7 +81,7 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 	public final boolean hasDebug() {
 		return m_debug;
 	}
-
+	
 	/**
 	 * Initialize the connections handler
 	 * 
@@ -87,51 +89,46 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 	 * @param config CIFSConfigSection
 	 * @exception InvalidConfigurationException
 	 */
-	public void initializeHandler(SMBServer srv, CIFSConfigSection config)
+	public void initializeHandler( SMBServer srv, CIFSConfigSection config)
 		throws InvalidConfigurationException {
 
 		// Save the server
-
+		
 		m_server = srv;
-
+		
 		// Check if the socket connection debug flag is enabled
 
-		if ((config.getSessionDebugFlags() & SMBSrvSession.DBG_SOCKET) != 0)
+		if ( (config.getSessionDebugFlags() & SMBSrvSession.DBG_SOCKET) != 0)
 			m_debug = true;
 
 		// Create the NetBIOS session socket handler, if enabled
 
-		if (config.hasNetBIOSSMB()) {
+		if ( config.hasNetBIOSSMB()) {
 
-			// Create the TCP/IP NetBIOS SMB/CIFS session handler(s), and host
-			// announcer(s)
+			// Create the TCP/IP NetBIOS SMB/CIFS session handler(s), and host announcer(s)
 
-			SocketSessionHandler sessHandler =
-				new NetBIOSSessionSocketHandler(
-					srv, config.getSessionPort(), config.getSMBBindAddress(),
-					hasDebug());
-			sessHandler.setSocketTimeout(config.getSocketTimeout());
-
+			SocketSessionHandler sessHandler = new NetBIOSSessionSocketHandler( srv, config.getSessionPort(), config.getSMBBindAddress(), hasDebug());
+			sessHandler.setSocketTimeout( config.getSocketTimeout());
+			
 			try {
-
+				
 				// Initialize the NetBIOS session handler
-
-				sessHandler.initializeSessionHandler(srv);
-				m_handlerList.addHandler(sessHandler);
+				
+				sessHandler.initializeSessionHandler( srv);
+				m_handlerList.addHandler( sessHandler);
 
 				// DEBUG
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println("[SMB] TCP NetBIOS session handler created");
 
 				// Check if a host announcer should be created
 
-				if (config.hasEnableAnnouncer()) {
+				if ( config.hasEnableAnnouncer()) {
 
 					// Create the TCP NetBIOS host announcer
 
-					TcpipNetBIOSHostAnnouncer announcer =
-						new TcpipNetBIOSHostAnnouncer();
+					TcpipNetBIOSHostAnnouncer announcer = new TcpipNetBIOSHostAnnouncer();
 
 					// Set the host name to be announced
 
@@ -139,17 +136,17 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 					announcer.setDomain(config.getDomainName());
 					announcer.setComment(config.getComment());
 					announcer.setBindAddress(config.getSMBBindAddress());
-					if (config.getHostAnnouncerPort() != 0)
+					if ( config.getHostAnnouncerPort() != 0)
 						announcer.setPort(config.getHostAnnouncerPort());
 
 					// Check if there are alias names to be announced
 
-					if (config.hasAliasNames())
+					if ( config.hasAliasNames())
 						announcer.addHostNames(config.getAliasNames());
 
 					// Set the announcement interval
 
-					if (config.getHostAnnounceInterval() > 0)
+					if ( config.getHostAnnounceInterval() > 0)
 						announcer.setInterval(config.getHostAnnounceInterval());
 
 					try {
@@ -164,151 +161,130 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 
 					// Enable debug output
 
-					if (config.hasHostAnnounceDebug())
+					if ( config.hasHostAnnounceDebug())
 						announcer.setDebug(true);
 
 					// Add the announcer to the list
-
-					m_hostAnnouncers.add(announcer);
+					
+					m_hostAnnouncers.add( announcer);
 
 					// DEBUG
 
-					if (Debug.EnableError && hasDebug())
+					if ( Debug.EnableError && hasDebug())
 						Debug.println("[SMB] TCP NetBIOS host announcer created");
 				}
 			}
 			catch (IOException ex) {
-
+				
 			}
 		}
 
 		// Create the TCP/IP SMB session socket handler, if enabled
 
-		if (config.hasTcpipSMB()) {
+		if ( config.hasTcpipSMB()) {
 
 			// Create the TCP/IP native SMB session handler(s)
 
-			SocketSessionHandler sessHandler =
-				new TcpipSMBSessionSocketHandler(
-					srv, config.getTcpipSMBPort(), config.getSMBBindAddress(),
-					hasDebug());
-			sessHandler.setSocketTimeout(config.getSocketTimeout());
+			SocketSessionHandler sessHandler = new TcpipSMBSessionSocketHandler( srv, config.getTcpipSMBPort(), config.getSMBBindAddress(), hasDebug());
+			sessHandler.setSocketTimeout( config.getSocketTimeout());
 
 			try {
-
+				
 				// Initialize the native SMB handler
-
-				sessHandler.initializeSessionHandler(srv);
-				m_handlerList.addHandler(sessHandler);
+				
+				sessHandler.initializeSessionHandler( srv);
+				m_handlerList.addHandler( sessHandler);
 
 				// DEBUG
 
-				if (Debug.EnableError && hasDebug())
+				if ( Debug.EnableError && hasDebug())
 					Debug.println("[SMB] Native SMB TCP session handler created");
 			}
-			catch (IOException ex) {
-				throw new InvalidConfigurationException(
-					"Error initializing session handler, " + ex.getMessage());
+			catch ( IOException ex) {
+				throw new InvalidConfigurationException( "Error initializing session handler, " + ex.getMessage());
 			}
 		}
 
 		// Create the Win32 NetBIOS session handler, if enabled
 
-		if (config.hasWin32NetBIOS()) {
+		if ( config.hasWin32NetBIOS()) {
 
 			// Only enable if running under Windows
 
-			if (isWindowsNTOnwards()) {
+			if ( isWindowsNTOnwards()) {
 
 				// DEBUG
 
-				if (Debug.EnableInfo && hasDebug()) {
+				if ( Debug.EnableInfo && hasDebug()) {
 					int[] lanas = Win32NetBIOS.LanaEnumerate();
 
 					StringBuffer lanaStr = new StringBuffer();
-					if (lanas != null && lanas.length > 0) {
+					if ( lanas != null && lanas.length > 0) {
 						for (int i = 0; i < lanas.length; i++) {
 							lanaStr.append(Integer.toString(lanas[i]));
 							lanaStr.append(" ");
 						}
 					}
-					Debug.println("[SMB] Win32 NetBIOS Available LANAs: " +
-						lanaStr.toString());
+					Debug.println("[SMB] Win32 NetBIOS Available LANAs: " + lanaStr.toString());
 				}
 
-				// Check if the Win32 NetBIOS session handler should use a
-				// particular LANA/network adapter
-				// or should use all available LANAs/network adapters (that have
-				// NetBIOS enabled).
+				// Check if the Win32 NetBIOS session handler should use a particular LANA/network adapter
+				// or should use all available LANAs/network adapters (that have NetBIOS enabled).
 
 				Win32NetBIOSSessionSocketHandler sessHandler = null;
-				List<Win32NetBIOSSessionSocketHandler> lanaListeners =
-					new ArrayList<Win32NetBIOSSessionSocketHandler>();
+				List<Win32NetBIOSSessionSocketHandler> lanaListeners = new ArrayList<Win32NetBIOSSessionSocketHandler>();
 
-				if (config.getWin32LANA() != -1) {
+				if ( config.getWin32LANA() != -1) {
 
-					// Create a single Win32 NetBIOS session handler using the
-					// specified LANA
+					// Create a single Win32 NetBIOS session handler using the specified LANA
 
-					sessHandler =
-						new Win32NetBIOSSessionSocketHandler(
-							srv, config.getWin32LANA(), hasDebug());
+					sessHandler = new Win32NetBIOSSessionSocketHandler(srv, config.getWin32LANA(), hasDebug());
 
 					try {
-
+						
 						// Initialize the Win32 JNI session handler
-
-						sessHandler.initializeSessionHandler(srv);
-						m_handlerList.addHandler(sessHandler);
+						
+						sessHandler.initializeSessionHandler( srv);
+						m_handlerList.addHandler( sessHandler);
 
 						// DEBUG
 
-						if (Debug.EnableInfo && hasDebug())
-							Debug.println("[SMB] Win32 NetBIOS created " +
-								"session handler on LANA " +
-								config.getWin32LANA());
+						if ( Debug.EnableInfo && hasDebug())
+							Debug.println("[SMB] Win32 NetBIOS created session handler on LANA " + config.getWin32LANA());
 
 					}
 					catch (Exception ex) {
 
 						// DEBUG
 
-						if (Debug.EnableError && hasDebug()) {
-							Debug.println("[SMB] Win32 NetBIOS failed to " +
-								"create session handler for LANA " +
-								config.getWin32LANA());
+						if ( Debug.EnableError && hasDebug()) {
+							Debug.println("[SMB] Win32 NetBIOS failed to create session handler for LANA " + config.getWin32LANA());
 							Debug.println("      " + ex.getMessage());
 						}
 					}
 
 					// Check if a host announcer should be enabled
 
-					if (config.hasWin32EnableAnnouncer()) {
+					if ( config.hasWin32EnableAnnouncer()) {
 
 						// Create a host announcer
 
-						Win32NetBIOSHostAnnouncer hostAnnouncer =
-							new Win32NetBIOSHostAnnouncer(
-								sessHandler, config.getDomainName(),
-								config.getWin32HostAnnounceInterval());
-						hostAnnouncer.setDebug(hasDebug());
+						Win32NetBIOSHostAnnouncer hostAnnouncer = new Win32NetBIOSHostAnnouncer(sessHandler, config.getDomainName(), config.getWin32HostAnnounceInterval());
+						hostAnnouncer.setDebug( hasDebug());
 
 						// Add the host announcer to the SMB/CIFS server list
 
-						m_hostAnnouncers.add(hostAnnouncer);
+						m_hostAnnouncers.add( hostAnnouncer);
 
 						// DEBUG
 
-						if (Debug.EnableInfo && hasDebug())
-							Debug.println("[SMB] Win32 NetBIOS host announcer" +
-								" enabled on LANA " +
-								config.getWin32LANA());
+						if ( Debug.EnableInfo && hasDebug())
+							Debug.println("[SMB] Win32 NetBIOS host announcer enabled on LANA " + config.getWin32LANA());
 					}
 
-					// Check if the session handler implements the LANA listener
-					// interface
+					// Check if the session handler implements the LANA listener interface
 
-					if (sessHandler instanceof LanaListener)
+					if ( sessHandler instanceof LanaListener)
 						lanaListeners.add(sessHandler);
 				}
 				else {
@@ -317,7 +293,7 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 
 					int[] lanas = Win32NetBIOS.LanaEnumerate();
 
-					if (lanas != null && lanas.length > 0) {
+					if ( lanas != null && lanas.length > 0) {
 
 						// Create a session handler for each available LANA
 
@@ -329,154 +305,131 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 
 							// Create a session handler
 
-							sessHandler =
-								new Win32NetBIOSSessionSocketHandler(
-									srv, lana, hasDebug());
+							sessHandler = new Win32NetBIOSSessionSocketHandler( srv, lana, hasDebug());
 
 							try {
-
+								
 								// Initialize the Win32 JNI session handler
-
-								sessHandler.initializeSessionHandler(srv);
-								m_handlerList.addHandler(sessHandler);
+								
+								sessHandler.initializeSessionHandler( srv);
+								m_handlerList.addHandler( sessHandler);
 
 								// DEBUG
 
-								if (Debug.EnableError && hasDebug())
-									Debug.println("[SMB] Win32 NetBIOS " +
-										"created session handler on LANA " +
-										lana);
+								if ( Debug.EnableError && hasDebug())
+									Debug.println("[SMB] Win32 NetBIOS created session handler on LANA " + lana);
 
 							}
 							catch (Exception ex) {
 
 								// DEBUG
 
-								if (Debug.EnableError && hasDebug()) {
-									Debug.println("[SMB] Win32 NetBIOS failed" +
-										" to create session handler for LANA " +
-										lana);
+								if ( Debug.EnableError && hasDebug()) {
+									Debug.println("[SMB] Win32 NetBIOS failed to create session handler for LANA " + lana);
 									Debug.println("      " + ex.getMessage());
 								}
 							}
 
 							// Check if a host announcer should be enabled
 
-							if (config.hasWin32EnableAnnouncer()) {
+							if ( config.hasWin32EnableAnnouncer()) {
 
 								// Create a host announcer
 
-								Win32NetBIOSHostAnnouncer hostAnnouncer =
-									new Win32NetBIOSHostAnnouncer(
-										sessHandler, config.getDomainName(),
-										config.getWin32HostAnnounceInterval());
-								hostAnnouncer.setDebug(hasDebug());
+								Win32NetBIOSHostAnnouncer hostAnnouncer = new Win32NetBIOSHostAnnouncer(sessHandler, config.getDomainName(), config.getWin32HostAnnounceInterval());
+								hostAnnouncer.setDebug( hasDebug());
 
-								// Add the host announcer to the SMB/CIFS server
-								// list
+								// Add the host announcer to the SMB/CIFS server list
 
-								m_hostAnnouncers.add(hostAnnouncer);
+								m_hostAnnouncers.add( hostAnnouncer);
 
 								// DEBUG
 
-								if (Debug.EnableInfo && hasDebug())
-									Debug.println("[SMB] Win32 NetBIOS host " +
-										"announcer enabled on LANA " +
-										lana);
+								if ( Debug.EnableInfo && hasDebug())
+									Debug.println("[SMB] Win32 NetBIOS host announcer enabled on LANA " + lana);
 							}
 
-							// Check if the session handler implements the LANA
-							// listener interface
+							// Check if the session handler implements the LANA listener interface
 
-							if (sessHandler instanceof LanaListener)
+							if ( sessHandler instanceof LanaListener)
 								lanaListeners.add(sessHandler);
 						}
 					}
 
-					// Create a LANA monitor to check for new LANAs becoming
-					// available
+					// Create a LANA monitor to check for new LANAs becoming available
 
-					Win32NetBIOSLanaMonitor lanaMonitor =
-						new Win32NetBIOSLanaMonitor(
-							srv, lanas, LANAPollingInterval, hasDebug());
+					Win32NetBIOSLanaMonitor lanaMonitor = new Win32NetBIOSLanaMonitor( srv, lanas, LANAPollingInterval, hasDebug());
 
 					// Register any session handlers that are LANA listeners
 
-					if (lanaListeners.size() > 0) {
+					if ( lanaListeners.size() > 0) {
 
 						for (int i = 0; i < lanaListeners.size(); i++) {
 
 							// Get the current LANA listener
 
-							Win32NetBIOSSessionSocketHandler handler =
-								lanaListeners.get(i);
+							Win32NetBIOSSessionSocketHandler handler = lanaListeners.get(i);
 
 							// Register the LANA listener
 
-							lanaMonitor.addLanaListener(
-								handler.getLANANumber(), handler);
+							lanaMonitor.addLanaListener(handler.getLANANumber(), handler);
 						}
 					}
 				}
 			}
 		}
 	}
-
+	
 	/**
-	 * Return the count of active session handlers
-	 * 
-	 * @return int
+	 *  Return the count of active session handlers
+	 *  
+	 *  @return int
 	 */
 	public int numberOfSessionHandlers() {
 		return m_handlerList.numberOfHandlers();
 	}
-
+	
 	/**
 	 * Start the connection handler thread
 	 */
 	public void startHandler() {
-
+		
 		// Start each session handler in a seperate thread
-
-		for (int idx = 0; idx < m_handlerList.numberOfHandlers(); idx++) {
-
-			SessionHandlerInterface sessHandler =
-				m_handlerList.getHandlerAt(idx);
-
-			if (sessHandler instanceof Runnable) {
-
+		
+		for ( int idx = 0; idx < m_handlerList.numberOfHandlers(); idx++) {
+			
+			SessionHandlerInterface sessHandler = m_handlerList.getHandlerAt( idx);
+			
+			if ( sessHandler instanceof Runnable) {
+				
 				// Start the session handler in a seperate thread
-
-				Thread handlerThread = new Thread((Runnable) sessHandler);
-				handlerThread.setName("CIFSSessHandler_" +
-					sessHandler.getHandlerName());
+				
+				Thread handlerThread = new Thread(( Runnable) sessHandler);
+				handlerThread.setName( "CIFSSessHandler_" + sessHandler.getHandlerName());
 				handlerThread.start();
-
+				
 				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("[SMB] Created session handler thread " +
-						handlerThread.getName());
+				
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] Created session handler thread " + handlerThread.getName());
 			}
 		}
-
+		
 		// Start the host announcer(s)
-
-		if (m_hostAnnouncers.size() > 0) {
-
-			for (int idx = 0; idx < m_hostAnnouncers.size(); idx++) {
+		
+		if ( m_hostAnnouncers.size() > 0) {
+			
+			for ( int idx = 0; idx < m_hostAnnouncers.size(); idx++) {
 
 				// Get the current host announcer
-
-				HostAnnouncer hostAnnouncer =
-					(HostAnnouncer) m_hostAnnouncers.get(idx);
+				
+				HostAnnouncer hostAnnouncer = (HostAnnouncer) m_hostAnnouncers.get( idx);
 				hostAnnouncer.startAnnouncer();
-
+				
 				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("[SMB] Started host announcer " +
-						hostAnnouncer.getName());
+				
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println( "[SMB] Started host announcer " + hostAnnouncer.getName());
 			}
 		}
 	}
@@ -485,43 +438,39 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 	 * Stop the connections handler
 	 */
 	public void stopHandler() {
-
+		
 		// Stop each session handler
-
-		for (int idx = 0; idx < m_handlerList.numberOfHandlers(); idx++) {
-
-			SessionHandlerInterface sessHandler =
-				m_handlerList.getHandlerAt(idx);
-			sessHandler.closeSessionHandler(m_server);
-
+		
+		for ( int idx = 0; idx < m_handlerList.numberOfHandlers(); idx++) {
+			
+			SessionHandlerInterface sessHandler = m_handlerList.getHandlerAt( idx);
+			sessHandler.closeSessionHandler( m_server);
+				
 			// DEBUG
-
-			if (Debug.EnableInfo && hasDebug())
-				Debug.println("[SMB] Shutting down session handler thread " +
-					sessHandler.getHandlerName());
+			
+			if ( Debug.EnableInfo && hasDebug())
+				Debug.println("[SMB] Shutting down session handler thread " + sessHandler.getHandlerName());
 		}
-
+		
 		// Stop the host announcer(s)
-
-		if (m_hostAnnouncers.size() > 0) {
-
-			for (int idx = 0; idx < m_hostAnnouncers.size(); idx++) {
+		
+		if ( m_hostAnnouncers.size() > 0) {
+			
+			for ( int idx = 0; idx < m_hostAnnouncers.size(); idx++) {
 
 				// Get the current host announcer
-
-				HostAnnouncer hostAnnouncer =
-					(HostAnnouncer) m_hostAnnouncers.get(idx);
+				
+				HostAnnouncer hostAnnouncer = (HostAnnouncer) m_hostAnnouncers.get( idx);
 				hostAnnouncer.shutdownAnnouncer();
-
+				
 				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("[SMB] Shutting down host announcer " +
-						hostAnnouncer.getName());
+				
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println( "[SMB] Shutting down host announcer " + hostAnnouncer.getName());
 			}
 		}
 	}
-
+	
 	/**
 	 * Determine if we are running under Windows NT onwards
 	 * 
@@ -533,9 +482,8 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 
 		String osName = System.getProperty("os.name");
 
-		if (osName.startsWith("Windows")) {
-			if (osName.endsWith("95") || osName.endsWith("98") ||
-				osName.endsWith("ME")) {
+		if ( osName.startsWith("Windows")) {
+			if ( osName.endsWith("95") || osName.endsWith("98") || osName.endsWith("ME")) {
 
 				// Windows 95-ME
 
@@ -551,5 +499,4 @@ public class ThreadedCifsConnectionsHandler implements CifsConnectionsHandler {
 
 		return false;
 	}
-
 }

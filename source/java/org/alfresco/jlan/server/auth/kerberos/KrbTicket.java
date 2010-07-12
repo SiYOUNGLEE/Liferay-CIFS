@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -44,22 +44,23 @@ import org.alfresco.jlan.server.auth.asn.DERSequence;
 public class KrbTicket {
 
 	// Realm and principal name
-
+	
 	private String m_realm;
 	private PrincipalName m_principalName;
-
+	
 	// Encrypted part
-
+	
 	private int m_encType;
 	private byte[] m_encPart;
 	private int m_encKvno = -1;
-
+	
 	/**
 	 * Default constructor
 	 */
-	public KrbTicket() {
+	public KrbTicket()
+	{
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -67,32 +68,36 @@ public class KrbTicket {
 	 * @exception IOException
 	 */
 	public KrbTicket(byte[] blob)
-		throws IOException {
-		parseTicket(blob);
+		throws IOException
+	{
+		parseTicket( blob);
 	}
 
 	/**
 	 * Return the realm
 	 */
-	public final String getRealm() {
+	public final String getRealm()
+	{
 		return m_realm;
 	}
-
+	
 	/**
 	 * Return the principal name
 	 * 
 	 * @return PrincipalName
 	 */
-	public final PrincipalName getPrincipalName() {
+	public final PrincipalName getPrincipalName()
+	{
 		return m_principalName;
 	}
-
+	
 	/**
 	 * Return the encrypted part of the ticket
 	 * 
 	 * @return byte[]
 	 */
-	public final byte[] getEncryptedPart() {
+	public final byte[] getEncryptedPart()
+	{
 		return m_encPart;
 	}
 
@@ -101,7 +106,8 @@ public class KrbTicket {
 	 * 
 	 * @return int
 	 */
-	public final int getEncryptedType() {
+	public final int getEncryptedType()
+	{
 		return m_encType;
 	}
 
@@ -110,132 +116,144 @@ public class KrbTicket {
 	 * 
 	 * @return int
 	 */
-	public final int getEncryptedPartKeyVersion() {
+	public final int getEncryptedPartKeyVersion()
+	{
 		return m_encKvno;
 	}
-
+	
 	/**
 	 * Parse a Kerberos ticket blob
 	 * 
 	 * @param byte[] blob
 	 * @exception IOException
 	 */
-	public final void parseTicket(byte[] blob)
-		throws IOException {
+	public final void parseTicket( byte[] blob)
+		throws IOException
+	{
 		// Create a stream to parse the ASN.1 encoded Kerberos ticket blob
-
-		DERBuffer derBuf = new DERBuffer(blob);
-
+		
+		DERBuffer derBuf = new DERBuffer( blob);
+		
 		DERObject derObj = derBuf.unpackObject();
-		if (derObj instanceof DERSequence) {
+		if ( derObj instanceof DERSequence)
+		{
 			// Enumerate the Kerberos ticket objects
-
+			
 			DERSequence derSeq = (DERSequence) derObj;
 			Iterator<DERObject> iterObj = derSeq.getObjects();
-
-			while (iterObj.hasNext()) {
+			
+			while ( iterObj.hasNext())
+			{
 				// Read an object
-
+			
 				derObj = iterObj.next();
-
-				if (derObj != null && derObj.isTagged()) {
-					switch (derObj.getTagNo()) {
-					// Tkt-vno
-
-					case 0:
-						if (derObj instanceof DERInteger) {
-							DERInteger derInt = (DERInteger) derObj;
-							if (derInt.intValue() != 5)
-								throw new IOException(
-									"Unexpected VNO value in Kerberos ticket");
-						}
-						break;
-
-					// Realm
-
-					case 1:
-						if (derObj instanceof DERGeneralString) {
-							DERGeneralString derStr = (DERGeneralString) derObj;
-							m_realm = derStr.getValue();
-						}
-						break;
-
-					// Principal name
-
-					case 2:
-						if (derObj instanceof DERSequence) {
-							DERSequence derPrincSeq = (DERSequence) derObj;
-							m_principalName = new PrincipalName();
-							m_principalName.parsePrincipalName(derPrincSeq);
-						}
-						break;
-
-					// Encrypted part of the ticket
-
-					case 3:
-						if (derObj instanceof DERSequence) {
-							DERSequence derEncSeq = (DERSequence) derObj;
-
-							// Enumerate the sequence
-
-							Iterator<DERObject> iterEncSeq =
-								derEncSeq.getObjects();
-
-							while (iterEncSeq.hasNext()) {
-								// Get the current sequence element
-
-								derObj = iterEncSeq.next();
-
-								if (derObj != null && derObj.isTagged()) {
-									switch (derObj.getTagNo()) {
-									// Encryption type
-
-									case 0:
-										if (derObj instanceof DERInteger) {
-											DERInteger derInt =
-												(DERInteger) derObj;
-											m_encType = derInt.intValue();
+				
+				if ( derObj != null && derObj.isTagged())
+				{
+					switch ( derObj.getTagNo())
+					{
+						// Tkt-vno
+						
+						case 0:
+							if ( derObj instanceof DERInteger)
+							{
+								DERInteger derInt = (DERInteger) derObj;
+								if ( derInt.intValue() != 5)
+									throw new IOException("Unexpected VNO value in Kerberos ticket");
+							}
+							break;
+							
+						// Realm
+						
+						case 1:
+							if ( derObj instanceof DERGeneralString)
+							{
+								DERGeneralString derStr = (DERGeneralString) derObj;
+								m_realm = derStr.getValue();
+							}
+							break;
+							
+						// Principal name
+							
+						case 2:
+							if ( derObj instanceof DERSequence)
+							{
+								DERSequence derPrincSeq = (DERSequence) derObj;
+								m_principalName = new PrincipalName();
+								m_principalName.parsePrincipalName( derPrincSeq);
+							}
+							break;
+							
+						// Encrypted part of the ticket
+							
+						case 3:
+							if ( derObj instanceof DERSequence)
+							{
+								DERSequence derEncSeq = (DERSequence) derObj;
+								
+								// Enumerate the sequence
+								
+								Iterator<DERObject> iterEncSeq = derEncSeq.getObjects();
+								
+								while ( iterEncSeq.hasNext())
+								{
+									// Get the current sequence element
+									
+									derObj = iterEncSeq.next();
+									
+									if ( derObj != null && derObj.isTagged())
+									{
+										switch ( derObj.getTagNo())
+										{
+											// Encryption type
+										
+											case 0:
+												if ( derObj instanceof DERInteger)
+												{
+													DERInteger derInt = (DERInteger) derObj;
+													m_encType = derInt.intValue();
+												}
+												break;
+												
+											// Kvno
+												
+											case 1:
+												if ( derObj instanceof DERInteger)
+												{
+													DERInteger derInt = (DERInteger) derObj;
+													m_encKvno = derInt.intValue();
+												}
+												break;
+												
+											// Cipher
+												
+											case 2:
+												if ( derObj instanceof DEROctetString)
+												{
+													DEROctetString derOct = (DEROctetString) derObj;
+													m_encPart = derOct.getValue();
+												}
+												break;
 										}
-										break;
-
-									// Kvno
-
-									case 1:
-										if (derObj instanceof DERInteger) {
-											DERInteger derInt =
-												(DERInteger) derObj;
-											m_encKvno = derInt.intValue();
-										}
-										break;
-
-									// Cipher
-
-									case 2:
-										if (derObj instanceof DEROctetString) {
-											DEROctetString derOct =
-												(DEROctetString) derObj;
-											m_encPart = derOct.getValue();
-										}
-										break;
 									}
 								}
 							}
-						}
-						break;
+							break;
 					}
 				}
 			}
 		}
 	}
-
+	
 	/**
 	 * Return the Kerberos ticket as a string
 	 * 
 	 * @return String
 	 */
-	public String toString() {
+	public String toString()
+	{
 		StringBuilder str = new StringBuilder();
-
+		
 		str.append("[KrbTkt Realm=");
 		str.append(getRealm());
 		str.append(",Principal=");
@@ -247,8 +265,7 @@ public class KrbTicket {
 		str.append(",Len=");
 		str.append(getEncryptedPart() != null ? getEncryptedPart().length : 0);
 		str.append("]");
-
+		
 		return str.toString();
 	}
-
 }

@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -38,14 +38,15 @@ import org.alfresco.jlan.smb.server.SMBSrvPacketQueue.QueuedSMBPacket;
 import org.alfresco.jlan.smb.server.nio.AsynchronousWritesHandler;
 
 /**
- * Winsock NetBIOS Packet Handler Class <p> Uses a Windows Winsock NetBIOS
- * socket to provide the low level session layer for better integration with
- * Windows.
+ * Winsock NetBIOS Packet Handler Class
+ * 
+ * <p>
+ * Uses a Windows Winsock NetBIOS socket to provide the low level session layer for better
+ * integration with Windows.
  * 
  * @author gkspencer
  */
-public class WinsockNetBIOSPacketHandler extends PacketHandler
-	implements AsynchronousWritesHandler {
+public class WinsockNetBIOSPacketHandler extends PacketHandler implements AsynchronousWritesHandler {
 
 	// Constants
 	//
@@ -62,13 +63,13 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler
 	private NetBIOSSocket m_sessSock;
 
 	// Asynchronous I/O packet queue
-
+	
 	private SMBSrvPacketQueue m_asyncQueue;
-
+	
 	// Asynchronous mode enabled
-
+	
 	private boolean m_asyncMode;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -77,23 +78,17 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler
 	 * @param packetPool CIFSPacketPool
 	 * @param asyncMode boolean
 	 */
-	public WinsockNetBIOSPacketHandler(
-		int lana, NetBIOSSocket sock, CIFSPacketPool packetPool,
-		boolean asyncMode) {
-
-		super(
-			SMBSrvPacket.PROTOCOL_WIN32NETBIOS, "WinsockNB", "WSNB", 
-			sock.getName().getName(), packetPool);
+	public WinsockNetBIOSPacketHandler(int lana, NetBIOSSocket sock, CIFSPacketPool packetPool, boolean asyncMode) {
+		super(SMBSrvPacket.PROTOCOL_WIN32NETBIOS, "WinsockNB", "WSNB", sock.getName().getName(), packetPool);
 
 		m_lana = lana;
 		m_sessSock = sock;
-
+		
 		m_asyncMode = asyncMode;
-
-		// If asynchrnous mode is enabled then allocate the asynchronous packet
-		// queue
-
-		if (hasAsynchronousMode())
+		
+		// If asynchrnous mode is enabled then allocate the asynchronous packet queue
+		
+		if ( hasAsynchronousMode())
 			m_asyncQueue = new SMBSrvPacketQueue();
 	}
 
@@ -137,7 +132,7 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler
 	public final boolean hasAsynchronousMode() {
 		return m_asyncMode;
 	}
-
+	
 	/**
 	 * Read a packet from the client
 	 * 
@@ -147,177 +142,160 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler
 	public SMBSrvPacket readPacket()
 		throws IOException {
 
-		// Get the length of the pending receive data, so we can allocate the
-		// correct sized buffer
-
+		// Get the length of the pending receive data, so we can allocate the correct sized buffer
+		
 		int rxlen = m_sessSock.available();
 
 		// Check if data is showing as available yet
-
-		if (rxlen == 0) {
+		
+		if ( rxlen == 0) {
 			int loop = 0;
-
-			while (loop++ < 50 && rxlen == 0) {
+			
+			while ( loop++ < 50 && rxlen == 0) {
 				rxlen = m_sessSock.available();
-				if (rxlen == 0) {
+				if ( rxlen == 0) {
 					try {
-						Thread.sleep(2);
+						Thread.sleep( 2);
 					}
 					catch (Exception e) {
 					}
 				}
 			}
-			if (rxlen == 0 && hasDebug())
+			if ( rxlen == 0 && hasDebug())
 				Debug.println("***** Still no data after 100ms *****");
 		}
-
-		SMBSrvPacket pkt = getPacketPool().allocatePacket(rxlen + 8);
-
+		
+		SMBSrvPacket pkt = getPacketPool().allocatePacket( rxlen + 8);
+		
 		// Receive an SMB/CIFS request packet via the Winsock NetBIOS socket
 
 		try {
 
 			// Read a packet of data
 
-			rxlen =
-				m_sessSock.read(pkt.getBuffer(), 4, pkt.getBufferLength() - 4);
+			rxlen = m_sessSock.read(pkt.getBuffer(), 4, pkt.getBufferLength() - 4);
 
-			// Check if the buffer is not big enough to receive the entire
-			// packet, extend the buffer
+			// Check if the buffer is not big enough to receive the entire packet, extend the buffer
 			// and read the remaining part of the packet
 
-			if (rxlen == ReceiveBufferSizeError) {
+			if ( rxlen == ReceiveBufferSizeError) {
 
-				// Check if there is a larger buffer size available from the
-				// packet pool
-
-				if (pkt.getBufferLength() >= getPacketPool().getLargestSize()) {
-
+				// Check if there is a larger buffer size available from the packet pool
+				
+				if ( pkt.getBufferLength() >= getPacketPool().getLargestSize()) {
+					
 					// Release the packet back to the pool
-
-					getPacketPool().releasePacket(pkt);
-
+					
+					getPacketPool().releasePacket( pkt);
+				
 					// Throw an exception
-
-					throw new RuntimeException(
-						"Winsock NetBIOS receive over max available " +
-						"buffer size");
+					
+					throw new RuntimeException("Winsock NetBIOS receive over max available buffer size");
 				}
-
+				
 				// Get the remaining data length
-
+				
 				int rxlen2 = m_sessSock.available();
-
-				if (rxlen2 > 0) {
-
+				
+				if ( rxlen2 > 0) {
+					
 					// Allocate a larger buffer to hold the full packet
-
-					SMBSrvPacket pkt2 =
-						getPacketPool().allocatePacket(
-							getPacketPool().getLargestSize());
-
+					
+					SMBSrvPacket pkt2 = getPacketPool().allocatePacket( getPacketPool().getLargestSize());
+					
 					// Copy the existing receive data to the new packet
-
+					
 					rxlen = pkt.getBufferLength();
-					System.arraycopy(
-						pkt.getBuffer(), 4, pkt2.getBuffer(), 4, rxlen - 4);
-
-					// Release the original packet buffer, switch to the new
-					// packet
-
-					getPacketPool().releasePacket(pkt);
+					System.arraycopy(pkt.getBuffer(), 4, pkt2.getBuffer(), 4, rxlen - 4);
+					
+					// Release the original packet buffer, switch to the new packet
+					
+					getPacketPool().releasePacket( pkt);
 					pkt = pkt2;
-
+					
 					// Read the remaining data
 
-					rxlen2 =
-						m_sessSock.read(
-							pkt.getBuffer(), rxlen, pkt.getBufferLength() -
-								rxlen);
-
+					rxlen2 = m_sessSock.read( pkt.getBuffer(), rxlen, pkt.getBufferLength() - rxlen);
+					
 					// Update the total received length
-
-					if (rxlen2 == ReceiveBufferSizeError) {
-
+					
+					if ( rxlen2 == ReceiveBufferSizeError) {
+						
 						// Release the packet back to the pool
-
-						getPacketPool().releasePacket(pkt);
-
+						
+						getPacketPool().releasePacket( pkt);
+					
 						// Throw an exception
-
-						throw new RuntimeException(
-							"Winsock NetBIOS receive error on second " +
-							"stage receive");
+						
+						throw new RuntimeException("Winsock NetBIOS receive error on second stage receive");
 					}
-
+					
 					// Update the total receive length
-
+					
 					rxlen += rxlen2 - 4;
 				}
 			}
 		}
-		catch (WinsockNetBIOSException ex) {
-
+		catch ( WinsockNetBIOSException ex) {
+			
 			// DEBUG
-
-			if (Debug.EnableDbg && hasDebug())
-				Debug.println(ex);
+			
+			if ( Debug.EnableDbg && hasDebug())
+				Debug.println( ex);
 
 			// Check the Winsock error code
-
-			if (ex.getErrorCode() != 0) {
-
+			
+			if ( ex.getErrorCode() != 0) {
+				
 				// Release the packet back to the pool
-
-				getPacketPool().releasePacket(pkt);
-
+				
+				getPacketPool().releasePacket( pkt);
+				
 				// Clear the received packet to indicate error
-
+				
 				pkt = null;
-
+				
 				// Rethrow the exception
-
+				
 				throw ex;
 			}
 			else {
 
 				// DEBUG
-
-				if (Debug.EnableDbg && hasDebug())
-					Debug.println(
-						"Winsock error code zero, ignored, rxlen=" +
-						rxlen + ", pktlen=" + pkt.getBuffer().length);
-
+				
+				if ( Debug.EnableDbg && hasDebug())
+					Debug.println("Winsock error code zero, ignored, rxlen=" + rxlen + ", pktlen=" + pkt.getBuffer().length);
+				
 				// Indicate a zero length receive
-
+				
 				rxlen = 0;
 			}
 		}
-		catch (IOException ex) {
+		catch ( IOException ex) {
 
 			// DEBUG
-
-			if (Debug.EnableDbg && hasDebug())
-				Debug.println(ex);
-
+			
+			if ( Debug.EnableDbg && hasDebug())
+				Debug.println( ex);
+			
 			// Release the packet back to the pool
-
-			getPacketPool().releasePacket(pkt);
-
+			
+			getPacketPool().releasePacket( pkt);
+			
 			// Clear the received packet to indicate error
-
+			
 			pkt = null;
-
+			
 			// Rethrow the exception
-
+			
 			throw ex;
 		}
 
 		// Set the received packet length
-
-		if (pkt != null)
-			pkt.setReceivedLength(rxlen);
-
+		
+		if ( pkt != null)
+			pkt.setReceivedLength( rxlen);
+		
 		// Return the received packet
 
 		return pkt;
@@ -334,88 +312,75 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler
 	public void writePacket(SMBSrvPacket pkt, int len, boolean writeRaw)
 		throws IOException {
 
-		// If asynchronous mode is enabled and the queue is not empty then queue
-		// this write request
-
-		if (hasAsynchronousMode() && m_asyncQueue.numberOfPackets() > 0) {
-
+		// If asynchronous mode is enabled and the queue is not empty then queue this write request
+		
+		if ( hasAsynchronousMode() && m_asyncQueue.numberOfPackets() > 0) {
+			
 			// DEBUG
-
-			if (Debug.EnableDbg && hasDebug())
-				Debug.println(
-					"*** Queued packet for async I/O pkt=" +
-					pkt.getPacketTypeString() + ", len=" + len + ", raw=" +
-					writeRaw + "  (QueueLen) ***");
-
+			
+			if ( Debug.EnableDbg && hasDebug())
+				Debug.println("*** Queued packet for async I/O pkt=" + pkt.getPacketTypeString() + ", len=" + len + ", raw=" + writeRaw + "  (QueueLen) ***");
+			
 			// Queue the request
-
+			
 			m_asyncQueue.addToQueue(pkt, 4, len, writeRaw);
 			return;
 		}
-
+		
 		// Output the packet via the Winsock NetBIOS socket
 		//
-		// As Windows is handling the NetBIOS session layer we do not send the 4
-		// byte header that is
+		// As Windows is handling the NetBIOS session layer we do not send the 4 byte header that is
 		// used by the NetBIOS over TCP/IP and native SMB packet handlers.
 
 		int pos = 4;
 		int wrlen = len;
 		int txlen = 0;
-
-		while (wrlen > 0) {
-
+		
+		while ( wrlen > 0) {
+			
 			// Write the packet
-
+		
 			txlen = m_sessSock.write(pkt.getBuffer(), pos, wrlen);
-
-			// Check if asynchronous mode is enabled and the socket would block,
-			// in this case we queue the response
+			
+			// Check if asynchronous mode is enabled and the socket would block, in this case we queue the response
 			// to be sent when the socket signals that it is writeable
-
-			if (hasAsynchronousMode() &&
-				txlen == NetBIOSSocket.SocketWouldBlock) {
+			
+			if ( hasAsynchronousMode() && txlen == NetBIOSSocket.SocketWouldBlock) {
 
 				// DEBUG
 
-				if (Debug.EnableDbg && hasDebug())
-					Debug.println(
-						"*** Queued packet for async I/O pkt=" +
-						pkt.getPacketTypeString() + ", len=" + len + ", raw=" +
-						writeRaw + "  (WouldBlock) ***");
-
+				if ( Debug.EnableDbg && hasDebug())
+					Debug.println("*** Queued packet for async I/O pkt=" + pkt.getPacketTypeString() + ", len=" + len + ", raw=" + writeRaw + "  (WouldBlock) ***");
+				
 				// Queue the request
-
+				
 				m_asyncQueue.addToQueue(pkt, pos, wrlen, writeRaw);
 				return;
 			}
-
+			
 			// If the write length is zero wait a short while before retrying
-
-			else if (txlen == 0) {
+			
+			else if ( txlen == 0) {
 				try {
-					Thread.sleep(10);
-
+					Thread.sleep( 10);
+					
 					// DEBUG
-
-					// Debug.println( "*** Zero length write, wait 10ms wrlen="
-					// + wrlen + ", pktType=" + pkt.getPacketTypeString() +
-					// " ***");
+					
+//					Debug.println( "*** Zero length write, wait 10ms wrlen=" + wrlen + ", pktType=" + pkt.getPacketTypeString() + " ***");
 				}
-				catch (InterruptedException ex) {
+				catch ( InterruptedException ex) {
 				}
 			}
 			else {
-
+				
 				// Adjust the remaining write length
-
+				
 				wrlen -= txlen;
-				pos += txlen;
+				pos   += txlen;
 			}
 		}
 
-		// Do not check the status, if the session has been closed the next
-		// receive will fail
+		// Do not check the status, if the session has been closed the next receive will fail
 	}
 
 	/**
@@ -437,159 +402,146 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler
 		super.closeHandler();
 
 		// Release any queued packets back to the pool
-
-		if (hasAsynchronousMode()) {
-
+		
+		if ( hasAsynchronousMode()) {
+			
 			// Release queued writes back to the packet pool
-
-			while (m_asyncQueue.numberOfPackets() > 0) {
-
-				// Get a packet from the queue and release back to the packet
-				// pool
-
+			
+			while ( m_asyncQueue.numberOfPackets() > 0) {
+				
+				// Get a packet from the queue and release back to the packet pool
+				
 				QueuedSMBPacket queuedPkt = m_asyncQueue.removeFromQueue();
-				getPacketPool().releasePacket(queuedPkt.getPacket());
+				getPacketPool().releasePacket( queuedPkt.getPacket());
 			}
 		}
-
+		
 		// Close the session socket
 
-		if (m_sessSock != null)
+		if ( m_sessSock != null)
 			m_sessSock.closeSocket();
 	}
-
+	
 	/**
 	 * Return the count of queued writes
 	 * 
 	 * @return int
 	 */
 	public int getQueuedWriteCount() {
-
+		
 		// Check if the asynchronous mode is enabled
-
-		if (hasAsynchronousMode() == false || m_asyncQueue == null)
+		
+		if ( hasAsynchronousMode() == false || m_asyncQueue == null)
 			return 0;
 		return m_asyncQueue.numberOfPackets();
 	}
-
+	
 	/**
-	 * Process the write queue and send pending data until outgoing buffers are
-	 * full
+	 * Process the write queue and send pending data until outgoing buffers are full
 	 * 
 	 * @return int Number of requests that were removed from the queue
 	 */
 	public int processQueuedWrites() {
 
 		// Process the queued write requests
-
+		
 		int procCnt = 0;
-
-		if (m_asyncQueue != null) {
-
-			// Loop until the queue is emptied or the socket buffer is full
-			// again
-
+		
+		if ( m_asyncQueue != null) {
+			
+			// Loop until the queue is emptied or the socket buffer is full again
+			
 			boolean wouldBlock = false;
-
-			while (m_asyncQueue.numberOfPackets() > 0 && wouldBlock == false) {
-
-				// Get a request from the queue, leave the request on the queue
-				// until the send is successful
-
+			
+			while ( m_asyncQueue.numberOfPackets() > 0 && wouldBlock == false) {
+			
+				// Get a request from the queue, leave the request on the queue until the send is successful
+				
 				QueuedSMBPacket queuedPkt = m_asyncQueue.getHeadOfQueue();
-
+				
 				// Output the packet via the Winsock NetBIOS socket
 
 				int pos = queuedPkt.getWriteOffset();
 				int wrlen = queuedPkt.getWriteLength();
 				int txlen = 0;
-
-				while (wrlen > 0 && txlen != NetBIOSSocket.SocketWouldBlock) {
-
+				
+				while ( wrlen > 0 && txlen != NetBIOSSocket.SocketWouldBlock) {
+					
 					// Write the packet
-
-					synchronized (m_sessSock) {
-
+				
+					synchronized ( m_sessSock) {
+						
 						try {
-							txlen = m_sessSock.write(
-								queuedPkt.getPacket().getBuffer(), pos, wrlen);
+							txlen = m_sessSock.write( queuedPkt.getPacket().getBuffer(), pos, wrlen);
 						}
-						catch (WinsockNetBIOSException ex) {
-
+						catch ( WinsockNetBIOSException ex) {
+							
 							// Socket error, stop processing the queue
-
+							
 							txlen = NetBIOSSocket.SocketWouldBlock;
 						}
 					}
-
-					// Check if the write status indicates the socket would
-					// block, in this case we update the queued request and exit
-
-					if (txlen == NetBIOSSocket.SocketWouldBlock) {
+					
+					// Check if the write status indicates the socket would block, in this case we update the queued request and exit
+					
+					if ( txlen == NetBIOSSocket.SocketWouldBlock) {
 
 						// DEBUG
 
-						if (hasDebug())
-							Debug.println(
-								"*** Process queued writes sts=WouldBlock ***");
-
+						if ( hasDebug())
+							Debug.println("*** Process queued writes sts=WouldBlock ***");
+						
 						// Update the request if part of the buffer was sent
-
-						if (pos != queuedPkt.getWriteOffset()) {
-
-							// Update the write offset and length with the new
-							// values
-
-							queuedPkt.updateSettings(pos, wrlen);
+						
+						if ( pos != queuedPkt.getWriteOffset()) {
+							
+							// Update the write offset and length with the new values
+							
+							queuedPkt.updateSettings( pos, wrlen);
 						}
 					}
 					else {
-
+						
 						// Adjust the remaining write length
-
+						
 						wrlen -= txlen;
-						pos += txlen;
+						pos   += txlen;
 					}
 				}
-
+				
 				// Set the I/O blocking flag
-
-				if (txlen == NetBIOSSocket.SocketWouldBlock) {
-
+				
+				if ( txlen == NetBIOSSocket.SocketWouldBlock) {
+					
 					// Stop processing the queue, socket buffer is full again
-
+					
 					wouldBlock = true;
 				}
-				else if (wrlen == 0) {
-
+				else if ( wrlen == 0) {
+					
 					// Queued request has been sent, remove it from the queue
-
+					
 					m_asyncQueue.removeFromQueue();
-
+					
 					// DEBUG
 
-					if (hasDebug())
-						Debug.println(
-							"*** Sent queued pkt=" +
-							queuedPkt.getPacket() + ", len=" +
-							queuedPkt.getWriteLength() + ", offset=" +
-							queuedPkt.getWriteOffset());
-
+					if ( hasDebug())
+						Debug.println("*** Sent queued pkt=" + queuedPkt.getPacket() + ", len=" + queuedPkt.getWriteLength() + ", offset=" + queuedPkt.getWriteOffset());
+					
 					// Release the packet back to the pool
-
-					queuedPkt.getPacket().setQueuedForAsyncIO(false);
-					getPacketPool().releasePacket(queuedPkt.getPacket());
-
+					
+					queuedPkt.getPacket().setQueuedForAsyncIO( false);
+					getPacketPool().releasePacket( queuedPkt.getPacket());
+					
 					// Update the count of packets sent
-
+					
 					procCnt++;
 				}
 			}
 		}
-
+		
 		// Return the count of write requests that were removed from the queue
-
+		
 		return procCnt;
 	}
-
 }

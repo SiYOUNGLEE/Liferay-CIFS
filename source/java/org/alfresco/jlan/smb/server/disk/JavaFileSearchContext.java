@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -35,558 +35,544 @@ import org.alfresco.jlan.util.WildCard;
 
 /**
  * Java File Search Context Class
- * 
+ *
  * @author gkspencer
  */
 public class JavaFileSearchContext extends SearchContext {
 
-	// Directory that we are searching
+  //	Directory that we are searching
 
-	private File m_root;
+  private File m_root;
 
-	// List of files
+  //	List of files
 
-	private String[] m_list;
-	private int m_idx;
+  private String[] m_list;
+  private int m_idx;
 
-	// File attributes
+  //	File attributes
 
-	private int m_attr;
+  private int m_attr;
 
-	// Single file/directory search flag
+  //	Single file/directory search flag
 
-	private boolean m_single;
+  private boolean m_single;
 
-	// Wildcard checker
-
+	//	Wildcard checker
+	
 	private WildCard m_wildcard;
+	
+  // Relative path to folder being searched
+  
+  private String m_relPath;
+  
+  /**
+   * Class constructor
+   */
+  protected JavaFileSearchContext() {
+  }
 
-	// Relative path to folder being searched
+  /**
+   * Return the list of file names for a directory.
+   *
+   * @param file java.io.File
+   * @return java.lang.String[]
+   */
+  protected final String[] getListForDirectory(File file) {
 
-	private String m_relPath;
+    //  Check if the file is a directory
 
-	/**
-	 * Class constructor
-	 */
-	protected JavaFileSearchContext() {
-	}
+    if (isDirectory(file) == false)
+      return null;
 
-	/**
-	 * Return the list of file names for a directory.
-	 * 
-	 * @param file java.io.File
-	 * @return java.lang.String[]
-	 */
-	protected final String[] getListForDirectory(File file) {
+    //  Get the file list for the directory
 
-		// Check if the file is a directory
+    String[] fileList = file.list();
+    if (fileList == null) {
 
-		if (isDirectory(file) == false)
-			return null;
+      //  Try and get the file list another way
 
-		// Get the file list for the directory
+      File file2 = new File(file.getPath().substring(0, file.getPath().length() - 1));
+      fileList = file2.list();
+    }
 
-		String[] fileList = file.list();
-		if (fileList == null) {
+    //  Return the file list
 
-			// Try and get the file list another way
+    return fileList;
+  }
 
-			File file2 =
-				new File(file.getPath().substring(
-					0, file.getPath().length() - 1));
-			fileList = file2.list();
-		}
+  /**
+   * Return the resume id for the current file/directory. We return the index of the next file,
+   * this is the file/directory that will be returned if the search is restarted.
+   *
+   * @return int  Resume id.
+   */
+  public int getResumeId() {
+    return m_idx;
+  }
 
-		// Return the file list
+  /**
+   * Determine if there are more files to return for this search
+   * 
+   * @return boolean
+   */
+  public boolean hasMoreFiles() {
 
-		return fileList;
-	}
+    //  Determine if there are any more files to be returned
 
-	/**
-	 * Return the resume id for the current file/directory. We return the index
-	 * of the next file, this is the file/directory that will be returned if the
-	 * search is restarted.
-	 * 
-	 * @return int Resume id.
-	 */
-	public int getResumeId() {
-		return m_idx;
-	}
+    if (m_single == true && m_idx > 0)
+      return false;
+    else if (m_list != null && m_idx >= m_list.length)
+      return false;
+    return true;
+  }
 
-	/**
-	 * Determine if there are more files to return for this search
-	 * 
-	 * @return boolean
-	 */
-	public boolean hasMoreFiles() {
+  /**
+   * Start a directory search.
+   *
+   * @param path java.lang.String
+   * @param attr int
+   */
+  public final void initSearch(String path, int attr)
+    throws java.io.FileNotFoundException {
 
-		// Determine if there are any more files to be returned
+    //  Store the search attributes
 
-		if (m_single == true && m_idx > 0)
-			return false;
-		else if (m_list != null && m_idx >= m_list.length)
-			return false;
-		return true;
-	}
+    m_attr = attr;
 
-	/**
-	 * Start a directory search.
-	 * 
-	 * @param path java.lang.String
-	 * @param attr int
-	 */
-	public final void initSearch(String path, int attr)
-		throws java.io.FileNotFoundException {
+    //  Split the path, check if there is a filename
 
-		// Store the search attributes
+    String[] pathStr = FileName.splitPath(path, java.io.File.separatorChar);
 
-		m_attr = attr;
+    //  Set the search string for the context
 
-		// Split the path, check if there is a filename
+    if (pathStr[1] != null)
+      setSearchString(pathStr[1]);
 
-		String[] pathStr = FileName.splitPath(path, java.io.File.separatorChar);
+    //  Create the root file
 
-		// Set the search string for the context
+    if (pathStr[1] != null
+      && WildCard.containsWildcards(pathStr[1]) == false) {
 
-		if (pathStr[1] != null)
-			setSearchString(pathStr[1]);
+      //  Indicate that the search is for a single file/directory
 
-		// Create the root file
+      setSingleFileSearch(true);
 
-		if (pathStr[1] != null &&
-			WildCard.containsWildcards(pathStr[1]) == false) {
+      //  Path may be a file
 
-			// Indicate that the search is for a single file/directory
+      m_root = new File(pathStr[0], pathStr[1]);
+      if (m_root.exists() == false) {
 
-			setSingleFileSearch(true);
+        //  Rebuild the path, looks like it is a directory
 
-			// Path may be a file
+        m_root = new File(FileName.buildPath(pathStr[0], pathStr[1], null, java.io.File.separatorChar));
+        if (m_root.exists() == false)
+          throw new java.io.FileNotFoundException(path);
+      }
+    }
+    else {
 
-			m_root = new File(pathStr[0], pathStr[1]);
-			if (m_root.exists() == false) {
-
-				// Rebuild the path, looks like it is a directory
-
-				m_root = new File(FileName.buildPath(
-					pathStr[0], pathStr[1], null,
-					java.io.File.separatorChar));
-				if (m_root.exists() == false)
-					throw new java.io.FileNotFoundException(path);
-			}
-		}
-		else {
-
-			// Wildcard search of a directory
+      //  Wildcard search of a directory
 
 			String root = pathStr[0];
-			if (root.endsWith(":"))
+			if ( root.endsWith(":"))
 				root = root + java.io.File.separator;
+				
+      m_root = new File(root);
+      
+      if (isDirectory(m_root)) {
 
-			m_root = new File(root);
+        //  Check if there is a file spec, if not then the search is for the directory only
 
-			if (isDirectory(m_root)) {
+        if (pathStr[1] == null) {
 
-				// Check if there is a file spec, if not then the search is for
-				// the directory only
+          //  Single file directory search
 
-				if (pathStr[1] == null) {
+          setSingleFileSearch(true);
+        }
+        else {
 
-					// Single file directory search
+          //  Multi file search, get the file list for the directory
 
-					setSingleFileSearch(true);
-				}
-				else {
+          m_list = getListForDirectory(m_root);
 
-					// Multi file search, get the file list for the directory
+          //  If there is not file list, the path does not exist
 
-					m_list = getListForDirectory(m_root);
+          if (m_list == null)
+            throw new java.io.FileNotFoundException(path);
 
-					// If there is not file list, the path does not exist
+          //  Indicate a multi-file search
 
-					if (m_list == null)
-						throw new java.io.FileNotFoundException(path);
+          setSingleFileSearch(false);
+          
+          //	Create the wildcard checker
+          
+          m_wildcard = new WildCard(pathStr[1],false);
+        }
+      }
+    }
 
-					// Indicate a multi-file search
+    //  Clear the current file index
 
-					setSingleFileSearch(false);
+    m_idx = 0;
+  }
 
-					// Create the wildcard checker
+  /**
+   * Test if the specified file is a file or directory.
+   *
+   * @param file java.io.File
+   * @return boolean
+   */
+  protected final boolean isDirectory(File file) {
 
-					m_wildcard = new WildCard(pathStr[1], false);
-				}
-			}
-		}
+    //  If the file object says it is a directory then it's a directory !
 
-		// Clear the current file index
+    if (file.isDirectory())
+      return true;
 
-		m_idx = 0;
-	}
+    //  If we can produce a file list then the file is a directory
 
-	/**
-	 * Test if the specified file is a file or directory.
-	 * 
-	 * @param file java.io.File
-	 * @return boolean
-	 */
-	protected final boolean isDirectory(File file) {
+    if (file.list() != null)
+      return true;
 
-		// If the file object says it is a directory then it's a directory !
+    //  Looks like it's a file then !
 
-		if (file.isDirectory())
-			return true;
+    return false;
+  }
 
-		// If we can produce a file list then the file is a directory
+  /**
+   * Determine if this is a wildcard or single file/directory type search.
+   *
+   * @return boolean
+   */
+  protected final boolean isSingleFileSearch() {
+    return m_single;
+  }
 
-		if (file.list() != null)
-			return true;
+  /**
+   * Determine if the search is valid. The directory may not exist or the file may not exist for a
+   * single file search.
+   *
+   * @return boolean
+   */
+  public final boolean isValidSearch() {
+    return m_root != null ? true : false;
+  }
 
-		// Looks like it's a file then !
+  /**
+   * Return the next file information for this search
+   * 
+   * @param info FileInfo
+   * @return boolean
+   */
+  public boolean nextFileInfo(FileInfo info) {
 
-		return false;
-	}
+    //  Get the next file information
 
-	/**
-	 * Determine if this is a wildcard or single file/directory type search.
-	 * 
-	 * @return boolean
-	 */
-	protected final boolean isSingleFileSearch() {
-		return m_single;
-	}
+    boolean infoValid = false;
 
-	/**
-	 * Determine if the search is valid. The directory may not exist or the file
-	 * may not exist for a single file search.
-	 * 
-	 * @return boolean
-	 */
-	public final boolean isValidSearch() {
-		return m_root != null ? true : false;
-	}
+    if (isSingleFileSearch()) {
 
-	/**
-	 * Return the next file information for this search
-	 * 
-	 * @param info FileInfo
-	 * @return boolean
-	 */
-	public boolean nextFileInfo(FileInfo info) {
+      //  Check if we have already returned the root file details
 
-		// Get the next file information
+      if (m_idx == 0) {
 
-		boolean infoValid = false;
+        //  Update the file index, indicates that we have returned the single file/directory
+        //  details.
 
-		if (isSingleFileSearch()) {
+        m_idx++;
 
-			// Check if we have already returned the root file details
+        //  Determine if the search is for a file or directory
 
-			if (m_idx == 0) {
+        int fattr = 0;
+        long flen = 0L;
 
-				// Update the file index, indicates that we have returned the
-				// single file/directory
-				// details.
+        if (isDirectory(m_root))
+          fattr = FileAttribute.Directory;
+        else
+          flen = m_root.length();
 
-				m_idx++;
+        //	Check if the file/folder is read-only
+        
+        if ( m_root.canWrite() == false)
+        	fattr += FileAttribute.ReadOnly;
 
-				// Determine if the search is for a file or directory
+        //  Return the file information
 
-				int fattr = 0;
-				long flen = 0L;
-
-				if (isDirectory(m_root))
-					fattr = FileAttribute.Directory;
-				else
-					flen = m_root.length();
-
-				// Check if the file/folder is read-only
-
-				if (m_root.canWrite() == false)
-					fattr += FileAttribute.ReadOnly;
-
-				// Return the file information
-
-				info.setFileName(m_root.getName());
-				info.setSize(flen);
-				info.setFileAttributes(fattr);
-				info.setFileId(m_root.getAbsolutePath().hashCode());
-
-				long modifyDate = m_root.lastModified();
-				info.setModifyDateTime(modifyDate);
+        info.setFileName(m_root.getName());
+        info.setSize(flen);
+        info.setFileAttributes(fattr);
+        info.setFileId(m_root.getAbsolutePath().hashCode());
+        
+        long modifyDate = m_root.lastModified();
+        info.setModifyDateTime(modifyDate);
 				info.setChangeDateTime(modifyDate);
-
+				
 				long dummyCreate = JavaFileDiskDriver.getGlobalCreateDateTime();
-
-				if (dummyCreate > modifyDate)
-					dummyCreate = modifyDate;
+				
+				if ( dummyCreate > modifyDate)
+				  dummyCreate = modifyDate;
 				info.setCreationDateTime(dummyCreate);
 
-				// Indicate that the file information is valid
+        //  Indicate that the file information is valid
 
-				infoValid = true;
-			}
-		}
-		else if (m_list != null && m_idx < m_list.length) {
+        infoValid = true;
+      }
+    }
+    else if (m_list != null && m_idx < m_list.length) {
 
-			// Find a file/directory that matches the search attributes
+      //  Find a file/directory that matches the search attributes
 
-			boolean foundMatch = false;
-			File curFile = new File(m_root, m_list[m_idx++]);
+      boolean foundMatch = false;
+      File curFile = new File(m_root, m_list[m_idx++]);
 
-			while (foundMatch == false && curFile != null) {
+      while (foundMatch == false && curFile != null) {
 
-				// Check if the file name matches the search pattern
-
-				if (m_wildcard.matchesPattern(curFile.getName()) == true) {
-
-					// Check if the file matches the search attributes
-
-					if (FileAttribute.hasAttribute(
-						m_attr, FileAttribute.Directory) &&
-						isDirectory(curFile)) {
-
-						// Found a match
-
-						foundMatch = true;
-					}
-					else if (curFile.isFile()) {
-						// &&
-						// SMBFileAttribute.hasAttribute(m_attr,SMBFileAttribute.System)
-						// == false) {
-
-						// Found a match
-
-						foundMatch = true;
-					}
+				//	Check if the file name matches the search pattern
+				
+				if ( m_wildcard.matchesPattern(curFile.getName()) == true) {
+					
+	        //  Check if the file matches the search attributes
+	
+	        if (FileAttribute.hasAttribute(m_attr, FileAttribute.Directory) &&
+	            isDirectory(curFile)) {
+	
+	          //  Found a match
+	
+	          foundMatch = true;
+	        }
+	        else if ( curFile.isFile()) {
+	          // && SMBFileAttribute.hasAttribute(m_attr,SMBFileAttribute.System) == false) {
+	
+	          //  Found a match
+	
+	          foundMatch = true;
+	        }
 				}
 
-				// Check if we found a match
+				//	Check if we found a match
+				
+				if ( foundMatch == false) {
+					
+          //  Get the next file from the list
 
-				if (foundMatch == false) {
+          if (m_idx < m_list.length)
+            curFile = new File(m_root, m_list[m_idx++]);
+          else
+            curFile = null;
+        }
+      }
 
-					// Get the next file from the list
+      //  Check if there is a file to return
 
-					if (m_idx < m_list.length)
-						curFile = new File(m_root, m_list[m_idx++]);
-					else
-						curFile = null;
-				}
-			}
+      if (curFile != null) {
 
-			// Check if there is a file to return
+        //  Create a file information object for the file
 
-			if (curFile != null) {
+        int fattr = 0;
+        long flen = 0L;
 
-				// Create a file information object for the file
+        String fname = curFile.getName();
+        
+        if (isDirectory(curFile)) {
+          
+          // Set the directory attribute
+        
+          fattr = FileAttribute.Directory;
+          
+          // Check if the diretory should be hidden
+          
+          if ( fname.startsWith( "."))
+            fattr += FileAttribute.Hidden;
+        }
+        else {
+        	
+        	//	Set the file length
+        	
+          flen = curFile.length();
 
-				int fattr = 0;
-				long flen = 0L;
+          //	Check if the file/folder is read-only
+          
+          if ( curFile.canWrite() == false)
+          	fattr += FileAttribute.ReadOnly;
+          
+          //	Check for common hidden files
 
-				String fname = curFile.getName();
+	        if ( fname.equalsIgnoreCase("Desktop.ini") ||
+	        		 fname.equalsIgnoreCase("Thumbs.db")   ||
+               fname.startsWith( "."))
+	        	fattr += FileAttribute.Hidden;
+        }
 
-				if (isDirectory(curFile)) {
+        //  Create the file information object
 
-					// Set the directory attribute
+        info.setFileName(curFile.getName());
+        info.setSize(flen);
+        info.setFileAttributes(fattr);
+        
+        // Build the share relative file path to generate the file id
+        
+        StringBuffer relPath = new StringBuffer();
+        relPath.append(m_relPath);
+        relPath.append(curFile.getName());
+        
+        info.setFileId(relPath.toString().hashCode());
 
-					fattr = FileAttribute.Directory;
-
-					// Check if the diretory should be hidden
-
-					if (fname.startsWith("."))
-						fattr += FileAttribute.Hidden;
-				}
-				else {
-
-					// Set the file length
-
-					flen = curFile.length();
-
-					// Check if the file/folder is read-only
-
-					if (curFile.canWrite() == false)
-						fattr += FileAttribute.ReadOnly;
-
-					// Check for common hidden files
-
-					if (fname.equalsIgnoreCase("Desktop.ini") ||
-						fname.equalsIgnoreCase("Thumbs.db") ||
-						fname.startsWith("."))
-						fattr += FileAttribute.Hidden;
-				}
-
-				// Create the file information object
-
-				info.setFileName(curFile.getName());
-				info.setSize(flen);
-				info.setFileAttributes(fattr);
-
-				// Build the share relative file path to generate the file id
-
-				StringBuffer relPath = new StringBuffer();
-				relPath.append(m_relPath);
-				relPath.append(curFile.getName());
-
-				info.setFileId(relPath.toString().hashCode());
-
-				// Set the file timestamps
-
-				long modifyDate = m_root.lastModified();
-				info.setModifyDateTime(modifyDate);
+        // Set the file timestamps
+        
+        long modifyDate = m_root.lastModified();
+        info.setModifyDateTime(modifyDate);
 				info.setChangeDateTime(modifyDate);
-
+				
 				long dummyCreate = JavaFileDiskDriver.getGlobalCreateDateTime();
-
-				if (dummyCreate > modifyDate)
-					dummyCreate = modifyDate;
+				
+				if ( dummyCreate > modifyDate)
+				  dummyCreate = modifyDate;
 				info.setCreationDateTime(dummyCreate);
 
-				// Indicate that the file information is valid
+        //  Indicate that the file information is valid
 
-				infoValid = true;
-			}
-		}
+        infoValid = true;
+      }
+    }
 
-		// Return the file information valid state
+    //  Return the file information valid state
 
-		return infoValid;
-	}
+    return infoValid;
+  }
 
+  /**
+   * Return the next file name for this search
+   * 
+   * @return String
+   */
+  public String nextFileName() {
+
+    //  Get the next file name
+
+    if (isDirectory(m_root) == false) {
+
+      //  Check if we have already returned the root file name
+
+      if (m_idx == 0) {
+
+        //  Return the root file name
+
+        m_idx++;
+        return m_root.getName();
+      }
+      else
+        return null;
+    }
+
+    //  Return the next file name from the list
+
+    else if (m_list != null && m_idx < m_list.length) {
+    	
+    	//	Find the next matching file name
+    	
+    	while ( m_idx < m_list.length) {
+    		
+    		//	Check if the current file name matches the search pattern
+    		
+    		String fname = m_list[m_idx++];
+    		
+    		if ( m_wildcard.matchesPattern(fname))
+    			return fname;
+    	}
+    }
+    
+    //  No more file names
+
+    return null;
+  }
+
+  /**
+   * Restart the search at the specified resume point.
+   *
+   * @param resumeId  Resume point.
+   * @return           true if the search can be restarted, else false.
+   */
+  public boolean restartAt(int resumeId) {
+
+    //  Check if the resume point is valid
+
+    if (m_list == null || resumeId >= m_list.length)
+      return false;
+
+    //  Reset the current search point
+
+    m_idx = resumeId;
+    return true;
+  }
+
+  /**
+   * Restart the file search at the specified file
+   * 
+   * @param info FileInfo
+   * @return boolean
+   */
+  public boolean restartAt(FileInfo info) {
+
+    //  Check if the file list is valid
+
+    boolean restartOK = false;
+    m_idx--;
+
+    if (m_list != null) {
+
+      //  Step backwards through the file list until we find the required restart file
+
+      while (m_idx > 0 && restartOK == false) {
+
+        //  Check if we found the restart file
+
+        if (m_list[m_idx].compareTo(info.getFileName()) == 0)
+          restartOK = true;
+        else
+          m_idx--;
+      }
+    }
+
+    //  Return the restart status
+
+    return restartOK;
+  }
+
+  /**
+   * Set the wildcard/single file search flag.
+   *
+   * @param single boolean
+   */
+  protected final void setSingleFileSearch(boolean single) {
+    m_single = single;
+  }
+  
 	/**
-	 * Return the next file name for this search
-	 * 
-	 * @return String
-	 */
-	public String nextFileName() {
-
-		// Get the next file name
-
-		if (isDirectory(m_root) == false) {
-
-			// Check if we have already returned the root file name
-
-			if (m_idx == 0) {
-
-				// Return the root file name
-
-				m_idx++;
-				return m_root.getName();
-			}
-			else
-				return null;
-		}
-
-		// Return the next file name from the list
-
-		else if (m_list != null && m_idx < m_list.length) {
-
-			// Find the next matching file name
-
-			while (m_idx < m_list.length) {
-
-				// Check if the current file name matches the search pattern
-
-				String fname = m_list[m_idx++];
-
-				if (m_wildcard.matchesPattern(fname))
-					return fname;
-			}
-		}
-
-		// No more file names
-
-		return null;
-	}
-
-	/**
-	 * Restart the search at the specified resume point.
-	 * 
-	 * @param resumeId Resume point.
-	 * @return true if the search can be restarted, else false.
-	 */
-	public boolean restartAt(int resumeId) {
-
-		// Check if the resume point is valid
-
-		if (m_list == null || resumeId >= m_list.length)
-			return false;
-
-		// Reset the current search point
-
-		m_idx = resumeId;
-		return true;
-	}
-
-	/**
-	 * Restart the file search at the specified file
-	 * 
-	 * @param info FileInfo
-	 * @return boolean
-	 */
-	public boolean restartAt(FileInfo info) {
-
-		// Check if the file list is valid
-
-		boolean restartOK = false;
-		m_idx--;
-
-		if (m_list != null) {
-
-			// Step backwards through the file list until we find the required
-			// restart file
-
-			while (m_idx > 0 && restartOK == false) {
-
-				// Check if we found the restart file
-
-				if (m_list[m_idx].compareTo(info.getFileName()) == 0)
-					restartOK = true;
-				else
-					m_idx--;
-			}
-		}
-
-		// Return the restart status
-
-		return restartOK;
-	}
-
-	/**
-	 * Set the wildcard/single file search flag.
-	 * 
-	 * @param single boolean
-	 */
-	protected final void setSingleFileSearch(boolean single) {
-		m_single = single;
-	}
-
-	/**
-	 * Return the total number of file entries for this search if known, else
-	 * return -1
+	 * Return the total number of file entries for this search if known, else return -1
 	 * 
 	 * @return int
 	 */
 	public int numberOfEntries() {
-
-		// return the count of file entries to be returned by this search
-
-		if (isSingleFileSearch())
+		
+		//	return the count of file entries to be returned by this search
+		
+		if ( isSingleFileSearch())
 			return 1;
-		else if (m_list != null)
+		else if ( m_list != null)
 			return m_list.length;
 		else
 			return -1;
 	}
-
-	/**
-	 * Set the share relative path to the search folder
-	 * 
-	 * @param relPath String
-	 */
-	public final void setRelativePath(String relPath) {
-		m_relPath = relPath;
-
-		if (m_relPath != null &&
-			m_relPath.endsWith(FileName.DOS_SEPERATOR_STR) == false)
-			m_relPath = m_relPath + FileName.DOS_SEPERATOR_STR;
-	}
-
+  
+  /**
+   * Set the share relative path to the search folder
+   * 
+   * @param relPath String
+   */
+  public final void setRelativePath(String relPath) {
+    m_relPath = relPath;
+    
+    if ( m_relPath != null && m_relPath.endsWith( FileName.DOS_SEPERATOR_STR) == false)
+      m_relPath = m_relPath + FileName.DOS_SEPERATOR_STR;
+  }
 }

@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -37,9 +37,11 @@ import org.alfresco.jlan.smb.server.CIFSConfigSection;
 import org.alfresco.jlan.smb.server.SMBServer;
 
 /**
- * Win32 NetBIOS LANA Monitor Class <p> Monitors the available NetBIOS LANAs to
- * check for new network interfaces coming online. A session socket handler will
- * be created for new LANAs as they appear.
+ * Win32 NetBIOS LANA Monitor Class
+ * 
+ * <p>
+ * Monitors the available NetBIOS LANAs to check for new network interfaces coming online. A session
+ * socket handler will be created for new LANAs as they appear.
  * 
  * @author gkspencer
  */
@@ -85,8 +87,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 	 * @param wakeup long
 	 * @param debug boolean
 	 */
-	public Win32NetBIOSLanaMonitor(
-		SMBServer server, int[] lanas, long wakeup, boolean debug) {
+	public Win32NetBIOSLanaMonitor(SMBServer server, int[] lanas, long wakeup, boolean debug) {
 
 		// Set the SMB server and wakeup interval
 
@@ -98,7 +99,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 		m_lanas = new BitSet();
 		m_lanaSts = new BitSet();
 
-		if (lanas != null) {
+		if ( lanas != null) {
 
 			// Set the currently available LANAs
 
@@ -110,14 +111,14 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 		int[] curLanas = Win32NetBIOS.LanaEnumerate();
 
-		if (curLanas != null) {
+		if ( curLanas != null) {
 			for (int i = 0; i < curLanas.length; i++)
 				m_lanaSts.set(curLanas[i], true);
 		}
 
 		// Set the global LANA monitor, if not already set
 
-		if (_lanaMonitor == null)
+		if ( _lanaMonitor == null)
 			_lanaMonitor = this;
 
 		// Start the LANA monitor thread
@@ -146,19 +147,19 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 		// Range check the LANA id
 
-		if (lana < 0 || lana > 255)
+		if ( lana < 0 || lana > 255)
 			return;
 
 		// Check if the listener array has been allocated
 
-		if (m_listeners == null) {
+		if ( m_listeners == null) {
 			int len = LanaListenerArraySize;
-			if (lana > len)
+			if ( lana > len)
 				len = (lana + 3) & 0x00FC;
 
 			m_listeners = new LanaListener[len];
 		}
-		else if (lana >= m_listeners.length) {
+		else if ( lana >= m_listeners.length) {
 
 			// Extend the LANA listener array
 
@@ -176,10 +177,8 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 		// DEBUG
 
-		if (Debug.EnableInfo && hasDebug())
-			Debug.println(
-				"[SMB] Win32 NetBIOS register listener for LANA " +
-				lana);
+		if ( Debug.EnableInfo && hasDebug())
+			Debug.println("[SMB] Win32 NetBIOS register listener for LANA " + lana);
 	}
 
 	/**
@@ -191,7 +190,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 		// Validate the LANA id
 
-		if (m_listeners == null || lana < 0 || lana >= m_listeners.length)
+		if ( m_listeners == null || lana < 0 || lana >= m_listeners.length)
 			return;
 
 		m_listeners[lana] = null;
@@ -206,15 +205,12 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 		m_shutdown = false;
 
-		// If Winsock NetBIOS is not enabled then initialize the sockets
-		// interface
+		// If Winsock NetBIOS is not enabled then initialize the sockets interface
 
 		ServerConfiguration config = m_server.getConfiguration();
-		CIFSConfigSection cifsConfig =
-			(CIFSConfigSection) config.getConfigSection(
-				CIFSConfigSection.SectionName);
+		CIFSConfigSection cifsConfig = (CIFSConfigSection) config.getConfigSection(CIFSConfigSection.SectionName);
 
-		if (cifsConfig.useWinsockNetBIOS() == false) {
+		if ( cifsConfig.useWinsockNetBIOS() == false) {
 
 			try {
 				NetBIOSSocket.initializeSockets();
@@ -223,7 +219,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 				// DEBUG
 
-				if (Debug.EnableError && hasDebug()) {
+				if ( Debug.EnableError && hasDebug()) {
 					Debug.println("[SMB] Win32 NetBIOS initialization error");
 					Debug.println(ex);
 				}
@@ -246,7 +242,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 			// Check if the monitor has been closed
 
-			if (m_shutdown == true)
+			if ( m_shutdown == true)
 				continue;
 
 			// Clear the current active LANA bit set
@@ -256,7 +252,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 			// Get the available LANA list
 
 			int[] lanas = Win32NetBIOS.LanaEnumerate();
-			if (lanas != null) {
+			if ( lanas != null) {
 
 				// Check if there are any new LANAs available
 
@@ -269,21 +265,16 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 					int lana = lanas[i];
 					curLanas.set(lana, true);
 
-					if (m_lanas.get(lana) == false) {
+					if ( m_lanas.get(lana) == false) {
 
 						// DEBUG
 
-						if (Debug.EnableInfo && hasDebug())
-							Debug.println(
-								"[SMB] Win32 NetBIOS found new LANA, " +
-								lana);
+						if ( Debug.EnableInfo && hasDebug())
+							Debug.println("[SMB] Win32 NetBIOS found new LANA, " + lana);
 
-						// Create a single Win32 NetBIOS session handler using
-						// the specified LANA
+						// Create a single Win32 NetBIOS session handler using the specified LANA
 
-						sessHandler =
-							new Win32NetBIOSSessionSocketHandler(
-								m_server, lana, hasDebug());
+						sessHandler = new Win32NetBIOSSessionSocketHandler(m_server, lana, hasDebug());
 
 						try {
 							sessHandler.initializeSessionHandler(m_server);
@@ -292,11 +283,8 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 							// DEBUG
 
-							if (Debug.EnableError && hasDebug()) {
-								Debug.println(
-									"[SMB] Win32 NetBIOS failed to create " +
-									"session handler for LANA " +
-									lana);
+							if ( Debug.EnableError && hasDebug()) {
+								Debug.println("[SMB] Win32 NetBIOS failed to create session handler for LANA " + lana);
 								Debug.println(ex);
 							}
 
@@ -305,18 +293,16 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 							sessHandler = null;
 						}
 
-						// If the session handler was initialized successfully
-						// add it to the
+						// If the session handler was initialized successfully add it to the
 						// SMB/CIFS server
 
-						if (sessHandler != null) {
+						if ( sessHandler != null) {
 
 							// Add the session handler to the SMB/CIFS server
 
-							// m_server.addSessionHandler(sessHandler);
+//							m_server.addSessionHandler(sessHandler);
 
-							// Run the NetBIOS session handler in a seperate
-							// thread
+							// Run the NetBIOS session handler in a seperate thread
 
 							Thread nbThread = new Thread(sessHandler);
 							nbThread.setName("Win32NB_Handler_" + lana);
@@ -324,42 +310,30 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 							// DEBUG
 
-							if (Debug.EnableInfo && hasDebug())
-								Debug.println(
-									"[SMB] Win32 NetBIOS created session " +
-									"handler on LANA " +
-									lana);
+							if ( Debug.EnableInfo && hasDebug())
+								Debug.println("[SMB] Win32 NetBIOS created session handler on LANA " + lana);
 
 							// Check if a host announcer should be enabled
 
-							if (cifsConfig.hasWin32EnableAnnouncer()) {
+							if ( cifsConfig.hasWin32EnableAnnouncer()) {
 
 								// Create a host announcer
 
-								Win32NetBIOSHostAnnouncer hostAnnouncer =
-									new Win32NetBIOSHostAnnouncer(
-										sessHandler,
-										cifsConfig.getDomainName(),
-										cifsConfig
-											.getWin32HostAnnounceInterval());
+								Win32NetBIOSHostAnnouncer hostAnnouncer = new Win32NetBIOSHostAnnouncer(sessHandler, cifsConfig
+										.getDomainName(), cifsConfig.getWin32HostAnnounceInterval());
 
-								// Add the host announcer to the SMB/CIFS server
-								// list
+								// Add the host announcer to the SMB/CIFS server list
 
-								// m_server.addHostAnnouncer(hostAnnouncer);
+//								m_server.addHostAnnouncer(hostAnnouncer);
 								hostAnnouncer.start();
 
 								// DEBUG
 
-								if (Debug.EnableInfo && hasDebug())
-									Debug.println(
-										"[SMB] Win32 NetBIOS host announcer " +
-										"enabled on LANA " +
-										lana);
+								if ( Debug.EnableInfo && hasDebug())
+									Debug.println("[SMB] Win32 NetBIOS host announcer enabled on LANA " + lana);
 							}
 
-							// Set the LANA in the available LANA list, and set
-							// the current status
+							// Set the LANA in the available LANA list, and set the current status
 							// to online
 
 							m_lanas.set(lana);
@@ -370,26 +344,21 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 						// Check if the LANA has just come back online
 
-						if (m_lanaSts.get(lana) == false) {
+						if ( m_lanaSts.get(lana) == false) {
 
-							// Change the LANA status to indicate the LANA is
-							// back online
+							// Change the LANA status to indicate the LANA is back online
 
 							m_lanaSts.set(lana, true);
 
 							// Inform the listener that the LANA is back online
 
-							if (m_listeners != null &&
-								lana < m_listeners.length &&
-								m_listeners[lana] != null)
+							if ( m_listeners != null && lana < m_listeners.length && m_listeners[lana] != null)
 								m_listeners[lana].lanaStatusChange(lana, true);
 
 							// DEBUG
 
-							if (Debug.EnableError && hasDebug())
-								Debug.println(
-									"[SMB] Win32 NetBIOS LANA online - " +
-									lana);
+							if ( Debug.EnableError && hasDebug())
+								Debug.println("[SMB] Win32 NetBIOS LANA online - " + lana);
 						}
 					}
 				}
@@ -398,14 +367,12 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 				for (int i = 0; i < m_lanaSts.length(); i++) {
 
-					if (curLanas.get(i) == false && m_lanaSts.get(i) == true) {
+					if ( curLanas.get(i) == false && m_lanaSts.get(i) == true) {
 
 						// DEBUG
 
-						if (Debug.EnableError && hasDebug())
-							Debug.println(
-								"[SMB] Win32 NetBIOS LANA offline - " +
-								i);
+						if ( Debug.EnableError && hasDebug())
+							Debug.println("[SMB] Win32 NetBIOS LANA offline - " + i);
 
 						// Change the LANA status
 
@@ -413,20 +380,18 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 						// Check if there is an associated listener for the LANA
 
-						if (m_listeners != null && m_listeners[i] != null) {
+						if ( m_listeners != null && m_listeners[i] != null) {
 
-							// Notify the LANA listener that the LANA is now
-							// offline
+							// Notify the LANA listener that the LANA is now offline
 
 							m_listeners[i].lanaStatusChange(i, false);
 						}
 					}
 				}
 			}
-			else if (m_lanaSts.length() == 0) {
+			else if ( m_lanaSts.length() == 0) {
 
-				// No network devices, sleep for a while as
-				// waitForNetworkAddressChange() does not
+				// No network devices, sleep for a while as waitForNetworkAddressChange() does not
 				// wait
 				// if there are no network devices
 
@@ -458,7 +423,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 		// If Winsock NetBIOS is being used shutdown the Winsock interface
 
-		if (m_server.getCIFSConfiguration().useWinsockNetBIOS())
+		if ( m_server.getCIFSConfiguration().useWinsockNetBIOS())
 			NetBIOSSocket.shutdownSockets();
 
 		// Interrupt the LANA monitor thread
@@ -467,8 +432,7 @@ public class Win32NetBIOSLanaMonitor extends Thread {
 
 		// Clear the global LANA monitor, if this is the global monitor
 
-		if (this == _lanaMonitor)
+		if ( this == _lanaMonitor)
 			_lanaMonitor = null;
 	}
-
 }

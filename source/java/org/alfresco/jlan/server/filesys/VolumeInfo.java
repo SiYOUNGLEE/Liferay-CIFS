@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -29,29 +29,29 @@ import java.util.Date;
 
 /**
  * Disk Volume Information Class
- * 
+ *
  * @author gkspencer
  */
 public class VolumeInfo {
 
-	// Volume label
-
+	//	Volume label
+	
 	private String m_label;
-
-	// Serial number
-
+	
+	//	Serial number
+	
 	private int m_serno = -1;
-
-	// Creation date/time
-
+	
+	//	Creation date/time
+	
 	private Date m_created;
-
+	
 	/**
 	 * Default constructor
 	 */
 	public VolumeInfo() {
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -60,7 +60,7 @@ public class VolumeInfo {
 	public VolumeInfo(String label) {
 		setVolumeLabel(label);
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -73,7 +73,7 @@ public class VolumeInfo {
 		setSerialNumber(serno);
 		setCreationDateTime(created);
 	}
-
+	
 	/**
 	 * Return the volume label
 	 * 
@@ -82,7 +82,7 @@ public class VolumeInfo {
 	public final String getVolumeLabel() {
 		return m_label;
 	}
-
+	
 	/**
 	 * Determine if the serial number is valid
 	 * 
@@ -91,14 +91,14 @@ public class VolumeInfo {
 	public final boolean hasSerialNumber() {
 		return m_serno != -1 ? true : false;
 	}
-
+	
 	/**
 	 * Return the serial number
 	 * 
 	 * @return int
 	 */
 	public final int getSerialNumber() {
-		return m_serno;
+		return m_serno; 
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class VolumeInfo {
 	public final boolean hasCreationDateTime() {
 		return m_created != null ? true : false;
 	}
-
+		
 	/**
 	 * Return the volume creation date/time
 	 * 
@@ -118,7 +118,7 @@ public class VolumeInfo {
 	public final Date getCreationDateTime() {
 		return m_created;
 	}
-
+	
 	/**
 	 * Set the volume label
 	 * 
@@ -127,7 +127,7 @@ public class VolumeInfo {
 	public final void setVolumeLabel(String label) {
 		m_label = label;
 	}
-
+	
 	/**
 	 * Set the serial number
 	 * 
@@ -136,7 +136,7 @@ public class VolumeInfo {
 	public final void setSerialNumber(int serno) {
 		m_serno = serno;
 	}
-
+	
 	/**
 	 * Set the volume creation date/time
 	 * 
@@ -145,7 +145,7 @@ public class VolumeInfo {
 	public final void setCreationDateTime(Date created) {
 		m_created = created;
 	}
-
+	
 	/**
 	 * Return the volume information as a string
 	 * 
@@ -153,7 +153,7 @@ public class VolumeInfo {
 	 */
 	public String toString() {
 		StringBuffer str = new StringBuffer();
-
+		
 		str.append("[");
 		str.append(getVolumeLabel());
 		str.append(",");
@@ -161,8 +161,7 @@ public class VolumeInfo {
 		str.append(",");
 		str.append(getCreationDateTime());
 		str.append("]");
-
+		
 		return str.toString();
 	}
-
 }

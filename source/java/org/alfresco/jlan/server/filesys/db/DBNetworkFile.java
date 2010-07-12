@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -32,28 +32,27 @@ import org.alfresco.jlan.server.filesys.loader.FileLoader;
 
 /**
  * Database Network File Class
- * 
+ *
  * @author gkspencer
  */
-public abstract class DBNetworkFile extends NetworkFile
-	implements NetworkFileStateInterface {
+public abstract class DBNetworkFile extends NetworkFile implements NetworkFileStateInterface {
 
-	// File state attributes used/set by the database network file
-
-	public final static String DBCacheFile = "DBCacheFile";
-
-	// File state
-
+	//	File state attributes used/set by the database network file
+	
+	public final static String DBCacheFile		= "DBCacheFile";
+	
+	//	File state
+	
 	private FileState m_state;
-
-	// Associated file loader
-
+	
+	//	Associated file loader
+	
 	private FileLoader m_loader;
-
-	// Owner session id
-
+	
+	//	Owner session id
+	
 	private String m_ownerSess;
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -63,14 +62,14 @@ public abstract class DBNetworkFile extends NetworkFile
 	 * @param did int
 	 */
 	public DBNetworkFile(String name, int fid, int stid, int did) {
-		super(fid, stid, did);
+		super(fid,stid,did);
 		setName(name);
+		
+		//	Set the unique file id using the file and directory ids
 
-		// Set the unique file id using the file and directory ids
-
-		setUniqueId(fid, did);
+		setUniqueId(fid,did);		
 	}
-
+	
 	/**
 	 * Class constructor
 	 * 
@@ -80,15 +79,14 @@ public abstract class DBNetworkFile extends NetworkFile
 	 * @param stid int
 	 * @param did int
 	 */
-	public DBNetworkFile(
-		String name, String fullName, int fid, int stid, int did) {
-		super(fid, stid, did);
-		setName(name);
-		setFullName(fullName);
+	public DBNetworkFile(String name, String fullName, int fid, int stid, int did) {
+	  super(fid,stid,did);
+	  setName(name);
+	  setFullName(fullName);
+		
+		//	Set the unique file id using the file and directory ids
 
-		// Set the unique file id using the file and directory ids
-
-		setUniqueId(fid, did);
+		setUniqueId(fid,did);		
 	}
 
 	/**
@@ -97,7 +95,7 @@ public abstract class DBNetworkFile extends NetworkFile
 	 * @return int
 	 */
 	public final int getStatus() {
-		if (m_state != null)
+		if ( m_state != null)
 			return m_state.getStatus();
 		return -1;
 	}
@@ -110,7 +108,7 @@ public abstract class DBNetworkFile extends NetworkFile
 	public final boolean hasFileState() {
 		return m_state != null ? true : false;
 	}
-
+		
 	/**
 	 * Return the associated caching file state
 	 * 
@@ -119,7 +117,7 @@ public abstract class DBNetworkFile extends NetworkFile
 	public final FileState getFileState() {
 		return m_state;
 	}
-
+	
 	/**
 	 * Determine if the network file has an associated file loader
 	 * 
@@ -128,7 +126,7 @@ public abstract class DBNetworkFile extends NetworkFile
 	public final boolean hasLoader() {
 		return m_loader != null ? true : false;
 	}
-
+	
 	/**
 	 * Return the associated file loader
 	 * 
@@ -166,27 +164,27 @@ public abstract class DBNetworkFile extends NetworkFile
 		setName(info.getFileName());
 		setFullName(info.getFullName());
 		setDirectoryId(info.getDirectoryId());
-
+		
 		setFileSize(info.getSize());
 		setAttributes(info.getFileAttributes());
-
-		if (info.getModifyDateTime() != 0L)
+		
+		if ( info.getModifyDateTime() != 0L)
 			setModifyDate(info.getModifyDateTime());
 	}
-
+		
 	/**
 	 * Set the file state
 	 * 
 	 * @param state int
 	 */
 	public final void setStatus(int state) {
-
-		// Set the file state
-
-		if (m_state != null)
+		
+		//	Set the file state
+		
+		if ( m_state != null)
 			m_state.setStatus(state);
 	}
-
+	
 	/**
 	 * Set the owner session unique id
 	 * 
@@ -195,7 +193,7 @@ public abstract class DBNetworkFile extends NetworkFile
 	public final void setOwnerSessionId(String id) {
 		m_ownerSess = id;
 	}
-
+	
 	/**
 	 * Set the associated file state
 	 * 
@@ -204,7 +202,7 @@ public abstract class DBNetworkFile extends NetworkFile
 	public final void setFileState(FileState state) {
 		m_state = state;
 	}
-
+	
 	/**
 	 * Set the associated file loader
 	 * 
@@ -213,5 +211,4 @@ public abstract class DBNetworkFile extends NetworkFile
 	public final void setLoader(FileLoader loader) {
 		m_loader = loader;
 	}
-
 }

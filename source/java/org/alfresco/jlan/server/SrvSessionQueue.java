@@ -1,18 +1,19 @@
 /*
  * Copyright (C) 2005-2008 Alfresco, Inc.
- * 
- * Licensed under the Mozilla Public License version 1.1 with a permitted
- * attribution clause. You may obtain a copy of the License at
- * 
- * http://www.alfresco.org/legal/license.txt
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ *
+ * Licensed under the Mozilla Public License version 1.1 
+ * with a permitted attribution clause. You may obtain a
+ * copy of the License at
+ *
+ *   http://www.alfresco.org/legal/license.txt
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the
+ * License.
  */
-
 package org.alfresco.jlan.server;
 
 import java.util.LinkedList;
@@ -53,7 +54,7 @@ public class SrvSessionQueue {
 
 		// Add the session to the queue
 
-		m_queue.add(sess);
+		m_queue.add( sess);
 
 		// Notify a listener that there is a session to process
 
@@ -79,21 +80,20 @@ public class SrvSessionQueue {
 	}
 
 	/**
-	 * Remove a session from the queue, without waiting if there are no sessions
-	 * in the queue
+	 * Remove a session from the queue, without waiting if there are no sessions in the queue
 	 * 
 	 * @return SrvSession
 	 */
 	public final synchronized SrvSession removeSessionNoWait() {
-
+		
 		SrvSession sess = null;
-
-		if (m_queue.size() > 0)
+		
+		if ( m_queue.size() > 0)
 			sess = m_queue.removeFirst();
-
+			
 		return sess;
 	}
-
+	
 	/**
 	 * Wait for a session to be added to the queue
 	 * 
@@ -121,5 +121,4 @@ public class SrvSessionQueue {
 		while (m_queue.size() != 0)
 			wait();
 	}
-
 }

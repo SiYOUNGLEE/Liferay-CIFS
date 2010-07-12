@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -34,6 +34,7 @@ import org.alfresco.jlan.netbios.NetBIOSNameList;
 import org.alfresco.jlan.netbios.NetBIOSSession;
 import org.alfresco.jlan.netbios.win32.Win32NetBIOS;
 
+
 /**
  * Local Server Class
  * 
@@ -41,121 +42,115 @@ import org.alfresco.jlan.netbios.win32.Win32NetBIOS;
  */
 public class LocalServer {
 
-	// Local server name and domain
+  // Local server name and domain
+  
+  private static String m_localName;
+  private static String m_localDomain;
+  
+  /**
+   * Get the local server name and optionally trim the domain name
+   * 
+   * @param trimDomain boolean
+   * @return String
+   */
+  public static final String getLocalServerName(boolean trimDomain) {
 
-	private static String m_localName;
-	private static String m_localDomain;
+    // Check if the name has already been set
 
-	/**
-	 * Get the local server name and optionally trim the domain name
-	 * 
-	 * @param trimDomain boolean
-	 * @return String
-	 */
-	public static final String getLocalServerName(boolean trimDomain) {
+    if (m_localName != null)
+      return m_localName;
 
-		// Check if the name has already been set
+    // Find the local server name
 
-		if (m_localName != null)
-			return m_localName;
+    String srvName = null;
 
-		// Find the local server name
+    if (Platform.isPlatformType() == Platform.Type.WINDOWS) {
+      
+      // Get the local name via JNI
 
-		String srvName = null;
+      srvName = Win32NetBIOS.GetLocalNetBIOSName();
+    }
+    else {
+      
+      // Get the DNS name of the local system
 
-		if (Platform.isPlatformType() == Platform.Type.WINDOWS) {
+      try {
+        srvName = InetAddress.getLocalHost().getHostName();
+      }
+      catch (UnknownHostException ex) {
+      }
+    }
 
-			// Get the local name via JNI
+    // Strip the domain name
 
-			srvName = Win32NetBIOS.GetLocalNetBIOSName();
-		}
-		else {
+    if (trimDomain && srvName != null) {
+      int pos = srvName.indexOf(".");
+      if (pos != -1)
+        srvName = srvName.substring(0, pos);
+    }
 
-			// Get the DNS name of the local system
+    // Save the local server name
 
-			try {
-				srvName = InetAddress.getLocalHost().getHostName();
-			}
-			catch (UnknownHostException ex) {
-			}
-		}
+    m_localName = srvName;
 
-		// Strip the domain name
+    // Return the local server name
 
-		if (trimDomain && srvName != null) {
-			int pos = srvName.indexOf(".");
-			if (pos != -1)
-				srvName = srvName.substring(0, pos);
-		}
+    return srvName;
+  }
 
-		// Save the local server name
+  /**
+   * Get the local domain/workgroup name
+   * 
+   * @return String
+   */
+  public static final String getLocalDomainName() {
 
-		m_localName = srvName;
+    // Check if the local domain has been set
 
-		// Return the local server name
+    if (m_localDomain != null)
+      return m_localDomain;
 
-		return srvName;
-	}
+    // Find the local domain name
 
-	/**
-	 * Get the local domain/workgroup name
-	 * 
-	 * @return String
-	 */
-	public static final String getLocalDomainName() {
+    String domainName = null;
 
-		// Check if the local domain has been set
+    if (Platform.isPlatformType() == Platform.Type.WINDOWS) {
+      
+      // Get the local domain/workgroup name via JNI
 
-		if (m_localDomain != null)
-			return m_localDomain;
+      domainName = Win32NetBIOS.GetLocalDomainName();
+    }
+    else {
+      
+      NetBIOSName nbName = null;
 
-		// Find the local domain name
+      try {
+        // Try and find the browse master on the local network
 
-		String domainName = null;
+        nbName = NetBIOSSession.FindName(NetBIOSName.BrowseMasterName, NetBIOSName.BrowseMasterGroup, 5000);
 
-		if (Platform.isPlatformType() == Platform.Type.WINDOWS) {
+        // Get the NetBIOS name list from the browse master
 
-			// Get the local domain/workgroup name via JNI
+        NetBIOSNameList nbNameList = NetBIOSSession.FindNamesForAddress(nbName.getIPAddressString(0));
+        if (nbNameList != null) {
+          nbName = nbNameList.findName(NetBIOSName.MasterBrowser, false);
+          
+          // Set the domain/workgroup name
+          
+          if (nbName != null)
+            domainName = nbName.getName();
+        }
+      }
+      catch (IOException ex) {
+      }
+    }
 
-			domainName = Win32NetBIOS.GetLocalDomainName();
-		}
-		else {
+    // Save the local domain name
 
-			NetBIOSName nbName = null;
+    m_localDomain = domainName;
 
-			try {
-				// Try and find the browse master on the local network
+    // Return the local domain/workgroup name
 
-				nbName =
-					NetBIOSSession.FindName(
-						NetBIOSName.BrowseMasterName,
-						NetBIOSName.BrowseMasterGroup, 5000);
-
-				// Get the NetBIOS name list from the browse master
-
-				NetBIOSNameList nbNameList = NetBIOSSession.FindNamesForAddress(
-					nbName.getIPAddressString(0));
-				if (nbNameList != null) {
-					nbName =
-						nbNameList.findName(NetBIOSName.MasterBrowser, false);
-
-					// Set the domain/workgroup name
-
-					if (nbName != null)
-						domainName = nbName.getName();
-				}
-			}
-			catch (IOException ex) {
-			}
-		}
-
-		// Save the local domain name
-
-		m_localDomain = domainName;
-
-		// Return the local domain/workgroup name
-
-		return domainName;
-	}
-
+    return domainName;
+  }
 }

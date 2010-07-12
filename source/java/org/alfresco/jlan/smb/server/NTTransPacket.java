@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -39,9 +39,8 @@ public class NTTransPacket extends SMBSrvPacket {
 	// Define the number of standard parameter words/bytes
 
 	private static final int StandardParams = 19;
-	private static final int ParameterBytes = 36; // 8 x 32bit params + max
-													// setup count byte +
-	// setup count byte + reserved word
+	private static final int ParameterBytes = 36; // 8 x 32bit params + max setup count byte +
+												  // setup count byte + reserved word
 
 	// Standard reply word count
 
@@ -50,14 +49,14 @@ public class NTTransPacket extends SMBSrvPacket {
 	// Offset to start of NT parameters from start of packet
 
 	private static final int NTMaxSetupCount = SMBPacket.PARAMWORDS;
-	private static final int NTParams = SMBPacket.PARAMWORDS + 3;
-	private static final int NTSetupCount = NTParams + 32;
-	private static final int NTFunction = NTSetupCount + 1;
+	private static final int NTParams        = SMBPacket.PARAMWORDS + 3;
+	private static final int NTSetupCount    = NTParams + 32;
+	private static final int NTFunction      = NTSetupCount + 1;
 
 	// Default return parameter/data byte counts
 
 	private static final int DefaultReturnParams = 4;
-	private static final int DefaultReturnData = 1024;
+	private static final int DefaultReturnData   = 1024;
 
 	/**
 	 * Default constructor
@@ -112,7 +111,7 @@ public class NTTransPacket extends SMBSrvPacket {
 		// Get the parameter count and allocate the parameter buffer
 
 		int prmcnt = getParameterBlockCount() / 4; // convert to number of ints
-		if (prmcnt <= 0)
+		if ( prmcnt <= 0)
 			return null;
 		int[] prmblk = new int[prmcnt];
 
@@ -188,8 +187,7 @@ public class NTTransPacket extends SMBSrvPacket {
 	 * @return int
 	 */
 	public final int getParameterBlockOffset() {
-		return getNTParameter(getCommand() == PacketType.NTTransact ? 5 : 3) +
-			RFCNetBIOSProtocol.HEADER_LEN;
+		return getNTParameter(getCommand() == PacketType.NTTransact ? 5 : 3) + RFCNetBIOSProtocol.HEADER_LEN;
 	}
 
 	/**
@@ -216,8 +214,7 @@ public class NTTransPacket extends SMBSrvPacket {
 	 * @return int
 	 */
 	public final int getDataBlockOffset() {
-		return getNTParameter(getCommand() == PacketType.NTTransact ? 7 : 6) +
-			RFCNetBIOSProtocol.HEADER_LEN;
+		return getNTParameter(getCommand() == PacketType.NTTransact ? 7 : 6) + RFCNetBIOSProtocol.HEADER_LEN;
 	}
 
 	/**
@@ -276,12 +273,10 @@ public class NTTransPacket extends SMBSrvPacket {
 	 * @param dlen Data block length @ param setupcnt Setup parameter count
 	 * @return int
 	 */
-	public static final int calculateResponseLength(
-		int plen, int dlen, int setupcnt) {
+	public static final int calculateResponseLength(int plen, int dlen, int setupcnt) {
 
-		// Standard CIFS header + reply parameters + setup parameters +
-		// parameter block length + data block length
-
+		// Standard CIFS header + reply parameters + setup parameters + parameter block length + data block length
+		
 		return HeaderLength + ((ReplyParams + setupcnt) * 2) + plen + dlen;
 	}
 
@@ -295,12 +290,8 @@ public class NTTransPacket extends SMBSrvPacket {
 	 * @param dlen Data block data length
 	 * @param setupcnt Number of setup parameters
 	 */
-	public final void initTransact(
-		int func, byte[] paramblk, int plen, byte[] datablk, int dlen,
-		int setupcnt) {
-		initTransact(
-			func, paramblk, plen, datablk, dlen, setupcnt, DefaultReturnParams,
-			DefaultReturnData);
+	public final void initTransact(int func, byte[] paramblk, int plen, byte[] datablk, int dlen, int setupcnt) {
+		initTransact(func, paramblk, plen, datablk, dlen, setupcnt, DefaultReturnParams, DefaultReturnData);
 	}
 
 	/**
@@ -315,9 +306,8 @@ public class NTTransPacket extends SMBSrvPacket {
 	 * @param maxPrm Maximum parameter bytes to return
 	 * @param maxData Maximum data bytes to return
 	 */
-	public final void initTransact(
-		int func, byte[] paramblk, int plen, byte[] datablk, int dlen,
-		int setupcnt, int maxPrm, int maxData) {
+	public final void initTransact(int func, byte[] paramblk, int plen, byte[] datablk, int dlen, int setupcnt, int maxPrm,
+			int maxData) {
 
 		// Set the SMB command and parameter count
 
@@ -342,7 +332,7 @@ public class NTTransPacket extends SMBSrvPacket {
 
 		// Pack the parameter block
 
-		if (paramblk != null) {
+		if ( paramblk != null) {
 
 			// Set the parameter block offset, from the start of the SMB packet
 
@@ -355,10 +345,9 @@ public class NTTransPacket extends SMBSrvPacket {
 
 		// Pack the data block
 
-		if (datablk != null) {
+		if ( datablk != null) {
 
-			// Align the byte area offset and set the data block offset in the
-			// request
+			// Align the byte area offset and set the data block offset in the request
 
 			alignBytePointer();
 			setDataBlockOffset(getPosition());
@@ -381,8 +370,7 @@ public class NTTransPacket extends SMBSrvPacket {
 	 * @param datablk Data block data bytes
 	 * @param dlen Data block data length
 	 */
-	public final void initTransactReply(
-		byte[] paramblk, int plen, byte[] datablk, int dlen) {
+	public final void initTransactReply(byte[] paramblk, int plen, byte[] datablk, int dlen) {
 
 		// Set the parameter count
 
@@ -408,7 +396,7 @@ public class NTTransPacket extends SMBSrvPacket {
 
 		// Pack the parameter block
 
-		if (paramblk != null) {
+		if ( paramblk != null) {
 
 			// Set the parameter block offset, from the start of the SMB packet
 
@@ -421,10 +409,9 @@ public class NTTransPacket extends SMBSrvPacket {
 
 		// Pack the data block
 
-		if (datablk != null) {
+		if ( datablk != null) {
 
-			// Align the byte area offset and set the data block offset in the
-			// request
+			// Align the byte area offset and set the data block offset in the request
 
 			alignBytePointer();
 			setReplyDataOffset(getPosition() - 4);
@@ -448,8 +435,7 @@ public class NTTransPacket extends SMBSrvPacket {
 	 * @param dlen Data block data length
 	 * @param setupCnt Number of setup parameter
 	 */
-	public final void initTransactReply(
-		byte[] paramblk, int plen, byte[] datablk, int dlen, int setupCnt) {
+	public final void initTransactReply(byte[] paramblk, int plen, byte[] datablk, int dlen, int setupCnt) {
 
 		// Set the parameter count, add the setup parameter count
 
@@ -475,7 +461,7 @@ public class NTTransPacket extends SMBSrvPacket {
 
 		// Pack the parameter block
 
-		if (paramblk != null) {
+		if ( paramblk != null) {
 
 			// Set the parameter block offset, from the start of the SMB packet
 
@@ -488,10 +474,9 @@ public class NTTransPacket extends SMBSrvPacket {
 
 		// Pack the data block
 
-		if (datablk != null) {
+		if ( datablk != null) {
 
-			// Align the byte area offset and set the data block offset in the
-			// request
+			// Align the byte area offset and set the data block offset in the request
 
 			alignBytePointer();
 			setReplyDataOffset(getPosition() - 4);
@@ -685,8 +670,8 @@ public class NTTransPacket extends SMBSrvPacket {
 	}
 
 	/**
-	 * Reset the byte/parameter pointer area for packing/unpacking setup
-	 * paramaters items to the packet
+	 * Reset the byte/parameter pointer area for packing/unpacking setup paramaters items to the
+	 * packet
 	 */
 	public final void resetSetupPointer() {
 		m_pos = NTFunction + 2;
@@ -694,8 +679,7 @@ public class NTTransPacket extends SMBSrvPacket {
 	}
 
 	/**
-	 * Reset the byte/parameter pointer area for packing/unpacking the
-	 * transaction data block
+	 * Reset the byte/parameter pointer area for packing/unpacking the transaction data block
 	 */
 	public final void resetDataBlockPointer() {
 		m_pos = getDataBlockOffset();
@@ -703,12 +687,10 @@ public class NTTransPacket extends SMBSrvPacket {
 	}
 
 	/**
-	 * Reset the byte/parameter pointer area for packing/unpacking the
-	 * transaction paramater block
+	 * Reset the byte/parameter pointer area for packing/unpacking the transaction paramater block
 	 */
 	public final void resetParameterBlockPointer() {
 		m_pos = getParameterBlockOffset();
 		m_endpos = m_pos;
 	}
-
 }

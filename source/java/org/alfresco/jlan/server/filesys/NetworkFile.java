@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -31,9 +31,12 @@ import org.alfresco.jlan.locking.FileLock;
 import org.alfresco.jlan.locking.FileLockList;
 
 /**
- * <p> The network file represents a file or directory on a filesystem. The
- * server keeps track of the open files on a per session basis. <p> This class
- * may be extended as required by your own disk driver class.
+ * <p>
+ * The network file represents a file or directory on a filesystem. The server keeps track of the
+ * open files on a per session basis.
+ * 
+ * <p>
+ * This class may be extended as required by your own disk driver class.
  * 
  * @author gkspencer
  */
@@ -47,10 +50,10 @@ public abstract class NetworkFile {
 
 	// File status flags
 
-	public static final int IOPending = 0x0001;
-	public static final int DeleteOnClose = 0x0002;
-	public static final int DelayedWriteError = 0x0004;
-	public static final int Created = 0x0008;
+	public static final int IOPending     		= 0x0001;
+	public static final int DeleteOnClose 		= 0x0002;
+	public static final int DelayedWriteError 	= 0x0004;
+	public static final int Created             = 0x0008;
 
 	// File identifier and parent directory identifier
 
@@ -96,20 +99,15 @@ public abstract class NetworkFile {
 
 	protected boolean m_closed = true;
 
-	// Count of write requests to the file, used to determine if the file size
-	// may have changed
+	// Count of write requests to the file, used to determine if the file size may have changed
 
 	protected int m_writeCount;
 
-	// List of locks on this file by this session. The lock object will almost
-	// certainly be
-	// referenced elsewhere depending upon the LockManager implementation used.
-	// If locking support is not
-	// enabled for the DiskInterface implementation the lock list will not be
-	// allocated.
+	// List of locks on this file by this session. The lock object will almost certainly be
+	// referenced elsewhere depending upon the LockManager implementation used. If locking support is not
+	// enabled for the DiskInterface implementation the lock list will not be allocated.
 	//
-	// This lock list is used to release locks on the file if the session
-	// abnormally terminates or
+	// This lock list is used to release locks on the file if the session abnormally terminates or
 	// closes the file without releasing all locks.
 
 	private FileLockList m_lockList;
@@ -139,8 +137,7 @@ public abstract class NetworkFile {
 	}
 
 	/**
-	 * Create a network file with the specified file id, stream id and parent
-	 * directory id
+	 * Create a network file with the specified file id, stream id and parent directory id
 	 * 
 	 * @param fid int
 	 * @param stid int
@@ -221,7 +218,7 @@ public abstract class NetworkFile {
 	 * @return java.lang.String
 	 */
 	public final String getFullNameStream() {
-		if (isStream())
+		if ( isStream())
 			return m_fullName + m_streamName;
 		else
 			return m_fullName;
@@ -343,7 +340,7 @@ public abstract class NetworkFile {
 	 * @return boolean
 	 */
 	public final boolean hasLocks() {
-		if (m_lockList != null && m_lockList.numberOfLocks() > 0)
+		if ( m_lockList != null && m_lockList.numberOfLocks() > 0)
 			return true;
 		return false;
 	}
@@ -427,9 +424,9 @@ public abstract class NetworkFile {
 	 * @return boolean
 	 */
 	public final boolean wasCreated() {
-		return (m_flags & Created) != 0 ? true : false;
+		return ( m_flags & Created) != 0 ? true : false;
 	}
-
+	
 	/**
 	 * Determine if the file modification date/time is valid
 	 * 
@@ -625,9 +622,9 @@ public abstract class NetworkFile {
 	 */
 	public final synchronized void setStatusFlag(int flag, boolean sts) {
 		boolean state = (m_flags & flag) != 0;
-		if (sts == true && state == false)
+		if ( sts == true && state == false)
 			m_flags += flag;
-		else if (sts == false && state == true)
+		else if ( sts == false && state == true)
 			m_flags -= flag;
 	}
 
@@ -640,7 +637,7 @@ public abstract class NetworkFile {
 
 		// Check if the lock list has been allocated
 
-		if (m_lockList == null)
+		if ( m_lockList == null)
 			m_lockList = new FileLockList();
 
 		// Add the lock
@@ -657,7 +654,7 @@ public abstract class NetworkFile {
 
 		// Check if the lock list is allocated
 
-		if (m_lockList == null)
+		if ( m_lockList == null)
 			return;
 
 		// Remove the lock
@@ -672,7 +669,7 @@ public abstract class NetworkFile {
 
 		// Check if the lock list is valid
 
-		if (m_lockList != null)
+		if ( m_lockList != null)
 			m_lockList.removeAllLocks();
 	}
 
@@ -685,7 +682,7 @@ public abstract class NetworkFile {
 
 		// Check if the lock list is allocated
 
-		if (m_lockList == null)
+		if ( m_lockList == null)
 			return 0;
 		return m_lockList.numberOfLocks();
 	}
@@ -700,7 +697,7 @@ public abstract class NetworkFile {
 
 		// Check if the lock list is allocated and the index is valid
 
-		if (m_lockList != null)
+		if ( m_lockList != null)
 			return m_lockList.getLockAt(idx);
 
 		// Invalid index or lock list not valid
@@ -822,5 +819,4 @@ public abstract class NetworkFile {
 		throws IOException {
 		closeFile();
 	}
-
 }

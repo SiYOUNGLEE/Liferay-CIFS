@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -40,135 +40,133 @@ import org.alfresco.jlan.util.DataPacker;
 
 /**
  * Notify Change Handler Class
- * 
+ *
  * @author gkspencer
  */
 public class NotifyChangeHandler implements Runnable {
 
-	// Change notification request list and global filter mask
-
+	//	Change notification request list and global filter mask
+	
 	private NotifyRequestList m_notifyList;
 	private int m_globalNotifyMask;
 
-	// Associated disk device context
-
+	//	Associated disk device context
+	
 	private DiskDeviceContext m_diskCtx;
 
-	// Change notification processing thread
-
+	//	Change notification processing thread
+	
 	private Thread m_procThread;
-
-	// Change events queue
-
+	
+	//	Change events queue
+	
 	private NotifyChangeEventList m_eventList;
-
-	// Debug output enable
-
+	
+	//	Debug output enable
+	
 	private boolean m_debug = false;
-
-	// Shutdown request flag
-
+	
+	//	Shutdown request flag
+	
 	private boolean m_shutdown;
-
+			
 	/**
 	 * Class constructor
 	 * 
 	 * @param diskCtx DiskDeviceContext
 	 */
 	public NotifyChangeHandler(DiskDeviceContext diskCtx) {
-
-		// Save the associated disk context details
-
+		
+		//	Save the associated disk context details
+		
 		m_diskCtx = diskCtx;
-
-		// Allocate the events queue
-
+		
+		//	Allocate the events queue
+		
 		m_eventList = new NotifyChangeEventList();
-
-		// Create the processing thread
-
+		
+		//	Create the processing thread
+		
 		m_procThread = new Thread(this);
-
+		
 		m_procThread.setDaemon(true);
 		m_procThread.setName("Notify_" + m_diskCtx.getDeviceName());
-
+		
 		m_procThread.start();
 	}
-
+	
 	/**
 	 * Add a request to the change notification list
 	 * 
 	 * @param req NotifyRequest
 	 */
 	public final void addNotifyRequest(NotifyRequest req) {
-
-		// Check if the request list has been allocated
-
-		if (m_notifyList == null)
+		
+		//	Check if the request list has been allocated
+		
+		if ( m_notifyList == null)
 			m_notifyList = new NotifyRequestList();
-
-		// Add the request to the list
+			
+		//	Add the request to the list
 
 		req.setDiskContext(m_diskCtx);
 		m_notifyList.addRequest(req);
-
-		// Regenerate the global notify change filter mask
-
+		
+		//	Regenerate the global notify change filter mask
+		
 		m_globalNotifyMask = m_notifyList.getGlobalFilter();
 	}
-
+	
 	/**
 	 * Remove a request from the notify change request list
 	 * 
 	 * @param req NotifyRequest
 	 */
 	public final void removeNotifyRequest(NotifyRequest req) {
-		removeNotifyRequest(req, true);
+	  removeNotifyRequest(req, true);
 	}
-
+	
 	/**
 	 * Remove a request from the notify change request list
 	 * 
 	 * @param req NotifyRequest
 	 * @param updateMask boolean
 	 */
-	public final void removeNotifyRequest(
-		NotifyRequest req, boolean updateMask) {
+	public final void removeNotifyRequest(NotifyRequest req, boolean updateMask) {
 
-		// Check if the request list has been allocated
-
-		if (m_notifyList == null)
+		//	Check if the request list has been allocated
+		
+		if ( m_notifyList == null)
 			return;
-
-		// Remove the request from the list
-
+			
+		//	Remove the request from the list
+		
 		m_notifyList.removeRequest(req);
+		
+		//	Regenerate the global notify change filter mask
 
-		// Regenerate the global notify change filter mask
-
-		if (updateMask == true)
-			m_globalNotifyMask = m_notifyList.getGlobalFilter();
+		if ( updateMask == true)
+		  m_globalNotifyMask = m_notifyList.getGlobalFilter();
 	}
-
+	
 	/**
 	 * Remove all notification requests owned by the specified session
 	 * 
 	 * @param sess SMBSrvSession
 	 */
 	public final void removeNotifyRequests(SMBSrvSession sess) {
-
-		// Remove all requests owned by the session
-
-		m_notifyList.removeAllRequestsForSession(sess);
-
-		// Recalculate the global notify change filter mask
-
-		m_globalNotifyMask = m_notifyList.getGlobalFilter();
+	  
+	  //	Remove all requests owned by the session
+	  
+	  m_notifyList.removeAllRequestsForSession(sess);
+	  
+	  //	Recalculate the global notify change filter mask
+	  
+	  m_globalNotifyMask = m_notifyList.getGlobalFilter();
 	}
-
+	
 	/**
-	 * Determine if the filter has file name change notification, triggered if a
-	 * file is created, renamed or deleted
+	 * Determine if the filter has file name change notification, triggered if a file is created, renamed or deleted
 	 * 
 	 * @return boolean
 	 */
@@ -177,24 +175,23 @@ public class NotifyChangeHandler implements Runnable {
 	}
 
 	/**
-	 * Determine if the filter has directory name change notification, triggered
-	 * if a directory is created or deleted.
+	 * Determine if the filter has directory name change notification, triggered if a directory is created or deleted.
 	 * 
 	 * @return boolean
 	 */
 	public final boolean hasDirectoryNameChange() {
 		return hasFilterFlag(NotifyChange.DirectoryName);
 	}
-
+	
 	/**
 	 * Determine if the filter has attribute change notification
 	 * 
-	 * @return boolean
+	 * @return boolean 
 	 */
 	public final boolean hasAttributeChange() {
 		return hasFilterFlag(NotifyChange.Attributes);
 	}
-
+	
 	/**
 	 * Determine if the filter has file size change notification
 	 * 
@@ -203,7 +200,7 @@ public class NotifyChangeHandler implements Runnable {
 	public final boolean hasFileSizeChange() {
 		return hasFilterFlag(NotifyChange.Size);
 	}
-
+	
 	/**
 	 * Determine if the filter has last write time change notification
 	 * 
@@ -212,7 +209,7 @@ public class NotifyChangeHandler implements Runnable {
 	public final boolean hasFileWriteTimeChange() {
 		return hasFilterFlag(NotifyChange.LastWrite);
 	}
-
+	
 	/**
 	 * Determine if the filter has last access time change notification
 	 * 
@@ -221,7 +218,7 @@ public class NotifyChangeHandler implements Runnable {
 	public final boolean hasFileAccessTimeChange() {
 		return hasFilterFlag(NotifyChange.LastAccess);
 	}
-
+	
 	/**
 	 * Determine if the filter has creation time change notification
 	 * 
@@ -230,7 +227,7 @@ public class NotifyChangeHandler implements Runnable {
 	public final boolean hasFileCreateTimeChange() {
 		return hasFilterFlag(NotifyChange.Creation);
 	}
-
+	
 	/**
 	 * Determine if the filter has the security descriptor change notification
 	 * 
@@ -244,11 +241,11 @@ public class NotifyChangeHandler implements Runnable {
 	 * Check if debug output is enabled
 	 * 
 	 * @return boolean
-	 */
+	 */	
 	public final boolean hasDebug() {
 		return m_debug;
 	}
-
+	
 	/**
 	 * Return the global notify filter mask
 	 * 
@@ -262,11 +259,11 @@ public class NotifyChangeHandler implements Runnable {
 	 * Return the notify request queue size
 	 * 
 	 * @return int
-	 */
+	 */	
 	public final int getRequestQueueSize() {
 		return m_notifyList != null ? m_notifyList.numberOfRequests() : 0;
 	}
-
+	
 	/**
 	 * Check if the change filter has the specified flag enabled
 	 * 
@@ -274,9 +271,9 @@ public class NotifyChangeHandler implements Runnable {
 	 * @return boolean
 	 */
 	private final boolean hasFilterFlag(int flag) {
-		return (m_globalNotifyMask & flag) != 0 ? true : false;
+		return ( m_globalNotifyMask & flag) != 0 ? true : false;
 	}
-
+	
 	/**
 	 * File changed notification
 	 * 
@@ -284,18 +281,17 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param path String
 	 */
 	public final void notifyFileChanged(int action, String path) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 || hasFileNameChange() == false)
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasFileNameChange() == false)
 			return;
 
-		// Queue the change notification
+		//	Queue the change notification
 
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.FileName, action, path, false));
+		queueNotification(new NotifyChangeEvent(NotifyChange.FileName, action, path, false));		
 	}
-
+	
 	/**
 	 * File/directory renamed notification
 	 * 
@@ -303,20 +299,17 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param newName String
 	 */
 	public final void notifyRename(String oldName, String newName) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 ||
-			(hasFileNameChange() == false && hasDirectoryNameChange() == false))
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || (hasFileNameChange() == false && hasDirectoryNameChange() == false))
 			return;
 
-		// Queue the change notification event
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.FileName, NotifyChange.ActionRenamedNewName, oldName,
-			newName, false));
+		//	Queue the change notification event
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.FileName, NotifyChange.ActionRenamedNewName, oldName, newName, false));
 	}
-
+	
 	/**
 	 * Directory changed notification
 	 * 
@@ -324,18 +317,17 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param path String
 	 */
 	public final void notifyDirectoryChanged(int action, String path) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 || hasDirectoryNameChange() == false)
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasDirectoryNameChange() == false)
 			return;
 
-		// Queue the change notification event
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.DirectoryName, action, path, true));
+		//	Queue the change notification event
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.DirectoryName, action, path, true));		
 	}
-
+	
 	/**
 	 * Attributes changed notification
 	 * 
@@ -343,36 +335,34 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param isdir boolean
 	 */
 	public final void notifyAttributesChanged(String path, boolean isdir) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 || hasAttributeChange() == false)
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasAttributeChange() == false)
 			return;
 
-		// Queue the change notification event
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.Attributes, NotifyChange.ActionModified, path, isdir));
+		//	Queue the change notification event
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.Attributes, NotifyChange.ActionModified, path, isdir));		
 	}
-
+	
 	/**
 	 * File size changed notification
 	 * 
 	 * @param path String
 	 */
 	public final void notifyFileSizeChanged(String path) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 || hasFileSizeChange() == false)
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasFileSizeChange() == false)
 			return;
 
-		// Send the change notification
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.Size, NotifyChange.ActionModified, path, false));
+		//	Send the change notification
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.Size, NotifyChange.ActionModified, path, false));		
 	}
-
+	
 	/**
 	 * Last write time changed notification
 	 * 
@@ -380,18 +370,17 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param isdir boolean
 	 */
 	public final void notifyLastWriteTimeChanged(String path, boolean isdir) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 || hasFileWriteTimeChange() == false)
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasFileWriteTimeChange() == false)
 			return;
 
-		// Send the change notification
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.LastWrite, NotifyChange.ActionModified, path, isdir));
+		//	Send the change notification
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.LastWrite, NotifyChange.ActionModified, path, isdir));		
 	}
-
+	
 	/**
 	 * Last access time changed notification
 	 * 
@@ -399,18 +388,17 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param isdir boolean
 	 */
 	public final void notifyLastAccessTimeChanged(String path, boolean isdir) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 || hasFileAccessTimeChange() == false)
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasFileAccessTimeChange() == false)
 			return;
 
-		// Send the change notification
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.LastAccess, NotifyChange.ActionModified, path, isdir));
+		//	Send the change notification
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.LastAccess, NotifyChange.ActionModified, path, isdir));		
 	}
-
+	
 	/**
 	 * Creation time changed notification
 	 * 
@@ -418,37 +406,33 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param isdir boolean
 	 */
 	public final void notifyCreationTimeChanged(String path, boolean isdir) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 || hasFileCreateTimeChange() == false)
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasFileCreateTimeChange() == false)
 			return;
 
-		// Send the change notification
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.Creation, NotifyChange.ActionModified, path, isdir));
+		//	Send the change notification
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.Creation, NotifyChange.ActionModified, path, isdir));		
 	}
-
+	
 	/**
 	 * Security descriptor changed notification
 	 * 
 	 * @param path String
 	 * @param isdir boolean
 	 */
-	public final void notifySecurityDescriptorChanged(
-		String path, boolean isdir) {
-
-		// Check if file change notifications are enabled
-
-		if (getGlobalNotifyMask() == 0 ||
-			hasSecurityDescriptorChange() == false)
+	public final void notifySecurityDescriptorChanged(String path, boolean isdir) {
+		
+		//	Check if file change notifications are enabled
+		
+		if ( getGlobalNotifyMask() == 0 || hasSecurityDescriptorChange() == false)
 			return;
 
-		// Send the change notification
-
-		queueNotification(new NotifyChangeEvent(
-			NotifyChange.Security, NotifyChange.ActionModified, path, isdir));
+		//	Send the change notification
+		
+		queueNotification(new NotifyChangeEvent(NotifyChange.Security, NotifyChange.ActionModified, path, isdir));		
 	}
 
 	/**
@@ -464,477 +448,419 @@ public class NotifyChangeHandler implements Runnable {
 	 * Shutdown the change notification processing thread
 	 */
 	public final void shutdownRequest() {
-
-		// Check if the processing thread is valid
-
-		if (m_procThread != null) {
-
-			// Set the shutdown flag
-
+		
+		//	Check if the processing thread is valid
+		
+		if ( m_procThread != null) {	
+			
+			//	Set the shutdown flag
+			
 			m_shutdown = true;
-
-			// Wakeup the processing thread
-
-			m_procThread.interrupt();
+			
+			//	Wakeup the processing thread
+			
+      m_procThread.interrupt();
 		}
 	}
-
+	
 	/**
 	 * Send buffered change notifications for a session
-	 * 
+	 *  
 	 * @param req NotifyRequest
 	 * @param evtList NotifyChangeEventList
 	 */
-	public final void sendBufferedNotifications(
-		NotifyRequest req, NotifyChangeEventList evtList) {
+	public final void sendBufferedNotifications(NotifyRequest req, NotifyChangeEventList evtList) {
 
-		// DEBUG
+		//	DEBUG
 
-		if (Debug.EnableInfo && hasDebug())
-			Debug.println("Send buffered notifications, req=" + req +
-				", evtList=" +
-				(evtList != null ? "" + evtList.numberOfEvents() : "null"));
+		if ( Debug.EnableInfo && hasDebug())
+		  Debug.println("Send buffered notifications, req=" + req + ", evtList=" + ( evtList != null ? "" + evtList.numberOfEvents() : "null"));
+		
+	  //	Initialize the notification request timeout
+		
+		long tmo = System.currentTimeMillis() + NotifyRequest.DefaultRequestTimeout;
 
-		// Initialize the notification request timeout
-
-		long tmo =
-			System.currentTimeMillis() + NotifyRequest.DefaultRequestTimeout;
-
-		// Allocate the NT transaction packet to send the asynchronous
-		// notification
-
+		//	Allocate the NT transaction packet to send the asynchronous notification
+		
 		NTTransPacket ntpkt = new NTTransPacket();
 
-		// Build the change notification response SMB
-
+		//	Build the change notification response SMB
+			
 		ntpkt.setParameterCount(18);
 		ntpkt.resetBytePointerAlign();
-
+			
 		int pos = ntpkt.getPosition();
-		ntpkt.setNTParameter(1, 0); // total data count
-		ntpkt.setNTParameter(3, pos - 4); // offset to parameter block
+		ntpkt.setNTParameter(1, 0);					//	total data count
+		ntpkt.setNTParameter(3, pos - 4);		//	offset to parameter block
 
-		// Check if the notify enum status is set
-
-		if (req.hasNotifyEnum()) {
-
-			// Set the parameter block length
-
-			ntpkt.setNTParameter(0, 0); // total parameter block count
-			ntpkt.setNTParameter(2, 0); // parameter block count for this packet
-			ntpkt.setNTParameter(6, pos - 4); // data block offset
+		//	Check if the notify enum status is set
+		
+		if ( req.hasNotifyEnum()) {
+		  
+			//	Set the parameter block length
+			
+			ntpkt.setNTParameter(0, 0);				//	total parameter block count
+			ntpkt.setNTParameter(2, 0);				//	parameter block count for this packet
+			ntpkt.setNTParameter(6, pos - 4);	//	data block offset
 			ntpkt.setByteCount();
 
 			ntpkt.setCommand(PacketType.NTTransact);
-			ntpkt.setLongErrorCode(SMBStatus.NTNotifyEnumDir);
-
-			ntpkt.setFlags(SMBSrvPacket.FLG_CANONICAL +
-				SMBSrvPacket.FLG_CASELESS);
-			ntpkt.setFlags2(SMBSrvPacket.FLG2_UNICODE +
-				SMBSrvPacket.FLG2_LONGERRORCODE);
-
-			// Set the notification request id to indicate that it has completed
-
+      ntpkt.setLongErrorCode(SMBStatus.NTNotifyEnumDir);
+			
+			ntpkt.setFlags(SMBSrvPacket.FLG_CANONICAL + SMBSrvPacket.FLG_CASELESS);
+			ntpkt.setFlags2(SMBSrvPacket.FLG2_UNICODE + SMBSrvPacket.FLG2_LONGERRORCODE);
+			
+			//	Set the notification request id to indicate that it has completed
+				
 			req.setCompleted(true, tmo);
-			req.setNotifyEnum(false);
-
-			// Set the response for the current notify request
-
+			req.setNotifyEnum( false);
+				
+			//	Set the response for the current notify request
+				
 			ntpkt.setMultiplexId(req.getMultiplexId());
 			ntpkt.setTreeId(req.getTreeId());
 			ntpkt.setUserId(req.getUserId());
 			ntpkt.setProcessId(req.getProcessId());
-
-			try {
-
-				// Send the response to the current session
-
-				if (req.getSession().sendAsynchResponseSMB(
-					ntpkt, ntpkt.getLength()) == false) {
-
-					// Asynchronous request was queued, clone the request packet
-
+	
+			try {			
+	
+				//	Send the response to the current session
+	
+				if ( req.getSession().sendAsynchResponseSMB(ntpkt, ntpkt.getLength()) == false) {
+						
+					//	Asynchronous request was queued, clone the request packet
+						
 					ntpkt = new NTTransPacket(ntpkt);
 				}
 			}
 			catch (Exception ex) {
 
-				// DEBUG
-
-				if (Debug.EnableError && hasDebug())
-					Debug.println("Failed to send change notification, " +
-						ex.getMessage());
+        //  DEBUG
+        
+        if ( Debug.EnableError && hasDebug())
+          Debug.println("Failed to send change notification, " + ex.getMessage());
 			}
 		}
-		else if (evtList != null) {
-
-			// Pack the change notification events
-
-			for (int i = 0; i < evtList.numberOfEvents(); i++) {
-
-				// Get the current event from the list
-
-				NotifyChangeEvent evt = evtList.getEventAt(i);
-
-				// Get the relative file name for the event
-
-				String relName =
-					FileName.makeRelativePath(
-						req.getWatchPath(), evt.getFileName());
-				if (relName == null)
-					relName = evt.getShortFileName();
-
-				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("  Notify evtPath=" + evt.getFileName() +
-						", reqPath=" + req.getWatchPath() + ", relative=" +
-						relName);
-
-				// Pack the notification structure
-
-				ntpkt.packInt(0); // offset to next structure
-				ntpkt.packInt(evt.getAction()); // action
-				ntpkt.packInt(relName.length() * 2); // file name length
+		else if ( evtList != null) {
+		  
+			//	Pack the change notification events
+			
+			for ( int i = 0; i < evtList.numberOfEvents(); i++) {
+			  
+			  //	Get the current event from the list
+			  
+			  NotifyChangeEvent evt = evtList.getEventAt(i);
+			  
+				//	Get the relative file name for the event
+				
+				String relName = FileName.makeRelativePath(req.getWatchPath(), evt.getFileName());
+				if ( relName == null)
+				  relName = evt.getShortFileName();
+				
+				//	DEBUG
+	
+				if ( Debug.EnableInfo && hasDebug())
+				  Debug.println("  Notify evtPath=" + evt.getFileName()  + ", reqPath=" + req.getWatchPath() + ", relative=" + relName);
+				
+				//	Pack the notification structure
+				
+				ntpkt.packInt(0);																//	offset to next structure
+				ntpkt.packInt(evt.getAction());									//	action
+				ntpkt.packInt(relName.length() * 2);						//	file name length
 				ntpkt.packString(relName, true, false);
-
-				// Check if the event is a file/directory rename, if so then add
-				// the old file/directory details
-
-				if (evt.getAction() == NotifyChange.ActionRenamedNewName &&
-					evt.hasOldFileName()) {
-
-					// Set the offset from the first structure to this structure
-
+				
+				//	Check if the event is a file/directory rename, if so then add the old file/directory details
+				
+				if ( evt.getAction() == NotifyChange.ActionRenamedNewName &&
+						 evt.hasOldFileName()) {
+	
+					//	Set the offset from the first structure to this structure
+					
 					int newPos = DataPacker.longwordAlign(ntpkt.getPosition());
-					DataPacker.putIntelInt(
-						newPos - pos, ntpkt.getBuffer(), pos);
-
-					// Get the old file name
-
-					relName =
-						FileName.makeRelativePath(
-							req.getWatchPath(), evt.getOldFileName());
-					if (relName == null)
-						relName = evt.getOldFileName();
-
-					// Add the old file/directory name details
-
-					ntpkt.packInt(0); // offset to next structure
+					DataPacker.putIntelInt(newPos - pos, ntpkt.getBuffer(), pos);
+	
+					//	Get the old file name
+					
+					relName = FileName.makeRelativePath(req.getWatchPath(), evt.getOldFileName());
+					if ( relName == null)
+					  relName = evt.getOldFileName();
+					
+					//	Add the old file/directory name details
+	
+					ntpkt.packInt(0);																//	offset to next structure
 					ntpkt.packInt(NotifyChange.ActionRenamedOldName);
-					ntpkt.packInt(relName.length() * 2); // file name length
+					ntpkt.packInt(relName.length() * 2);						//	file name length
 					ntpkt.packString(relName, true, false);
 				}
-
-				// Calculate the parameter block length, longword align the
-				// buffer position
-
+				
+				//	Calculate the parameter block length, longword align the buffer position
+				
 				int prmLen = ntpkt.getPosition() - pos;
 				ntpkt.alignBytePointer();
 				pos = (pos + 3) & 0xFFFFFFFC;
-
-				// Set the parameter block length
-
-				ntpkt.setNTParameter(0, prmLen); // total parameter block count
-				ntpkt.setNTParameter(2, prmLen); // parameter block count for
-													// this packet
+				
+				//	Set the parameter block length
+				
+				ntpkt.setNTParameter(0, prmLen);		//	total parameter block count
+				ntpkt.setNTParameter(2, prmLen);		//	parameter block count for this packet
 				ntpkt.setNTParameter(6, ntpkt.getPosition() - 4);
-				// data block offset
+																						//	data block offset
 				ntpkt.setByteCount();
-
+	
 				ntpkt.setCommand(PacketType.NTTransact);
-
-				ntpkt.setFlags(SMBSrvPacket.FLG_CANONICAL +
-					SMBSrvPacket.FLG_CASELESS);
-				ntpkt.setFlags2(SMBSrvPacket.FLG2_UNICODE +
-					SMBSrvPacket.FLG2_LONGERRORCODE);
-
-				// Set the notification request id to indicate that it has
-				// completed
-
+				
+				ntpkt.setFlags(SMBSrvPacket.FLG_CANONICAL + SMBSrvPacket.FLG_CASELESS);
+				ntpkt.setFlags2(SMBSrvPacket.FLG2_UNICODE + SMBSrvPacket.FLG2_LONGERRORCODE);
+				
+				//	Set the notification request id to indicate that it has completed
+					
 				req.setCompleted(true, tmo);
-
-				// Set the response for the current notify request
-
+					
+				//	Set the response for the current notify request
+					
 				ntpkt.setMultiplexId(req.getMultiplexId());
 				ntpkt.setTreeId(req.getTreeId());
 				ntpkt.setUserId(req.getUserId());
 				ntpkt.setProcessId(req.getProcessId());
-
-				try {
-
-					// Send the response to the current session
-
-					if (req.getSession().sendAsynchResponseSMB(
-						ntpkt, ntpkt.getLength()) == false) {
-
-						// Asynchronous request was queued, clone the request
-						// packet
-
+		
+				try {			
+		
+					//	Send the response to the current session
+		
+					if ( req.getSession().sendAsynchResponseSMB(ntpkt, ntpkt.getLength()) == false) {
+							
+						//	Asynchronous request was queued, clone the request packet
+							
 						ntpkt = new NTTransPacket(ntpkt);
 					}
 				}
 				catch (Exception ex) {
 
-					// DEBUG
-
-					if (Debug.EnableError && hasDebug())
-						Debug.println("Failed to send change notification, " +
-							ex.getMessage());
+          //  DEBUG
+          
+          if ( Debug.EnableError && hasDebug())
+            Debug.println("Failed to send change notification, " + ex.getMessage());
 				}
 			}
 		}
-
-		// DEBUG
-
-		if (Debug.EnableInfo && hasDebug())
+		
+		//	DEBUG
+		
+		if ( Debug.EnableInfo && hasDebug())
 			Debug.println("sendBufferedNotifications() done");
 	}
-
+	
 	/**
 	 * Queue a change notification event for processing
 	 * 
 	 * @param evt NotifyChangeEvent
 	 */
 	protected final void queueNotification(NotifyChangeEvent evt) {
-
-		// DEBUG
-
-		if (Debug.EnableInfo && hasDebug())
+		
+		//	DEBUG
+		
+		if ( Debug.EnableInfo && hasDebug())
 			Debug.println("Queue notification event=" + evt.toString());
-
-		// Queue the notification event to the main notification handler thread
-
-		synchronized (m_eventList) {
-
-			// Add the event to the list
-
+		
+		//	Queue the notification event to the main notification handler thread
+		
+		synchronized ( m_eventList) {
+			
+			//	Add the event to the list
+			
 			m_eventList.addEvent(evt);
-
-			// Notify the processing thread that there are events to process
-
-			m_eventList.notifyAll();
+			
+			//	Notify the processing thread that there are events to process
+			
+			m_eventList.notifyAll();	
 		}
 	}
 
 	/**
-	 * Send change notifications to sessions with notification enabled that
-	 * match the change event.
+	 * Send change notifications to sessions with notification enabled that match the change event.
 	 * 
 	 * @param evt NotifyChangeEvent
 	 * @return int
 	 */
 	protected final int sendChangeNotification(NotifyChangeEvent evt) {
 
-		// DEBUG
-
-		if (Debug.EnableInfo && hasDebug())
+		//	DEBUG
+		
+		if ( Debug.EnableInfo && hasDebug())
 			Debug.println("sendChangeNotification event=" + evt);
-
-		// Get a list of notification requests that match the type/path
-
-		Vector reqList =
-			findMatchingRequests(
-				evt.getFilter(), evt.getFileName(), evt.isDirectory());
-		if (reqList == null || reqList.size() == 0)
+			
+		//	Get a list of notification requests that match the type/path
+		
+		Vector reqList = findMatchingRequests(evt.getFilter(),evt.getFileName(),evt.isDirectory());
+		if ( reqList == null || reqList.size() == 0)
 			return 0;
 
-		// DEBUG
+		//	DEBUG
+		
+		if ( Debug.EnableInfo && hasDebug())
+			Debug.println("  Found " + reqList.size() + " matching change listeners");
+			
+		//	Initialize the notification request timeout
+		
+		long tmo = System.currentTimeMillis() + NotifyRequest.DefaultRequestTimeout;
 
-		if (Debug.EnableInfo && hasDebug())
-			Debug.println("  Found " + reqList.size() +
-				" matching change listeners");
-
-		// Initialize the notification request timeout
-
-		long tmo =
-			System.currentTimeMillis() + NotifyRequest.DefaultRequestTimeout;
-
-		// Allocate the NT transaction packet to send the asynchronous
-		// notification
-
+		//	Allocate the NT transaction packet to send the asynchronous notification
+		
 		NTTransPacket ntpkt = new NTTransPacket();
 
-		// Send the notify response to each client in the list
-
-		for (int i = 0; i < reqList.size(); i++) {
-
-			// Get the current request
-
+		//	Send the notify response to each client in the list
+		
+		for ( int i = 0; i < reqList.size(); i++) {
+			
+			//	Get the current request
+			
 			NotifyRequest req = (NotifyRequest) reqList.elementAt(i);
 
-			// Build the change notification response SMB
-
+			//	Build the change notification response SMB
+			
 			ntpkt.setParameterCount(18);
 			ntpkt.resetBytePointerAlign();
-
+			
 			int pos = ntpkt.getPosition();
-			ntpkt.setNTParameter(1, 0); // total data count
-			ntpkt.setNTParameter(3, pos - 4); // offset to parameter block
+			ntpkt.setNTParameter(1, 0);				//	total data count
+			ntpkt.setNTParameter(3, pos - 4);		//	offset to parameter block
 
-			// Get the path for the event
-
+			//	Get the path for the event
+			
 			String relName = evt.getFileName();
-			if (relName == null)
-				relName = evt.getShortFileName();
+			if ( relName == null)
+			  relName = evt.getShortFileName();
+			
+			//	DEBUG
 
-			// DEBUG
-
-			if (Debug.EnableInfo && hasDebug())
-				Debug.println("  Notify evtPath=" + evt.getFileName() +
-					", MID=" + req.getMultiplexId() + ", reqPath=" +
-					req.getWatchPath() + ", relative=" + relName);
-
-			// Pack the notification structure
-
-			ntpkt.packInt(0); // offset to next structure
-			ntpkt.packInt(evt.getAction()); // action
-			ntpkt.packInt(relName.length() * 2); // file name length
+			if ( Debug.EnableInfo && hasDebug())
+			  Debug.println("  Notify evtPath=" + evt.getFileName() + ", MID=" + req.getMultiplexId() + ", reqPath=" + req.getWatchPath() + ", relative=" + relName);
+			
+			//	Pack the notification structure
+			
+			ntpkt.packInt(0);						//	offset to next structure
+			ntpkt.packInt(evt.getAction());			//	action
+			ntpkt.packInt(relName.length() * 2);	//	file name length
 			ntpkt.packString(relName, true, false);
+			
+			//	Check if the event is a file/directory rename, if so then add the old file/directory details
+			
+			if ( evt.getAction() == NotifyChange.ActionRenamedNewName &&
+					 evt.hasOldFileName()) {
 
-			// Check if the event is a file/directory rename, if so then add the
-			// old file/directory details
-
-			if (evt.getAction() == NotifyChange.ActionRenamedNewName &&
-				evt.hasOldFileName()) {
-
-				// Set the offset from the first structure to this structure
-
+				//	Set the offset from the first structure to this structure
+				
 				int newPos = DataPacker.longwordAlign(ntpkt.getPosition());
 				DataPacker.putIntelInt(newPos - pos, ntpkt.getBuffer(), pos);
 
-				// Get the old file name
+				//	Get the old file name
+				
+				relName = FileName.makeRelativePath(req.getWatchPath(), evt.getOldFileName());
+				if ( relName == null)
+				  relName = evt.getOldFileName();
+				
+				//	Add the old file/directory name details
 
-				relName =
-					FileName.makeRelativePath(
-						req.getWatchPath(), evt.getOldFileName());
-				if (relName == null)
-					relName = evt.getOldFileName();
-
-				// Add the old file/directory name details
-
-				ntpkt.packInt(0); // offset to next structure
+				ntpkt.packInt(0);									//	offset to next structure
 				ntpkt.packInt(NotifyChange.ActionRenamedOldName);
-				ntpkt.packInt(relName.length() * 2); // file name length
+				ntpkt.packInt(relName.length() * 2);				//	file name length
 				ntpkt.packString(relName, true, false);
 			}
-
-			// Calculate the parameter block length, longword align the buffer
-			// position
-
+			
+			//	Calculate the parameter block length, longword align the buffer position
+			
 			int prmLen = ntpkt.getPosition() - pos;
 			ntpkt.alignBytePointer();
 			pos = (pos + 3) & 0xFFFFFFFC;
-
-			// Set the parameter block length
-
-			ntpkt.setNTParameter(0, prmLen); // total parameter block count
-			ntpkt.setNTParameter(2, prmLen); // parameter block count for this
-											 // packet
+			
+			//	Set the parameter block length
+			
+			ntpkt.setNTParameter(0, prmLen);		//	total parameter block count
+			ntpkt.setNTParameter(2, prmLen);		//	parameter block count for this packet
 			ntpkt.setNTParameter(6, ntpkt.getPosition() - 4);
-			// data block offset
+													//	data block offset
 			ntpkt.setByteCount();
 			int bytCnt = ntpkt.getByteCount();
 
 			ntpkt.setCommand(PacketType.NTTransact);
 			ntpkt.setLongErrorCode(0);
+			
+			ntpkt.setFlags(SMBSrvPacket.FLG_CANONICAL + SMBSrvPacket.FLG_CASELESS);
+			ntpkt.setFlags2(SMBSrvPacket.FLG2_UNICODE + SMBSrvPacket.FLG2_LONGERRORCODE);
+			
+			//	Check if the request is already complete
+			
+			if ( req.isCompleted() == false) {			
 
-			ntpkt.setFlags(SMBSrvPacket.FLG_CANONICAL +
-				SMBSrvPacket.FLG_CASELESS);
-			ntpkt.setFlags2(SMBSrvPacket.FLG2_UNICODE +
-				SMBSrvPacket.FLG2_LONGERRORCODE);
-
-			// Check if the request is already complete
-
-			if (req.isCompleted() == false) {
-
-				// Set the notification request id to indicate that it has
-				// completed
-
+				//	Set the notification request id to indicate that it has completed
+				
 				req.setCompleted(true, tmo);
-
-				// Set the response for the current notify request
-
+				
+				//	Set the response for the current notify request
+				
 				ntpkt.setMultiplexId(req.getMultiplexId());
 				ntpkt.setTreeId(req.getTreeId());
 				ntpkt.setUserId(req.getUserId());
 				ntpkt.setProcessId(req.getProcessId());
-
-				// DEBUG
-
-				// ntpkt.DumpPacket();
-
-				try {
-
-					// Send the response to the current session
-
-					if (req.getSession().sendAsynchResponseSMB(
-						ntpkt, ntpkt.getLength()) == false) {
-
-						// Asynchronous request was queued, clone the request
-						// packet
-
+	
+				//	DEBUG
+				
+//				ntpkt.DumpPacket();
+				
+				try {			
+	
+					//	Send the response to the current session
+	
+					if ( req.getSession().sendAsynchResponseSMB(ntpkt, ntpkt.getLength()) == false) {
+						
+						//	Asynchronous request was queued, clone the request packet
+						
 						ntpkt = new NTTransPacket(ntpkt);
 
-						// DEBUG
-
-						if (Debug.EnableInfo &&
-							req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
-							req.getSession().debugPrintln(
-								"  Notification request was queued, sess=" +
-									req.getSession().getSessionId() + ", MID=" +
-									req.getMultiplexId());
+						//	DEBUG
+						
+						if ( Debug.EnableInfo && req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
+							req.getSession().debugPrintln("  Notification request was queued, sess=" + req.getSession().getSessionId() + ", MID=" + req.getMultiplexId());
 					}
-					else if (Debug.EnableInfo &&
-						req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
-						req.getSession().debugPrintln(
-							"  Notification request was sent, sess=" +
-								req.getSession().getSessionId() + ", MID=" +
-								req.getMultiplexId());
+					else if ( Debug.EnableInfo && req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
+						req.getSession().debugPrintln("  Notification request was sent, sess=" + req.getSession().getSessionId() + ", MID=" + req.getMultiplexId());
 				}
 				catch (Exception ex) {
-					Debug.println(ex);
+				  Debug.println( ex);
 				}
 			}
 			else {
-
-				// Buffer the event so it can be sent when the client resets the
-				// notify request
-
+				
+				//	Buffer the event so it can be sent when the client resets the notify request
+				
 				req.addEvent(evt);
 
-				// DEBUG
-
-				if (Debug.EnableInfo &&
-					req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
-					req.getSession().debugPrintln(
-						"Buffered notify req=" + req + ", event=" + evt +
-							", sess=" + req.getSession().getSessionId());
+				//	DEBUG
+				
+				if ( Debug.EnableInfo && req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
+					req.getSession().debugPrintln("Buffered notify req=" + req + ", event=" + evt + ", sess=" + req.getSession().getSessionId());
 			}
-
-			// Reset the notification pending flag for the session
-
+						
+			//	Reset the notification pending flag for the session
+			
 			req.getSession().setNotifyPending(false);
-
-			// DEBUG
-
-			if (Debug.EnableInfo &&
-				req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
-				req.getSession().debugPrintln(
-					"Asynch notify req=" + req + ", event=" + evt + ", sess=" +
-						req.getSession().getUniqueId());
+			
+			//	DEBUG
+			
+			if ( Debug.EnableInfo && req.getSession().hasDebug(SMBSrvSession.DBG_NOTIFY))
+				req.getSession().debugPrintln("Asynch notify req=" + req + ", event=" + evt + ", sess=" + req.getSession().getUniqueId());
 		}
-
-		// DEBUG
-
-		if (Debug.EnableInfo && hasDebug())
+		
+		//	DEBUG
+		
+		if ( Debug.EnableInfo && hasDebug())
 			Debug.println("sendChangeNotification() done");
-
-		// Return the count of matching requests
-
+			
+		//	Return the count of matching requests
+		
 		return reqList.size();
 	}
-
+	
 	/**
 	 * Find notify requests that match the type and path
 	 * 
@@ -943,218 +869,197 @@ public class NotifyChangeHandler implements Runnable {
 	 * @param isdir boolean
 	 * @return Vector
 	 */
-	protected final synchronized Vector findMatchingRequests(
-		int typ, String path, boolean isdir) {
-
-		// Create a vector to hold the matching requests
-
+	protected final synchronized Vector findMatchingRequests(int typ, String path, boolean isdir) {
+		
+		//	Create a vector to hold the matching requests
+		
 		Vector reqList = new Vector();
-
-		// Normalise the path string
-
+		
+		//	Normalise the path string
+		
 		String matchPath = path.toUpperCase();
-
-		// Search for matching requests and remove them from the main request
-		// list
+		
+		//	Search for matching requests and remove them from the main request list
 
 		int idx = 0;
 		long curTime = System.currentTimeMillis();
-
+		
 		boolean removedReq = false;
-
-		while (idx < m_notifyList.numberOfRequests()) {
-
-			// Get the current request
-
+		
+		while ( idx < m_notifyList.numberOfRequests()) {
+			
+			//	Get the current request
+			
 			NotifyRequest curReq = m_notifyList.getRequest(idx);
+			
+			//	DEBUG
+			
+			if ( Debug.EnableInfo && hasDebug())
+				Debug.println("findMatchingRequests() req=" + curReq.toString());
 
-			// DEBUG
-
-			if (Debug.EnableInfo && hasDebug())
-				Debug.println(
-					"findMatchingRequests() req=" + curReq.toString());
-
-			// Check if the request has expired
-
-			if (curReq.hasExpired(curTime)) {
-
-				// Remove the request from the list
-
+			//	Check if the request has expired
+			
+			if ( curReq.hasExpired(curTime)) {
+				
+				//	Remove the request from the list
+				
 				m_notifyList.removeRequestAt(idx);
 
-				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug()) {
-					Debug.println("Removed expired request req=" +
-						curReq.toString());
-					if (curReq.getBufferedEventList() != null) {
-						NotifyChangeEventList bufList =
-							curReq.getBufferedEventList();
-						Debug.println("  Buffered events = " +
-							bufList.numberOfEvents());
-						for (int b = 0; b < bufList.numberOfEvents(); b++)
-							Debug.println("    " + (b + 1) + ": " +
-								bufList.getEventAt(b));
+				//	DEBUG
+				
+				if ( Debug.EnableInfo && hasDebug()) {
+					Debug.println("Removed expired request req=" + curReq.toString());
+					if ( curReq.getBufferedEventList() != null) {
+					  NotifyChangeEventList bufList = curReq.getBufferedEventList();
+					  Debug.println("  Buffered events = " + bufList.numberOfEvents());
+					  for ( int b = 0; b < bufList.numberOfEvents(); b++)
+					    Debug.println("    " + (b+1) + ": " + bufList.getEventAt(b));
 					}
 				}
-
-				// Indicate that q request has been removed from the queue, the
-				// global filter mask will need
-				// to be recalculated
-
+		
+				//	Indicate that q request has been removed from the queue, the global filter mask will need
+				//	to be recalculated
+				
 				removedReq = true;
-
-				// Restart the loop
-
+				
+				//	Restart the loop
+				
 				continue;
 			}
-
-			// Check if the request matches the filter
-
-			if (curReq.hasFilter(typ)) {
-
-				// DEBUG
-
-				if (Debug.EnableInfo && hasDebug())
-					Debug.println("  hasFilter typ=" + typ + ", watchTree=" +
-						curReq.hasWatchTree() + ", watchPath=" +
-						curReq.getWatchPath() + ", matchPath=" + matchPath +
-						", isDir=" + isdir);
-
-				// Check if the path matches or is a subdirectory and the whole
-				// tree is being watched
-
+			
+			//	Check if the request matches the filter
+			
+			if ( curReq.hasFilter(typ)) {
+				
+			  //	DEBUG
+			  
+			  if ( Debug.EnableInfo && hasDebug())
+			    Debug.println("  hasFilter typ=" + typ + ", watchTree=" + curReq.hasWatchTree() + ", watchPath=" + curReq.getWatchPath() +
+			        ", matchPath=" + matchPath + ", isDir=" + isdir);
+			  
+				//	Check if the path matches or is a subdirectory and the whole tree is being watched
+				
 				boolean wantReq = false;
-
-				if (matchPath.length() == 0 && curReq.hasWatchTree())
+				
+				if ( matchPath.length() == 0 && curReq.hasWatchTree())
 					wantReq = true;
-				else if (curReq.hasWatchTree() == true &&
-					matchPath.startsWith(curReq.getWatchPath()) == true)
+				else if ( curReq.hasWatchTree() == true && matchPath.startsWith(curReq.getWatchPath()) == true)
 					wantReq = true;
-				else if (isdir == true &&
-					matchPath.compareTo(curReq.getWatchPath()) == 0)
+				else if ( isdir == true && matchPath.compareTo(curReq.getWatchPath()) == 0)
 					wantReq = true;
-				else if (isdir == false) {
-
-					// Strip the file name from the path and compare
-
+				else if ( isdir == false) {
+					
+					//	Strip the file name from the path and compare
+					
 					String[] paths = FileName.splitPath(matchPath);
-
-					if (paths != null && paths[0] != null) {
-
-						// Check if the directory part of the path is the
-						// directory being watched
-
-						if (curReq.getWatchPath().equalsIgnoreCase(paths[0]))
+					
+					if ( paths != null && paths[0] != null) {
+						
+						//	Check if the directory part of the path is the directory being watched
+						
+						if ( curReq.getWatchPath().equalsIgnoreCase(paths[0]))
 							wantReq = true;
 					}
 				}
-
-				// Check if the request is required
-
-				if (wantReq == true) {
-
-					// For all notify requests in the matching list we set the
-					// 'notify pending' state on the associated SMB
-					// session so that any socket writes on those sessions are
-					// synchronized until the change notification
-					// response has been sent.
-
+				
+				//	Check if the request is required
+				
+				if ( wantReq == true) {
+					
+					//	For all notify requests in the matching list we set the 'notify pending' state on the associated SMB
+					//	session so that any socket writes on those sessions are synchronized until the change notification
+					//	response has been sent.
+					
 					curReq.getSession().setNotifyPending(true);
-
-					// Add the request to the matching list
-
+					
+					//	Add the request to the matching list
+					
 					reqList.addElement(curReq);
 
-					// DEBUG
-
-					if (Debug.EnableInfo && hasDebug())
-						Debug.println("  Added request to matching list");
+					//	DEBUG
+				  
+				  if ( Debug.EnableInfo && hasDebug())
+				    Debug.println("  Added request to matching list");
 				}
 			}
 
-			// Move to the next request in the list
-
+			//	Move to the next request in the list
+				
 			idx++;
 		}
 
-		// If requests were removed from the queue the global filter mask must
-		// be recalculated
-
-		if (removedReq == true)
-			m_globalNotifyMask = m_notifyList.getGlobalFilter();
-
-		// Return the matching request list
-
+		//	If requests were removed from the queue the global filter mask must be recalculated
+		
+		if ( removedReq == true)
+		  m_globalNotifyMask = m_notifyList.getGlobalFilter();
+		
+		//	Return the matching request list
+		
 		return reqList;
 	}
-
+	
 	/**
 	 * Asynchronous change notification processing thread
 	 */
 	public void run() {
+		
+		//	Loop until shutdown
+		
+		while ( m_shutdown == false) {
 
-		// Loop until shutdown
-
-		while (m_shutdown == false) {
-
-			// Wait for some events to process
-
-			synchronized (m_eventList) {
+			//	Wait for some events to process
+			
+			synchronized ( m_eventList) {
 				try {
-					m_eventList.wait();
+					m_eventList.wait();			
 				}
 				catch (InterruptedException ex) {
 				}
 			}
-
-			// Check if the shutdown flag has been set
-
-			if (m_shutdown == true)
+			
+			//	Check if the shutdown flag has been set
+			
+			if ( m_shutdown == true)
 				break;
-
-			// Loop until all pending events have been processed
-
-			while (m_eventList.numberOfEvents() > 0) {
-
-				// Remove the event at the head of the queue
-
+				
+			//	Loop until all pending events have been processed
+			
+			while ( m_eventList.numberOfEvents() > 0) {
+				
+				//	Remove the event at the head of the queue
+				
 				NotifyChangeEvent evt = null;
-
-				synchronized (m_eventList) {
+				
+				synchronized ( m_eventList) {
 					evt = m_eventList.removeEventAt(0);
 				}
-
-				// Check if the event is valid
-
-				if (evt == null)
+				
+				//	Check if the event is valid
+				
+				if ( evt == null)
 					break;
 
 				try {
-
-					// Send out change notifications to clients that match the
-					// filter/path
-
+				  
+					//	Send out change notifications to clients that match the filter/path
+	
 					int cnt = sendChangeNotification(evt);
-
-					// DEBUG
-
-					if (Debug.EnableInfo && hasDebug())
-						Debug.println(
-							"Change notify event=" + evt.toString() +
-							", clients=" + cnt);
+					
+					//	DEBUG
+					
+					if ( Debug.EnableInfo && hasDebug())				
+						Debug.println("Change notify event=" + evt.toString() + ", clients=" + cnt);
 				}
 				catch (Throwable ex) {
-					Debug.println("NotifyChangeHandler thread");
-					Debug.println(ex);
+				  Debug.println("NotifyChangeHandler thread");
+				  Debug.println(ex);
 				}
 			}
 		}
-
-		// DEBUG
-
-		if (Debug.EnableInfo && hasDebug())
+		
+		//	DEBUG
+		
+		if ( Debug.EnableInfo && hasDebug())
 			Debug.println("NotifyChangeHandler thread exit");
 	}
-
 }

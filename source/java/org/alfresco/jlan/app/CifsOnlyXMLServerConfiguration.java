@@ -1,25 +1,25 @@
 /*
  * Copyright (C) 2006-2008 Alfresco Software Limited.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
- * As a special exception to the terms and conditions of version 2.0 of the GPL,
- * you may redistribute this Program in connection with Free/Libre and Open
- * Source Software ("FLOSS") applications as described in Alfresco's FLOSS
- * exception. You should have recieved a copy of the text describing the FLOSS
- * exception, and it is also available here:
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
  * http://www.alfresco.com/legal/licensing"
  */
 
@@ -93,8 +93,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * Cifs Only XML File Server Configuration Class <p> XML implementation of the
- * SMB server configuration.
+ * Cifs Only XML File Server Configuration Class
+ * 
+ * <p>
+ * XML implementation of the SMB server configuration.
  * 
  * @author gkspencer
  */
@@ -110,62 +112,47 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 	//
 	// Must match the bit mask order.
 
-	private static final String m_sessDbgStr[] =
-		{
-			"NETBIOS", "STATE", "RXDATA", "TXDATA", "DUMPDATA", "NEGOTIATE",
-			"TREE", "SEARCH", "INFO", "FILE", "FILEIO", "TRANSACT", "ECHO",
-			"ERROR", "IPC", "LOCK", "PKTTYPE", "DCERPC", "STATECACHE",
-			"TIMING", "NOTIFY", "STREAMS", "SOCKET", "PKTPOOL", "PKTSTATS",
-			"THREADPOOL", "BENCHMARK", "OPLOCK"
-		};
+	private static final String m_sessDbgStr[] = { "NETBIOS", "STATE", "RXDATA", "TXDATA", "DUMPDATA", "NEGOTIATE", "TREE",
+			"SEARCH", "INFO", "FILE", "FILEIO", "TRANSACT", "ECHO", "ERROR", "IPC", "LOCK", "PKTTYPE", "DCERPC", "STATECACHE",
+			"TIMING", "NOTIFY", "STREAMS", "SOCKET", "PKTPOOL", "PKTSTATS", "THREADPOOL", "BENCHMARK", "OPLOCK" };
 
 	// Default session debug flags, if enabled
 
-	private static final int DEFAULT_SESSDEBUG =
-		SMBSrvSession.DBG_ERROR + SMBSrvSession.DBG_INFO +
-			SMBSrvSession.DBG_SEARCH + SMBSrvSession.DBG_TREE +
-			SMBSrvSession.DBG_TRAN + SMBSrvSession.DBG_STATE;
+	private static final int DEFAULT_SESSDEBUG = SMBSrvSession.DBG_ERROR + SMBSrvSession.DBG_INFO + SMBSrvSession.DBG_SEARCH
+			+ SMBSrvSession.DBG_TREE + SMBSrvSession.DBG_TRAN + SMBSrvSession.DBG_STATE;
 
 	// Valid drive letter names for mapped drives
 
 	private static final String _driveLetters = "CDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	// Default thread pool size
-
-	private static final int DefaultThreadPoolInit = 25;
-	private static final int DefaultThreadPoolMax = 50;
-
+	
+	private static final int DefaultThreadPoolInit	= 25;
+	private static final int DefaultThreadPoolMax	= 50;
+	
 	// Default memory pool settings
-
-	private static final int[] DefaultMemoryPoolBufSizes = {
-		256, 4096, 16384, 66000
-	};
-	private static final int[] DefaultMemoryPoolInitAlloc = {
-		20, 20, 5, 5
-	};
-	private static final int[] DefaultMemoryPoolMaxAlloc = {
-		100, 50, 50, 50
-	};
-
+	
+	private static final int[] DefaultMemoryPoolBufSizes  = { 256, 4096, 16384, 66000 };
+	private static final int[] DefaultMemoryPoolInitAlloc = {  20,   20,     5,     5 };
+	private static final int[] DefaultMemoryPoolMaxAlloc  = { 100,   50,    50,    50 };
+	
 	// Memory pool packet size limits
-
-	private static final int MemoryPoolMinimumPacketSize = 256;
-	private static final int MemoryPoolMaximumPacketSize =
-		128 * (int) MemorySize.KILOBYTE;
-
+	
+	private static final int MemoryPoolMinimumPacketSize	= 256;
+	private static final int MemoryPoolMaximumPacketSize	= 128 * (int) MemorySize.KILOBYTE; 
+		
 	// Memory pool allocation limits
-
-	private static final int MemoryPoolMinimumAllocation = 5;
-	private static final int MemoryPoolMaximumAllocation = 500;
-
+	
+	private static final int MemoryPoolMinimumAllocation	= 5;
+	private static final int MemoryPoolMaximumAllocation    = 500;
+	
 	// Maximum session timeout
-
-	private static final int MaxSessionTimeout = 60 * 60; // 1 hour
-
+	
+	private static final int MaxSessionTimeout				= 60 * 60;	// 1 hour
+	
 	// Date formatter
 
-	private SimpleDateFormat m_dateFmt =
-		new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+	private SimpleDateFormat m_dateFmt = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
 
 	/**
 	 * Default constructor
@@ -214,8 +201,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			// Load the configuration from the XML file
 
-			DocumentBuilderFactory factory =
-				DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 
 			InputSource xmlSource = new InputSource(in);
@@ -257,8 +243,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		try {
 
-			// Access the root of the XML document, get a list of the child
-			// nodes
+			// Access the root of the XML document, get a list of the child nodes
 
 			Element root = doc.getDocumentElement();
 			NodeList childNodes = root.getChildNodes();
@@ -268,9 +253,9 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			procDebugElement(findChildNode("debug", childNodes));
 
 			// Process the core server configuration settings
-
+			
 			procServerCoreElement(findChildNode("server-core", childNodes));
-
+			
 			// Process the global configuration settings
 
 			procGlobalElement(findChildNode("global", childNodes));
@@ -289,8 +274,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			// Process the drive mappings settings
 
-			procDriveMappingsElement(
-				findChildNode("DriveMappings", childNodes));
+			procDriveMappingsElement(findChildNode("DriveMappings", childNodes));
 		}
 		catch (Exception ex) {
 
@@ -315,303 +299,251 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the server core element has been specified
 
-		if (srvCore == null) {
-
+		if ( srvCore == null) {
+			
 			// Configure a default memory pool
-
-			coreConfig.setMemoryPool(
-				DefaultMemoryPoolBufSizes, DefaultMemoryPoolInitAlloc,
-				DefaultMemoryPoolMaxAlloc);
-
+			
+			coreConfig.setMemoryPool( DefaultMemoryPoolBufSizes, DefaultMemoryPoolInitAlloc, DefaultMemoryPoolMaxAlloc);
+			
 			// Configure a default thread pool size
-
-			coreConfig.setThreadPool(
-				DefaultThreadPoolInit, DefaultThreadPoolMax);
+			
+			coreConfig.setThreadPool( DefaultThreadPoolInit, DefaultThreadPoolMax);
 			return;
 		}
 
 		// Check if the thread pool size has been specified
-
+		
 		Element elem = findChildNode("threadPool", srvCore.getChildNodes());
-		if (elem != null) {
-
+		if ( elem != null) {
+			
 			// Get the initial thread pool size
-
+			
 			String initSizeStr = elem.getAttribute("init");
-			if (initSizeStr == null || initSizeStr.length() == 0)
-				throw new InvalidConfigurationException(
-					"Thread pool initial size not specified");
-
+			if ( initSizeStr == null || initSizeStr.length() == 0)
+				throw new InvalidConfigurationException("Thread pool initial size not specified");
+			
 			// Validate the initial thread pool size
-
+			
 			int initSize = 0;
-
+			
 			try {
-				initSize = Integer.parseInt(initSizeStr);
+				initSize = Integer.parseInt( initSizeStr);
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid thread pool size value, " + initSizeStr);
+				throw new InvalidConfigurationException("Invalid thread pool size value, " + initSizeStr);
 			}
-
+			
 			// Range check the thread pool size
-
-			if (initSize < ThreadRequestPool.MinimumWorkerThreads)
-				throw new InvalidConfigurationException(
-					"Thread pool size below minimum allowed size");
-
-			if (initSize > ThreadRequestPool.MaximumWorkerThreads)
-				throw new InvalidConfigurationException(
-					"Thread pool size above maximum allowed size");
-
+			
+			if ( initSize < ThreadRequestPool.MinimumWorkerThreads)
+				throw new InvalidConfigurationException("Thread pool size below minimum allowed size");
+			
+			if ( initSize > ThreadRequestPool.MaximumWorkerThreads)
+				throw new InvalidConfigurationException("Thread pool size above maximum allowed size");
+			
 			// Get the maximum thread pool size
-
+			
 			String maxSizeStr = elem.getAttribute("max");
 			int maxSize = initSize;
-
-			if (maxSizeStr.length() > 0) {
-
+			
+			if ( maxSizeStr.length() > 0) {
+				
 				// Validate the maximum thread pool size
-
+				
 				try {
-					maxSize = Integer.parseInt(maxSizeStr);
+					maxSize = Integer.parseInt( maxSizeStr);
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						" Invalid thread pool maximum size value, " +
-							maxSizeStr);
+					throw new InvalidConfigurationException(" Invalid thread pool maximum size value, " + maxSizeStr);
 				}
-
+				
 				// Range check the maximum thread pool size
-
-				if (maxSize < ThreadRequestPool.MinimumWorkerThreads)
-					throw new InvalidConfigurationException(
-						"Thread pool maximum size below minimum allowed size");
-
-				if (maxSize > ThreadRequestPool.MaximumWorkerThreads)
-					throw new InvalidConfigurationException(
-						"Thread pool maximum size above maximum allowed size");
-
-				if (maxSize < initSize)
-					throw new InvalidConfigurationException(
-						"Initial size is larger than maxmimum size");
+				
+				if ( maxSize < ThreadRequestPool.MinimumWorkerThreads)
+					throw new InvalidConfigurationException("Thread pool maximum size below minimum allowed size");
+				
+				if ( maxSize > ThreadRequestPool.MaximumWorkerThreads)
+					throw new InvalidConfigurationException("Thread pool maximum size above maximum allowed size");
+				
+				if ( maxSize < initSize)
+					throw new InvalidConfigurationException("Initial size is larger than maxmimum size");
 			}
-			else if (maxSizeStr != null)
-				throw new InvalidConfigurationException(
-					"Thread pool maximum size not specified");
-
+			else if ( maxSizeStr != null)
+				throw new InvalidConfigurationException("Thread pool maximum size not specified");
+			
 			// Configure the thread pool
-
-			coreConfig.setThreadPool(initSize, maxSize);
+			
+			coreConfig.setThreadPool( initSize, maxSize);
 		}
 		else {
-
+			
 			// Configure a default thread pool size
-
-			coreConfig.setThreadPool(
-				DefaultThreadPoolInit, DefaultThreadPoolMax);
+			
+			coreConfig.setThreadPool( DefaultThreadPoolInit, DefaultThreadPoolMax);
 		}
-
+		
 		// Check if thread pool debug output is enabled
-
-		if (findChildNode("threadPoolDebug", srvCore.getChildNodes()) != null)
-			coreConfig.getThreadPool().setDebug(true);
-
+		
+		if ( findChildNode("threadPoolDebug", srvCore.getChildNodes()) != null)
+			coreConfig.getThreadPool().setDebug( true);
+		
 		// Check if the memory pool configuration has been specified
-
+		
 		elem = findChildNode("memoryPool", srvCore.getChildNodes());
-		if (elem != null) {
-
+		if ( elem != null) {
+			
 			// Check if the packet sizes/allocations have been specified
+			
+			Element pktElem = findChildNode("packetSizes", elem.getChildNodes());
+			if ( pktElem != null) {
 
-			Element pktElem =
-				findChildNode("packetSizes", elem.getChildNodes());
-			if (pktElem != null) {
-
-				// Calculate the array size for the packet size/allocation
-				// arrays
-
+				// Calculate the array size for the packet size/allocation arrays
+				
 				NodeList nodeList = pktElem.getChildNodes();
 				int elemCnt = 0;
-
-				for (int i = 0; i < nodeList.getLength(); i++) {
-					if (nodeList.item(i).getNodeType() == ELEMENT_TYPE)
+				
+				for ( int i = 0; i < nodeList.getLength(); i++) {
+					if ( nodeList.item( i).getNodeType() == ELEMENT_TYPE)
 						elemCnt++;
 				}
-
-				// Create the packet size, initial allocation and maximum
-				// allocation arrays
-
-				int[] pktSizes = new int[elemCnt];
+				
+				// Create the packet size, initial allocation and maximum allocation arrays
+				
+				int[] pktSizes  = new int[elemCnt];
 				int[] initSizes = new int[elemCnt];
-				int[] maxSizes = new int[elemCnt];
-
+				int[] maxSizes  = new int[elemCnt];
+				
 				int elemIdx = 0;
-
+				
 				// Process the packet size elements
-
-				for (int i = 0; i < nodeList.getLength(); i++) {
-
+				
+				for ( int i = 0; i < nodeList.getLength(); i++) {
+					
 					// Get the current element node
-
-					Node curNode = nodeList.item(i);
-					if (curNode.getNodeType() == ELEMENT_TYPE) {
-
-						// Get the element and check if it is a packet size
-						// element
-
+					
+					Node curNode = nodeList.item( i);
+					if ( curNode.getNodeType() == ELEMENT_TYPE) {
+						
+						// Get the element and check if it is a packet size element
+						
 						Element curElem = (Element) curNode;
-						if (curElem.getNodeName().equals("packet")) {
-
+						if ( curElem.getNodeName().equals("packet")) {
+							
 							// Get the packet size
-
-							int pktSize = -1;
+							
+							int pktSize   = -1;
 							int initAlloc = -1;
-							int maxAlloc = -1;
-
+							int maxAlloc  = -1;
+							
 							String pktSizeStr = curElem.getAttribute("size");
-							if (pktSizeStr == null || pktSizeStr.length() == 0)
-								throw new InvalidConfigurationException(
-									"Memory pool packet size not specified");
-
+							if ( pktSizeStr == null || pktSizeStr.length() == 0)
+								throw new InvalidConfigurationException("Memory pool packet size not specified");
+							
 							// Parse the packet size
-
+							
 							try {
-								pktSize =
-									MemorySize.getByteValueInt(pktSizeStr);
+								pktSize = MemorySize.getByteValueInt( pktSizeStr);
 							}
-							catch (NumberFormatException ex) {
-								throw new InvalidConfigurationException(
-									"Memory pool packet size, invalid size" +
-										" value, " +
-										pktSizeStr);
+							catch ( NumberFormatException ex) {
+								throw new InvalidConfigurationException("Memory pool packet size, invalid size value, " + pktSizeStr);
 							}
 
-							// Make sure the packet sizes have been specified in
-							// ascending order
-
-							if (elemIdx > 0 && pktSizes[elemIdx - 1] >= pktSize)
-								throw new InvalidConfigurationException(
-									"Invalid packet size specified, less " +
-									"than/equal to previous packet size");
-
-							// Get the initial allocation for the current packet
-							// size
-
+							// Make sure the packet sizes have been specified in ascending order
+							
+							if ( elemIdx > 0 && pktSizes[elemIdx - 1] >= pktSize)
+								throw new InvalidConfigurationException("Invalid packet size specified, less than/equal to previous packet size");
+							
+							// Get the initial allocation for the current packet size
+							
 							String initSizeStr = curElem.getAttribute("init");
-							if (initSizeStr == null ||
-								initSizeStr.length() == 0)
-								throw new InvalidConfigurationException(
-									"Memory pool initial allocation not " +
-									"specified");
-
+							if ( initSizeStr == null || initSizeStr.length() == 0)
+								throw new InvalidConfigurationException("Memory pool initial allocation not specified");
+							
 							// Parse the initial allocation
-
+							
 							try {
-								initAlloc = Integer.parseInt(initSizeStr);
+								initAlloc = Integer.parseInt( initSizeStr);
 							}
 							catch (NumberFormatException ex) {
-								throw new InvalidConfigurationException(
-									"Invalid initial allocation, " +
-										initSizeStr);
+								throw new InvalidConfigurationException("Invalid initial allocation, " + initSizeStr);
 							}
-
+							
 							// Range check the initial allocation
-
-							if (initAlloc < MemoryPoolMinimumAllocation)
-								throw new InvalidConfigurationException(
-									"Initial memory pool allocation below " +
-										"minimum of " +
-										MemoryPoolMinimumAllocation);
-
-							if (initAlloc > MemoryPoolMaximumAllocation)
-								throw new InvalidConfigurationException(
-									"Initial memory pool allocation above " +
-										"maximum of " +
-										MemoryPoolMaximumAllocation);
-
-							// Get the maximum allocation for the current packet
-							// size
+							
+							if ( initAlloc < MemoryPoolMinimumAllocation)
+								throw new InvalidConfigurationException("Initial memory pool allocation below minimum of " + MemoryPoolMinimumAllocation);
+							
+							if ( initAlloc > MemoryPoolMaximumAllocation)
+								throw new InvalidConfigurationException("Initial memory pool allocation above maximum of " + MemoryPoolMaximumAllocation);
+							
+							// Get the maximum allocation for the current packet size
 
 							String maxSizeStr = curElem.getAttribute("max");
-							if (maxSizeStr == null || maxSizeStr.length() == 0)
-								throw new InvalidConfigurationException(
-									"Memory pool maximum allocation not " +
-									"specified");
-
+							if ( maxSizeStr == null || maxSizeStr.length() == 0)
+								throw new InvalidConfigurationException("Memory pool maximum allocation not specified");
+							
 							// Parse the maximum allocation
-
+							
 							try {
-								maxAlloc = Integer.parseInt(maxSizeStr);
+								maxAlloc = Integer.parseInt( maxSizeStr);
 							}
 							catch (NumberFormatException ex) {
-								throw new InvalidConfigurationException(
-									"Invalid maximum allocation, " + 
-									maxSizeStr);
+								throw new InvalidConfigurationException("Invalid maximum allocation, " + maxSizeStr);
 							}
 
 							// Range check the maximum allocation
-
-							if (maxAlloc < MemoryPoolMinimumAllocation)
-								throw new InvalidConfigurationException(
-									"Maximum memory pool allocation below " +
-										"minimum of " +
-										MemoryPoolMinimumAllocation);
-
-							if (initAlloc > MemoryPoolMaximumAllocation)
-								throw new InvalidConfigurationException(
-									"Maximum memory pool allocation above " +
-										"maximum of " +
-										MemoryPoolMaximumAllocation);
+							
+							if ( maxAlloc < MemoryPoolMinimumAllocation)
+								throw new InvalidConfigurationException("Maximum memory pool allocation below minimum of " + MemoryPoolMinimumAllocation);
+							
+							if ( initAlloc > MemoryPoolMaximumAllocation)
+								throw new InvalidConfigurationException("Maximum memory pool allocation above maximum of " + MemoryPoolMaximumAllocation);
 
 							// Set the current packet size elements
-
-							pktSizes[elemIdx] = pktSize;
+							
+							pktSizes[elemIdx]  = pktSize;
 							initSizes[elemIdx] = initAlloc;
-							maxSizes[elemIdx] = maxAlloc;
-
+							maxSizes[elemIdx]  = maxAlloc;
+							
 							elemIdx++;
 						}
 					}
-
+						
 				}
-
-				// Check if all elements were used in the packet size/allocation
-				// arrays
-
-				if (elemIdx < pktSizes.length) {
-
+				
+				// Check if all elements were used in the packet size/allocation arrays
+				
+				if ( elemIdx < pktSizes.length) {
+					
 					// Re-allocate the packet size/allocation arrays
-
-					int[] newPktSizes = new int[elemIdx];
+					
+					int[] newPktSizes  = new int[elemIdx];
 					int[] newInitSizes = new int[elemIdx];
-					int[] newMaxSizes = new int[elemIdx];
-
+					int[] newMaxSizes  = new int[elemIdx];
+					
 					// Copy the values to the shorter arrays
-
+					
 					System.arraycopy(pktSizes, 0, newPktSizes, 0, elemIdx);
 					System.arraycopy(initSizes, 0, newInitSizes, 0, elemIdx);
 					System.arraycopy(maxSizes, 0, newMaxSizes, 0, elemIdx);
-
+					
 					// Move the new arrays into place
-
-					pktSizes = newPktSizes;
+					
+					pktSizes  = newPktSizes;
 					initSizes = newInitSizes;
-					maxSizes = newMaxSizes;
+					maxSizes  = newMaxSizes;
 				}
-
+				
 				// Configure the memory pool
-
-				coreConfig.setMemoryPool(pktSizes, initSizes, maxSizes);
+				
+				coreConfig.setMemoryPool( pktSizes, initSizes, maxSizes);
 			}
 		}
 		else {
-
+			
 			// Configure a default memory pool
-
-			coreConfig.setMemoryPool(
-				DefaultMemoryPoolBufSizes, DefaultMemoryPoolInitAlloc,
-				DefaultMemoryPoolMaxAlloc);
+			
+			coreConfig.setMemoryPool( DefaultMemoryPoolBufSizes, DefaultMemoryPoolInitAlloc, DefaultMemoryPoolMaxAlloc);
 		}
 	}
 
@@ -630,47 +562,42 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the global element has been specified
 
-		if (global == null)
+		if ( global == null)
 			return;
 
 		// Check if the timezone has been specified
 
 		Element elem = findChildNode("timezone", global.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check for the timezone name
 
 			String tzName = elem.getAttribute("name");
-			if (tzName != null && tzName.length() > 0)
+			if ( tzName != null && tzName.length() > 0)
 				globalConfig.setTimeZone(tzName);
 
 			// Check for the timezone offset value
 
 			String tzOffset = elem.getAttribute("offset");
-			if (tzOffset != null && tzOffset.length() > 0 && tzName != null &&
-				tzName.length() > 0)
-				throw new InvalidConfigurationException(
-					"Specify name or offset for timezone");
+			if ( tzOffset != null && tzOffset.length() > 0 && tzName != null && tzName.length() > 0)
+				throw new InvalidConfigurationException("Specify name or offset for timezone");
 
 			// Validate the timezone offset
 
-			if (tzOffset != null && tzOffset.length() > 0) {
+			if ( tzOffset != null && tzOffset.length() > 0) {
 				int offset = 0;
 
 				try {
 					offset = Integer.parseInt(tzOffset);
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid timezone offset value, " + tzOffset);
+					throw new InvalidConfigurationException("Invalid timezone offset value, " + tzOffset);
 				}
 
 				// Range check the timezone offset value
 
-				if (offset < -1440 || offset > 1440)
-					throw new InvalidConfigurationException(
-						"Invalid timezone offset, value out of valid range, " +
-							tzOffset);
+				if ( offset < -1440 || offset > 1440)
+					throw new InvalidConfigurationException("Invalid timezone offset, value out of valid range, " + tzOffset);
 
 				// Set the timezone offset in minutes from UTC
 
@@ -690,9 +617,8 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the SMB element is valid
 
-		if (smb == null)
-			throw new InvalidConfigurationException(
-				"SMB section must be specified");
+		if ( smb == null)
+			throw new InvalidConfigurationException("SMB section must be specified");
 
 		// Create the CIFS server configuration section
 
@@ -702,32 +628,31 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		procHostElement(findChildNode("host", smb.getChildNodes()), cifsConfig);
 
-		// Debug settings are now specified within the SMB server configuration
-		// block
+		// Debug settings are now specified within the SMB server configuration block
 
 		// Check if NetBIOS debug is enabled
 
 		Element elem = findChildNode("netbiosDebug", smb.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			cifsConfig.setNetBIOSDebug(true);
 
 		// Check if host announcement debug is enabled
 
 		elem = findChildNode("announceDebug", smb.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			cifsConfig.setHostAnnounceDebug(true);
 
 		// Check if session debug is enabled
 
 		elem = findChildNode("sessionDebug", smb.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check for session debug flags
 
 			String flags = elem.getAttribute("flags");
 			int sessDbg = DEFAULT_SESSDEBUG;
 
-			if (flags != null) {
+			if ( flags != null) {
 
 				// Clear the default debug flags
 
@@ -748,13 +673,11 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 					int idx = 0;
 
-					while (idx < m_sessDbgStr.length &&
-						m_sessDbgStr[idx].equalsIgnoreCase(dbg) == false)
+					while (idx < m_sessDbgStr.length && m_sessDbgStr[idx].equalsIgnoreCase(dbg) == false)
 						idx++;
 
-					if (idx >= m_sessDbgStr.length)
-						throw new InvalidConfigurationException(
-							"Invalid session debug flag, " + dbg);
+					if ( idx >= m_sessDbgStr.length)
+						throw new InvalidConfigurationException("Invalid session debug flag, " + dbg);
 
 					// Set the debug flag
 
@@ -766,47 +689,39 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			cifsConfig.setSessionDebugFlags(sessDbg);
 		}
-
+		
 		// Check if NIO based code should be disabled
-
-		if (findChildNode("disableNIO", smb.getChildNodes()) != null)
-			cifsConfig.setDisableNIOCode(true);
-
+		
+		if ( findChildNode( "disableNIO", smb.getChildNodes()) != null)
+			cifsConfig.setDisableNIOCode( true);
+		
 		// Check if an authenticator has been specified
 
 		Element authElem = findChildNode("authenticator", smb.getChildNodes());
-		if (authElem != null) {
+		if ( authElem != null) {
 
 			// Get the authenticator class and security mode
 
-			Element classElem =
-				findChildNode("class", authElem.getChildNodes());
+			Element classElem = findChildNode("class", authElem.getChildNodes());
 			String authClass = null;
 
-			if (classElem == null) {
+			if ( classElem == null) {
 
 				// Check if the authenticator type has been specified
 
 				String authType = authElem.getAttribute("type");
 
-				if (authType == null)
-					throw new InvalidConfigurationException(
-						"Authenticator class not specified");
+				if ( authType == null)
+					throw new InvalidConfigurationException("Authenticator class not specified");
 
-				// Check the authenticator type and set the appropriate
-				// authenticator class
+				// Check the authenticator type and set the appropriate authenticator class
 
-				if (authType.equalsIgnoreCase("local"))
-					authClass =
-						"org.alfresco.jlan.server.auth.LocalAuthenticator";
-				else if (authType.equalsIgnoreCase("passthru"))
-					authClass =
-						"org.alfresco.jlan.server.auth.passthru." +
-						"PassthruAuthenticator";
-				else if (authType.equalsIgnoreCase("enterprise"))
-					authClass =
-						"org.alfresco.jlan.server.auth." +
-						"EnterpriseCifsAuthenticator";
+				if ( authType.equalsIgnoreCase("local"))
+					authClass = "org.alfresco.jlan.server.auth.LocalAuthenticator";
+				else if ( authType.equalsIgnoreCase("passthru"))
+					authClass = "org.alfresco.jlan.server.auth.passthru.PassthruAuthenticator";
+				else if ( authType.equalsIgnoreCase("enterprise"))
+					authClass = "org.alfresco.jlan.server.auth.EnterpriseCifsAuthenticator";
 			}
 			else {
 
@@ -818,31 +733,27 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			Element modeElem = findChildNode("mode", authElem.getChildNodes());
 			int accessMode = CifsAuthenticator.USER_MODE;
 
-			if (modeElem != null) {
+			if ( modeElem != null) {
 
 				// Validate the authenticator mode
 
 				String mode = getText(modeElem);
-				if (mode.equalsIgnoreCase("user"))
+				if ( mode.equalsIgnoreCase("user"))
 					accessMode = CifsAuthenticator.USER_MODE;
-				else if (mode.equalsIgnoreCase("share"))
+				else if ( mode.equalsIgnoreCase("share"))
 					accessMode = CifsAuthenticator.SHARE_MODE;
 				else
-					throw new InvalidConfigurationException(
-						"Invalid authentication mode, must be USER or SHARE");
+					throw new InvalidConfigurationException("Invalid authentication mode, must be USER or SHARE");
 			}
 
 			// Get the allow guest setting
 
-			Element allowGuest =
-				findChildNode("allowGuest", authElem.getChildNodes());
+			Element allowGuest = findChildNode("allowGuest", authElem.getChildNodes());
 
 			// Get the parameters for the authenticator class
 
 			ConfigElement params = buildConfigElement(authElem);
-			cifsConfig.setAuthenticator(
-				authClass, params, accessMode, allowGuest != null
-					? true : false);
+			cifsConfig.setAuthenticator(authClass, params, accessMode, allowGuest != null ? true : false);
 		}
 	}
 
@@ -852,40 +763,36 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 	 * @param host Element 2param cifsConfig CIFSConfigSection
 	 * @exception InvalidConfigurationException
 	 */
-	protected final void procHostElement(
-		Element host, CIFSConfigSection cifsConfig)
+	protected final void procHostElement(Element host, CIFSConfigSection cifsConfig)
 		throws InvalidConfigurationException {
 
 		// Check if the host element is valid
 
-		if (host == null)
-			throw new InvalidConfigurationException(
-				"Host section must be specified");
+		if ( host == null)
+			throw new InvalidConfigurationException("Host section must be specified");
 
 		// Get the host name attribute
 
 		String attr = host.getAttribute("name");
-		if (attr == null || attr.length() == 0)
-			throw new InvalidConfigurationException(
-				"Host name not specified or invalid");
+		if ( attr == null || attr.length() == 0)
+			throw new InvalidConfigurationException("Host name not specified or invalid");
 		cifsConfig.setServerName(attr.toUpperCase());
 
-		// If the global server name has not been set then use the CIFS server
-		// name
+		// If the global server name has not been set then use the CIFS server name
 
-		if (getServerName() == null)
+		if ( getServerName() == null)
 			setServerName(cifsConfig.getServerName());
 
 		// Get the domain name
 
 		attr = host.getAttribute("domain");
-		if (attr != null && attr.length() > 0)
+		if ( attr != null && attr.length() > 0)
 			cifsConfig.setDomainName(attr.toUpperCase());
 
 		// Get the enabled SMB dialects
 
 		Element elem = findChildNode("smbdialects", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Clear all configured SMB dialects
 
@@ -904,14 +811,14 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				// Determine the dialect to be enabled
 
-				if (dia.equalsIgnoreCase("CORE")) {
+				if ( dia.equalsIgnoreCase("CORE")) {
 
 					// Enable core dialects
 
 					diaSel.AddDialect(Dialect.Core);
 					diaSel.AddDialect(Dialect.CorePlus);
 				}
-				else if (dia.equalsIgnoreCase("LANMAN")) {
+				else if ( dia.equalsIgnoreCase("LANMAN")) {
 
 					// Enable the LanMAn dialects
 
@@ -921,15 +828,14 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 					diaSel.AddDialect(Dialect.LanMan2);
 					diaSel.AddDialect(Dialect.LanMan2_1);
 				}
-				else if (dia.equalsIgnoreCase("NT")) {
+				else if ( dia.equalsIgnoreCase("NT")) {
 
 					// Enable the NT dialect
 
 					diaSel.AddDialect(Dialect.NT);
 				}
 				else
-					throw new InvalidConfigurationException(
-						"Invalid SMB dialect, " + dia);
+					throw new InvalidConfigurationException("Invalid SMB dialect, " + dia);
 			}
 
 			// Set the enabled server SMB dialects
@@ -940,22 +846,21 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Check for a server comment
 
 		elem = findChildNode("comment", host.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			cifsConfig.setComment(getText(elem));
 
 		// Check for a bind address
 
 		elem = findChildNode("bindto", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check if the network adapter name has been specified
 
-			if (elem.hasAttribute("adapter")) {
+			if ( elem.hasAttribute("adapter")) {
 
 				// Get the IP address for the adapter
 
-				InetAddress bindAddr =
-					parseAdapterName(elem.getAttribute("adapter"));
+				InetAddress bindAddr = parseAdapterName(elem.getAttribute("adapter"));
 
 				// Set the bind address for the server
 
@@ -986,29 +891,25 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Check if the host announcer should be enabled
 
 		elem = findChildNode("hostAnnounce", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check for an announcement interval
 
 			attr = elem.getAttribute("interval");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				try {
 					cifsConfig.setHostAnnounceInterval(Integer.parseInt(attr));
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid host announcement interval");
+					throw new InvalidConfigurationException("Invalid host announcement interval");
 				}
 			}
 
-			// Check if the domain name has been set, this is required if the
-			// host announcer is
+			// Check if the domain name has been set, this is required if the host announcer is
 			// enabled
 
-			if (cifsConfig.getDomainName() == null)
-				throw new InvalidConfigurationException(
-					"Domain name must be specified if host announcement is " +
-					"enabled");
+			if ( cifsConfig.getDomainName() == null)
+				throw new InvalidConfigurationException("Domain name must be specified if host announcement is enabled");
 
 			// Enable host announcement
 
@@ -1018,43 +919,37 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Check for a host announcer port
 
 		elem = findChildNode("HostAnnouncerPort", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 			try {
-				cifsConfig.setHostAnnouncerPort(
-					Integer.parseInt(getText(elem)));
-				if (cifsConfig.getHostAnnouncerPort() <= 0 ||
-					cifsConfig.getHostAnnouncerPort() >= 65535)
-					throw new InvalidConfigurationException(
-						"Host announcer port out of valid range");
+				cifsConfig.setHostAnnouncerPort(Integer.parseInt(getText(elem)));
+				if ( cifsConfig.getHostAnnouncerPort() <= 0 || cifsConfig.getHostAnnouncerPort() >= 65535)
+					throw new InvalidConfigurationException("Host announcer port out of valid range");
 			}
 			catch (NumberFormatException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid host announcer port");
+				throw new InvalidConfigurationException("Invalid host announcer port");
 			}
 		}
 
 		// Check if NetBIOS SMB is enabled
 
 		elem = findChildNode("netBIOSSMB", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check if NetBIOS over TCP/IP is enabled for the current platform
 
 			boolean platformOK = false;
 
-			if (elem.hasAttribute("platforms")) {
-
+			if ( elem.hasAttribute("platforms")) {
+				
 				// Get the list of platforms
 
 				String platformsStr = elem.getAttribute("platforms");
 
-				// Parse the list of platforms that NetBIOS over TCP/IP is to be
-				// enabled for and
+				// Parse the list of platforms that NetBIOS over TCP/IP is to be enabled for and
 				// check if the current platform is included
 
-				List<Platform.Type> enabledPlatforms =
-					parsePlatformString(platformsStr);
-				if (enabledPlatforms.contains(getPlatformType()))
+				List<Platform.Type> enabledPlatforms = parsePlatformString(platformsStr);
+				if ( enabledPlatforms.contains(getPlatformType()))
 					platformOK = true;
 			}
 			else {
@@ -1067,67 +962,57 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			cifsConfig.setNetBIOSSMB(platformOK);
 
-			// Only parse the other settings if NetBIOS based SMB is enabled for
-			// the current
+			// Only parse the other settings if NetBIOS based SMB is enabled for the current
 			// platform
 
-			if (platformOK) {
+			if ( platformOK) {
 
 				// Check for the session port
 
 				attr = elem.getAttribute("sessionPort");
-				if (attr != null && attr.length() > 0) {
+				if ( attr != null && attr.length() > 0) {
 					try {
 						cifsConfig.setSessionPort(Integer.parseInt(attr));
-						if (cifsConfig.getSessionPort() <= 0 ||
-							cifsConfig.getSessionPort() >= 65535)
-							throw new InvalidConfigurationException(
-								"NetBIOS SMB session port out of valid range");
+						if ( cifsConfig.getSessionPort() <= 0 || cifsConfig.getSessionPort() >= 65535)
+							throw new InvalidConfigurationException("NetBIOS SMB session port out of valid range");
 					}
 					catch (NumberFormatException ex) {
-						throw new InvalidConfigurationException(
-							"Invalid NetBIOS SMB session port");
+						throw new InvalidConfigurationException("Invalid NetBIOS SMB session port");
 					}
 				}
 
 				// Check for the datagram port
 
 				attr = elem.getAttribute("datagramPort");
-				if (attr != null && attr.length() > 0) {
+				if ( attr != null && attr.length() > 0) {
 					try {
 						cifsConfig.setNameServerPort(Integer.parseInt(attr));
-						if (cifsConfig.getNameServerPort() <= 0 ||
-							cifsConfig.getNameServerPort() >= 65535)
-							throw new InvalidConfigurationException(
-								"NetBIOS SMB datagram port out of valid range");
+						if ( cifsConfig.getNameServerPort() <= 0 || cifsConfig.getNameServerPort() >= 65535)
+							throw new InvalidConfigurationException("NetBIOS SMB datagram port out of valid range");
 					}
 					catch (NumberFormatException ex) {
-						throw new InvalidConfigurationException(
-							"Invalid NetBIOS SMB datagram port");
+						throw new InvalidConfigurationException("Invalid NetBIOS SMB datagram port");
 					}
 				}
 
 				// Check for the name server port
 
 				attr = elem.getAttribute("namingPort");
-				if (attr != null && attr.length() > 0) {
+				if ( attr != null && attr.length() > 0) {
 					try {
 						cifsConfig.setNameServerPort(Integer.parseInt(attr));
-						if (cifsConfig.getNameServerPort() <= 0 ||
-							cifsConfig.getNameServerPort() >= 65535)
-							throw new InvalidConfigurationException(
-								"NetBIOS SMB naming port out of valid range");
+						if ( cifsConfig.getNameServerPort() <= 0 || cifsConfig.getNameServerPort() >= 65535)
+							throw new InvalidConfigurationException("NetBIOS SMB naming port out of valid range");
 					}
 					catch (NumberFormatException ex) {
-						throw new InvalidConfigurationException(
-							"Invalid NetBIOS SMB naming port");
+						throw new InvalidConfigurationException("Invalid NetBIOS SMB naming port");
 					}
 				}
 
 				// Check for a bind address
 
 				attr = elem.getAttribute("bindto");
-				if (attr != null && attr.length() > 0) {
+				if ( attr != null && attr.length() > 0) {
 
 					// Validate the bind address
 
@@ -1148,20 +1033,18 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				// Check for a bind address using the adapter name
 
-				else if (elem.hasAttribute("adapter")) {
+				else if ( elem.hasAttribute("adapter")) {
 
 					// Get the bind address via the network adapter name
 
-					InetAddress bindAddr =
-						parseAdapterName(elem.getAttribute("adapter"));
+					InetAddress bindAddr = parseAdapterName(elem.getAttribute("adapter"));
 					cifsConfig.setNetBIOSBindAddress(bindAddr);
 				}
-				else if (cifsConfig.hasSMBBindAddress()) {
+				else if ( cifsConfig.hasSMBBindAddress()) {
 
 					// Use the SMB bind address for the NetBIOS name server
 
-					cifsConfig.setNetBIOSBindAddress(
-						cifsConfig.getSMBBindAddress());
+					cifsConfig.setNetBIOSBindAddress(cifsConfig.getSMBBindAddress());
 				}
 			}
 		}
@@ -1175,25 +1058,23 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Check if TCP/IP SMB is enabled
 
 		elem = findChildNode("tcpipSMB", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check if native SMB is enabled for the current platform
 
 			boolean platformOK = false;
 
-			if (elem.hasAttribute("platforms")) {
+			if ( elem.hasAttribute("platforms")) {
 
 				// Get the list of platforms
 
 				String platformsStr = elem.getAttribute("platforms");
 
-				// Parse the list of platforms that NetBIOS over TCP/IP is to be
-				// enabled for and
+				// Parse the list of platforms that NetBIOS over TCP/IP is to be enabled for and
 				// check if the current platform is included
 
-				List<Platform.Type> enabledPlatforms =
-					parsePlatformString(platformsStr);
-				if (enabledPlatforms.contains(getPlatformType()))
+				List<Platform.Type> enabledPlatforms = parsePlatformString(platformsStr);
+				if ( enabledPlatforms.contains(getPlatformType()))
 					platformOK = true;
 			}
 			else {
@@ -1210,17 +1091,14 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Check if the port has been specified
 
 			attr = elem.getAttribute("port");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				try {
 					cifsConfig.setTcpipSMBPort(Integer.parseInt(attr));
-					if (cifsConfig.getTcpipSMBPort() <= 0 ||
-						cifsConfig.getTcpipSMBPort() >= 65535)
-						throw new InvalidConfigurationException(
-							"TCP/IP SMB port out of valid range");
+					if ( cifsConfig.getTcpipSMBPort() <= 0 || cifsConfig.getTcpipSMBPort() >= 65535)
+						throw new InvalidConfigurationException("TCP/IP SMB port out of valid range");
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid TCP/IP SMB port");
+					throw new InvalidConfigurationException("Invalid TCP/IP SMB port");
 				}
 			}
 		}
@@ -1231,22 +1109,20 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			cifsConfig.setTcpipSMB(false);
 		}
 
-		// Check that the broadcast mask has been set if TCP/IP NetBIOS and/or
-		// the host announcer is
+		// Check that the broadcast mask has been set if TCP/IP NetBIOS and/or the host announcer is
 		// enabled
 
-		if (cifsConfig.hasNetBIOSSMB() || cifsConfig.hasEnableAnnouncer()) {
+		if ( cifsConfig.hasNetBIOSSMB() || cifsConfig.hasEnableAnnouncer()) {
 
 			// Parse the broadcast mask
 
 			elem = findChildNode("broadcast", host.getChildNodes());
-			if (elem != null) {
+			if ( elem != null) {
 
 				// Check if the broadcast mask is a valid numeric IP address
 
-				if (IPAddress.isNumericAddress(getText(elem)) == false)
-					throw new InvalidConfigurationException(
-						"Invalid broadcast mask, must be n.n.n.n format");
+				if ( IPAddress.isNumericAddress(getText(elem)) == false)
+					throw new InvalidConfigurationException("Invalid broadcast mask, must be n.n.n.n format");
 
 				// Set the network broadcast mask
 
@@ -1256,26 +1132,24 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				// Broadcast mask not configured
 
-				throw new InvalidConfigurationException(
-					"Network broadcast mask not specified");
+				throw new InvalidConfigurationException("Network broadcast mask not specified");
 			}
 		}
 
 		// Check if Win32 NetBIOS is enabled
 
 		elem = findChildNode("Win32NetBIOS", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check if the Win32 NetBIOS server name has been specified
 
 			attr = elem.getAttribute("name");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 
 				// Validate the name
 
-				if (attr.length() > 16)
-					throw new InvalidConfigurationException(
-						"Invalid Win32 NetBIOS name, " + attr);
+				if ( attr.length() > 16)
+					throw new InvalidConfigurationException("Invalid Win32 NetBIOS name, " + attr);
 
 				// Set the Win32 NetBIOS file server name
 
@@ -1285,13 +1159,12 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Check if the Win32 NetBIOS client accept name has been specified
 
 			attr = elem.getAttribute("accept");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 
 				// Validate the client accept name
 
-				if (attr.length() > 15)
-					throw new InvalidConfigurationException(
-						"Invalid Win32 NetBIOS accept name, " + attr);
+				if ( attr.length() > 15)
+					throw new InvalidConfigurationException("Invalid Win32 NetBIOS accept name, " + attr);
 
 				// Set the client accept string
 
@@ -1301,33 +1174,27 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Check if the Win32 NetBIOS LANA has been specified
 
 			attr = elem.getAttribute("lana");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 
-				// Check if the LANA has been specified as an IP address or
-				// adapter name
+				// Check if the LANA has been specified as an IP address or adapter name
 
 				int lana = -1;
 
-				if (IPAddress.isNumericAddress(attr)) {
+				if ( IPAddress.isNumericAddress(attr)) {
 
 					// Convert the IP address to a LANA id
 
 					lana = Win32NetBIOS.getLANAForIPAddress(attr);
-					if (lana == -1)
-						throw new InvalidConfigurationException(
-							"Failed to convert IP address " + attr +
-								" to a LANA");
+					if ( lana == -1)
+						throw new InvalidConfigurationException("Failed to convert IP address " + attr + " to a LANA");
 				}
-				else if (attr.length() > 1 &&
-					Character.isLetter(attr.charAt(0))) {
+				else if ( attr.length() > 1 && Character.isLetter(attr.charAt(0))) {
 
 					// Convert the network adapter to a LANA id
 
 					lana = Win32NetBIOS.getLANAForAdapterName(attr);
-					if (lana == -1)
-						throw new InvalidConfigurationException(
-							"Failed to convert network adapter " + attr +
-								" to a LANA");
+					if ( lana == -1)
+						throw new InvalidConfigurationException("Failed to convert network adapter " + attr + " to a LANA");
 				}
 				else {
 
@@ -1337,15 +1204,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 						lana = Integer.parseInt(attr);
 					}
 					catch (NumberFormatException ex) {
-						throw new InvalidConfigurationException(
-							"Invalid Win32 NetBIOS LANA specified");
+						throw new InvalidConfigurationException("Invalid Win32 NetBIOS LANA specified");
 					}
 
 					// LANA should be in the range 0-255
 
-					if (lana < 0 || lana > 255)
-						throw new InvalidConfigurationException(
-							"Invalid Win32 NetBIOS LANA number, " + lana);
+					if ( lana < 0 || lana > 255)
+						throw new InvalidConfigurationException("Invalid Win32 NetBIOS LANA number, " + lana);
 				}
 
 				// Set the LANA number
@@ -1353,53 +1218,45 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 				cifsConfig.setWin32LANA(lana);
 			}
 
-			// Check if the native NetBIOS interface has been specified, either
-			// 'winsock' or
+			// Check if the native NetBIOS interface has been specified, either 'winsock' or
 			// 'netbios'
 
 			attr = elem.getAttribute("api");
 
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				// Validate the API type
 
 				boolean useWinsock = true;
 
-				if (attr.equalsIgnoreCase("netbios"))
+				if ( attr.equalsIgnoreCase("netbios"))
 					useWinsock = false;
-				else if (attr.equalsIgnoreCase("winsock") == false)
-					throw new InvalidConfigurationException(
-						"Invalid NetBIOS API type, spefify 'winsock' or " +
-						"'netbios'");
+				else if ( attr.equalsIgnoreCase("winsock") == false)
+					throw new InvalidConfigurationException("Invalid NetBIOS API type, spefify 'winsock' or 'netbios'");
 
 				// Set the NetBIOS API to use
 
 				cifsConfig.setWin32WinsockNetBIOS(useWinsock);
 			}
 
-			// Force the older NetBIOS API code to be used on 64Bit Windows as
-			// Winsock NetBIOS is
+			// Force the older NetBIOS API code to be used on 64Bit Windows as Winsock NetBIOS is
 			// not available
 
-			if (cifsConfig.useWinsockNetBIOS() == true && X64.isWindows64()) {
+			if ( cifsConfig.useWinsockNetBIOS() == true && X64.isWindows64()) {
 
 				// Log a warning
 
-				Debug.println("Using older Netbios() API code, Winsock " +
-						"NetBIOS not available on x64");
+				Debug.println("Using older Netbios() API code, Winsock NetBIOS not available on x64");
 
 				// Use the older NetBIOS API code
 
 				cifsConfig.setWin32WinsockNetBIOS(false);
 			}
 
-			// Check if the current operating system is supported by the Win32
-			// NetBIOS handler
+			// Check if the current operating system is supported by the Win32 NetBIOS handler
 
 			String osName = System.getProperty("os.name");
-			if (osName.startsWith("Windows") &&
-				(osName.endsWith("95") == false &&
-					osName.endsWith("98") == false && 
-					osName.endsWith("ME") == false)) {
+			if ( osName.startsWith("Windows")
+					&& (osName.endsWith("95") == false && osName.endsWith("98") == false && osName.endsWith("ME") == false)) {
 
 				// Enable Win32 NetBIOS
 
@@ -1422,30 +1279,25 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Check if the host announcer should be enabled
 
 		elem = findChildNode("Win32Announce", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Check for an announcement interval
 
 			attr = elem.getAttribute("interval");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				try {
-					cifsConfig.setWin32HostAnnounceInterval(
-						Integer.parseInt(attr));
+					cifsConfig.setWin32HostAnnounceInterval(Integer.parseInt(attr));
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid host announcement interval");
+					throw new InvalidConfigurationException("Invalid host announcement interval");
 				}
 			}
 
-			// Check if the domain name has been set, this is required if the
-			// host announcer is
+			// Check if the domain name has been set, this is required if the host announcer is
 			// enabled
 
-			if (cifsConfig.getDomainName() == null)
-				throw new InvalidConfigurationException(
-					"Domain name must be specified if host announcement is " +
-					"enabled");
+			if ( cifsConfig.getDomainName() == null)
+				throw new InvalidConfigurationException("Domain name must be specified if host announcement is enabled");
 
 			// Enable Win32 NetBIOS host announcement
 
@@ -1454,23 +1306,19 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if NetBIOS and/or TCP/IP SMB have been enabled
 
-		if (cifsConfig.hasNetBIOSSMB() == false &&
-			cifsConfig.hasTcpipSMB() == false &&
-			cifsConfig.hasWin32NetBIOS() == false)
-			throw new InvalidConfigurationException(
-				"NetBIOS SMB, TCP/IP SMB or Win32 NetBIOS must be enabled");
+		if ( cifsConfig.hasNetBIOSSMB() == false && cifsConfig.hasTcpipSMB() == false && cifsConfig.hasWin32NetBIOS() == false)
+			throw new InvalidConfigurationException("NetBIOS SMB, TCP/IP SMB or Win32 NetBIOS must be enabled");
 
 		// Check if server alias name(s) have been specified
 
 		elem = findChildNode("alias", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Get the alias name list
 
 			attr = elem.getAttribute("names");
-			if (attr == null || attr.length() == 0)
-				throw new InvalidConfigurationException(
-					"Alias name(s) not specified");
+			if ( attr == null || attr.length() == 0)
+				throw new InvalidConfigurationException("Alias name(s) not specified");
 
 			// Split the alias name list
 
@@ -1483,16 +1331,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				String alias = nameTokens.nextToken().trim().toUpperCase();
 
-				// Check if the name already exists in the alias list, or
-				// matches the main server
+				// Check if the name already exists in the alias list, or matches the main server
 				// name
 
-				if (alias.equalsIgnoreCase(getServerName()))
-					throw new InvalidConfigurationException(
-						"Alias is the same as the main server name");
-				else if (names.containsString(alias))
-					throw new InvalidConfigurationException(
-						"Same alias specified twice, " + alias);
+				if ( alias.equalsIgnoreCase(getServerName()))
+					throw new InvalidConfigurationException("Alias is the same as the main server name");
+				else if ( names.containsString(alias))
+					throw new InvalidConfigurationException("Same alias specified twice, " + alias);
 				else
 					names.addString(alias);
 			}
@@ -1505,7 +1350,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Check if Macintosh extension SMBs should be enabled
 
 		elem = findChildNode("macExtensions", host.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Enable Macintosh extension SMBs
 
@@ -1516,14 +1361,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		elem = findChildNode("WINS", host.getChildNodes());
 
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Get the primary WINS server
 
 			Element winsSrv = findChildNode("primary", elem.getChildNodes());
-			if (winsSrv == null)
-				throw new InvalidConfigurationException(
-					"No primary WINS server configured");
+			if ( winsSrv == null)
+				throw new InvalidConfigurationException("No primary WINS server configured");
 
 			// Validate the WINS server address
 
@@ -1533,9 +1377,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 				primaryWINS = InetAddress.getByName(getText(winsSrv));
 			}
 			catch (UnknownHostException ex) {
-				throw new InvalidConfigurationException(
-					"Invalid primary WINS server address, " +
-						winsSrv.getNodeValue());
+				throw new InvalidConfigurationException("Invalid primary WINS server address, " + winsSrv.getNodeValue());
 			}
 
 			// Check if a secondary WINS server has been specified
@@ -1543,7 +1385,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			winsSrv = findChildNode("secondary", elem.getChildNodes());
 			InetAddress secondaryWINS = null;
 
-			if (winsSrv != null) {
+			if ( winsSrv != null) {
 
 				// Validate the secondary WINS server address
 
@@ -1551,50 +1393,44 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 					secondaryWINS = InetAddress.getByName(getText(winsSrv));
 				}
 				catch (UnknownHostException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid secondary WINS server address, " +
-							winsSrv.getNodeValue());
+					throw new InvalidConfigurationException("Invalid secondary WINS server address, " + winsSrv.getNodeValue());
 				}
 			}
 
 			// Set the WINS server address(es)
 
 			cifsConfig.setPrimaryWINSServer(primaryWINS);
-			if (secondaryWINS != null)
+			if ( secondaryWINS != null)
 				cifsConfig.setSecondaryWINSServer(secondaryWINS);
 		}
-
+		
 		// Check if a session timeout is configured
-
+		
 		elem = findChildNode("sessionTimeout", host.getChildNodes());
-		if (elem != null) {
-
+		if ( elem != null) {
+			
 			// Validate the session timeout value
 
-			String sessTmo = getText(elem);
-			if (sessTmo != null && sessTmo.length() > 0) {
+			String sessTmo = getText( elem);
+			if ( sessTmo != null && sessTmo.length() > 0) {
 				try {
-
+					
 					// Convert the timeout value to milliseconds
-
+					
 					int tmo = Integer.parseInt(sessTmo);
-					if (tmo < 0 || tmo > MaxSessionTimeout)
-						throw new InvalidConfigurationException(
-							"Session timeout out of range (0 - " +
-								MaxSessionTimeout + ")");
-
+					if ( tmo < 0 || tmo > MaxSessionTimeout)
+						throw new InvalidConfigurationException("Session timeout out of range (0 - " + MaxSessionTimeout + ")");
+					
 					// Convert the session timeout to milliseconds
-
-					cifsConfig.setSocketTimeout(tmo * 1000);
+					
+					cifsConfig.setSocketTimeout( tmo * 1000);
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid session timeout value, " + sessTmo);
+					throw new InvalidConfigurationException("Invalid session timeout value, " + sessTmo);
 				}
 			}
 			else
-				throw new InvalidConfigurationException(
-					"Session timeout value not specified");
+				throw new InvalidConfigurationException("Session timeout value not specified");
 		}
 	}
 
@@ -1609,7 +1445,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the debug section has been specified
 
-		if (debug == null)
+		if ( debug == null)
 			return;
 
 		// Create the debug configuration section
@@ -1619,16 +1455,14 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Get the debug output class and parameters
 
 		Element elem = findChildNode("output", debug.getChildNodes());
-		if (elem == null)
-			throw new InvalidConfigurationException(
-				"Output class must be specified to enable debug output");
+		if ( elem == null)
+			throw new InvalidConfigurationException("Output class must be specified to enable debug output");
 
 		// Get the debug output class
 
 		Element debugClass = findChildNode("class", elem.getChildNodes());
-		if (debugClass == null)
-			throw new InvalidConfigurationException(
-				"Class must be specified for debug output");
+		if ( debugClass == null)
+			throw new InvalidConfigurationException("Class must be specified for debug output");
 
 		// Get the parameters for the debug class
 
@@ -1647,22 +1481,20 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the shares element is valid
 
-		if (shares == null)
+		if ( shares == null)
 			return;
 
 		// Create the filesystems configuration section
 
-		FilesystemsConfigSection filesysConfig =
-			new FilesystemsConfigSection(this);
+		FilesystemsConfigSection filesysConfig = new FilesystemsConfigSection(this);
 
 		// Iterate the child elements
 
 		NodeList children = shares.getChildNodes();
 
-		if (children != null) {
+		if ( children != null) {
 
-			// Iterate the child elements and process the disk/print share
-			// elements
+			// Iterate the child elements and process the disk/print share elements
 
 			for (int i = 0; i < children.getLength(); i++) {
 
@@ -1670,7 +1502,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				Node node = children.item(i);
 
-				if (node.getNodeType() == ELEMENT_TYPE) {
+				if ( node.getNodeType() == ELEMENT_TYPE) {
 
 					// Get the next element from the list
 
@@ -1678,7 +1510,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 					// Check if this is a disk or print share element
 
-					if (child.getNodeName().equalsIgnoreCase("diskshare"))
+					if ( child.getNodeName().equalsIgnoreCase("diskshare"))
 						addDiskShare(child, filesysConfig);
 				}
 			}
@@ -1696,7 +1528,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the security element is valid
 
-		if (security == null)
+		if ( security == null)
 			return;
 
 		// Create the security configuration section
@@ -1705,16 +1537,14 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if an access control manager has been specified
 
-		Element aclElem =
-			findChildNode("accessControlManager", security.getChildNodes());
-		if (aclElem != null) {
+		Element aclElem = findChildNode("accessControlManager", security.getChildNodes());
+		if ( aclElem != null) {
 
 			// Get the access control manager class and security mode
 
 			Element classElem = findChildNode("class", aclElem.getChildNodes());
-			if (classElem == null)
-				throw new InvalidConfigurationException(
-					"Access control manager class not specified");
+			if ( classElem == null)
+				throw new InvalidConfigurationException("Access control manager class not specified");
 
 			// Get the parameters for the access control manager class
 
@@ -1725,30 +1555,26 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			// Use the default access control manager
 
-			secConfig.setAccessControlManager(
-				"org.alfresco.jlan.server.auth.acl.DefaultAccessControlManager",
-				new GenericConfigElement("aclManager"));
+			secConfig.setAccessControlManager("org.alfresco.jlan.server.auth.acl.DefaultAccessControlManager",
+					new GenericConfigElement("aclManager"));
 		}
 
 		// Check if global access controls have been specified
 
-		Element globalACLs =
-			findChildNode("globalAccessControl", security.getChildNodes());
-		if (globalACLs != null) {
+		Element globalACLs = findChildNode("globalAccessControl", security.getChildNodes());
+		if ( globalACLs != null) {
 
 			// Parse the access control list
 
-			AccessControlList acls =
-				procAccessControlElement(globalACLs, secConfig);
-			if (acls != null)
+			AccessControlList acls = procAccessControlElement(globalACLs, secConfig);
+			if ( acls != null)
 				secConfig.setGlobalAccessControls(acls);
 		}
 
 		// Check if a JCE provider class has been specified
 
-		Element jceElem =
-			findChildNode("JCEProvider", security.getChildNodes());
-		if (jceElem != null) {
+		Element jceElem = findChildNode("JCEProvider", security.getChildNodes());
+		if ( jceElem != null) {
 
 			// Set the JCE provider
 
@@ -1758,7 +1584,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Add the users
 
 		Element usersElem = findChildNode("users", security.getChildNodes());
-		if (usersElem != null) {
+		if ( usersElem != null) {
 
 			// Get the list of user elements
 
@@ -1770,7 +1596,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				Node node = userList.item(i);
 
-				if (node.getNodeType() == ELEMENT_TYPE) {
+				if ( node.getNodeType() == ELEMENT_TYPE) {
 					Element userElem = (Element) node;
 					addUser(userElem, secConfig);
 				}
@@ -1781,14 +1607,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		Element mapper = findChildNode("shareMapper", security.getChildNodes());
 
-		if (mapper != null) {
+		if ( mapper != null) {
 
 			// Get the share mapper class
 
 			Element classElem = findChildNode("class", mapper.getChildNodes());
-			if (classElem == null)
-				throw new InvalidConfigurationException(
-					"Share mapper class not specified");
+			if ( classElem == null)
+				throw new InvalidConfigurationException("Share mapper class not specified");
 
 			// Get the parameters for the share mapper class
 
@@ -1798,18 +1623,15 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the users interface has been specified
 
-		Element usersIface =
-			findChildNode("usersInterface", security.getChildNodes());
+		Element usersIface = findChildNode("usersInterface", security.getChildNodes());
 
-		if (usersIface != null) {
+		if ( usersIface != null) {
 
 			// Get the users interface class
 
-			Element classElem =
-				findChildNode("class", usersIface.getChildNodes());
-			if (classElem == null)
-				throw new InvalidConfigurationException(
-					"Users interface class not specified");
+			Element classElem = findChildNode("class", usersIface.getChildNodes());
+			if ( classElem == null)
+				throw new InvalidConfigurationException("Users interface class not specified");
 
 			// Get the parameters for the users interface class
 
@@ -1829,20 +1651,19 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the drive mappings element is valid
 
-		if (mappings == null)
+		if ( mappings == null)
 			return;
 
 		// Create the drive mappings configuration section
 
-		DriveMappingsConfigSection mapConfig =
-			new DriveMappingsConfigSection(this);
+		DriveMappingsConfigSection mapConfig = new DriveMappingsConfigSection(this);
 
 		// Parse each drive mapping element
 
 		NodeList mapElems = mappings.getChildNodes();
 		DriveMappingList mapList = null;
 
-		if (mapElems != null && mapElems.getLength() > 0) {
+		if ( mapElems != null && mapElems.getLength() > 0) {
 
 			// Create the mapped drive list
 
@@ -1850,18 +1671,12 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			// Access the CIFS server configuration
 
-			CIFSConfigSection cifsConfig =
-				(CIFSConfigSection) getConfigSection(
-					CIFSConfigSection.SectionName);
+			CIFSConfigSection cifsConfig = (CIFSConfigSection) getConfigSection(CIFSConfigSection.SectionName);
 
 			// Get a list of the available shares
 
-			SecurityConfigSection secConfig =
-				(SecurityConfigSection) getConfigSection(
-					SecurityConfigSection.SectionName);
-			SharedDeviceList shareList =
-				secConfig.getShareMapper().getShareList(
-					getServerName(), null, false);
+			SecurityConfigSection secConfig = (SecurityConfigSection) getConfigSection(SecurityConfigSection.SectionName);
+			SharedDeviceList shareList = secConfig.getShareMapper().getShareList(getServerName(), null, false);
 
 			// Process each drive mapping element
 
@@ -1871,55 +1686,44 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				Node node = mapElems.item(i);
 
-				if (node.getNodeType() == ELEMENT_TYPE) {
+				if ( node.getNodeType() == ELEMENT_TYPE) {
 
 					// Access the mapped drive element
 
 					Element elem = (Element) node;
 
-					if (elem.getNodeName().equals("mapDrive")) {
+					if ( elem.getNodeName().equals("mapDrive")) {
 
-						// Get the mapped drive local drive and remote path
-						// details
+						// Get the mapped drive local drive and remote path details
 
-						String localPath =
-							elem.getAttribute("drive").toUpperCase();
+						String localPath = elem.getAttribute("drive").toUpperCase();
 						String shareName = elem.getAttribute("share");
 
 						// Check the local path string
 
-						if (localPath.length() != 2)
-							throw new InvalidConfigurationException(
-								"Invalid local drive specified, " + localPath);
+						if ( localPath.length() != 2)
+							throw new InvalidConfigurationException("Invalid local drive specified, " + localPath);
 
-						if (localPath.charAt(1) != ':' ||
-							_driveLetters.indexOf(localPath.charAt(0)) == -1)
-							throw new InvalidConfigurationException(
-								"Invalid local drive specified, " + localPath);
+						if ( localPath.charAt(1) != ':' || _driveLetters.indexOf(localPath.charAt(0)) == -1)
+							throw new InvalidConfigurationException("Invalid local drive specified, " + localPath);
 
 						// Check if the share name is a valid local disk share
 
-						if (shareName.length() == 0)
-							throw new InvalidConfigurationException(
-								"Empty share name for mapped drive, " +
-									localPath);
+						if ( shareName.length() == 0)
+							throw new InvalidConfigurationException("Empty share name for mapped drive, " + localPath);
 
-						if (shareList.findShare(
-							shareName, ShareType.DISK, true) == null)
-							throw new InvalidConfigurationException(
-								"Mapped drive share " + shareName +
-									" does not exist");
+						if ( shareList.findShare(shareName, ShareType.DISK, true) == null)
+							throw new InvalidConfigurationException("Mapped drive share " + shareName + " does not exist");
 
-						// Get the username/password to be used to connect the
-						// mapped drive
+						// Get the username/password to be used to connect the mapped drive
 
 						String userName = null;
 						String password = null;
 
-						if (elem.hasAttribute("username"))
+						if ( elem.hasAttribute("username"))
 							userName = elem.getAttribute("username");
 
-						if (elem.hasAttribute("password"))
+						if ( elem.hasAttribute("password"))
 							password = elem.getAttribute("password");
 
 						// Get the options flags
@@ -1927,16 +1731,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 						boolean interact = false;
 						boolean prompt = false;
 
-						if (elem.hasAttribute("interactive")) {
-							if (elem.getAttribute("interactive")
-								.equalsIgnoreCase("YES"))
-								
+						if ( elem.hasAttribute("interactive")) {
+							if ( elem.getAttribute("interactive").equalsIgnoreCase("YES"))
 								interact = true;
 						}
 
-						if (elem.hasAttribute("prompt")) {
-							if (elem.getAttribute("prompt").equalsIgnoreCase(
-								"YES"))
+						if ( elem.hasAttribute("prompt")) {
+							if ( elem.getAttribute("prompt").equalsIgnoreCase("YES"))
 								prompt = true;
 						}
 
@@ -1945,8 +1746,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 						StringBuffer remPath = new StringBuffer();
 						remPath.append("\\\\");
 
-						if (cifsConfig.hasWin32NetBIOS() &&
-							cifsConfig.getWin32ServerName() != null)
+						if ( cifsConfig.hasWin32NetBIOS() && cifsConfig.getWin32ServerName() != null)
 							remPath.append(cifsConfig.getWin32ServerName());
 						else
 							remPath.append(getServerName());
@@ -1955,9 +1755,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 						// Add a drive mapping
 
-						mapList.addMapping(new DriveMapping(
-							localPath, remPath.toString(), userName, password,
-							interact, prompt));
+						mapList.addMapping(new DriveMapping(localPath, remPath.toString(), userName, password, interact, prompt));
 					}
 				}
 			}
@@ -1975,15 +1773,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 	 * @param secConfig SecutiryConfigSection
 	 * @throws InvalidConfigurationException
 	 */
-	protected final AccessControlList procAccessControlElement(
-		Element acl, SecurityConfigSection secConfig)
+	protected final AccessControlList procAccessControlElement(Element acl, SecurityConfigSection secConfig)
 		throws InvalidConfigurationException {
 
 		// Check if there is an access control manager configured
 
-		if (secConfig.getAccessControlManager() == null)
-			throw new InvalidConfigurationException(
-				"No access control manager configured");
+		if ( secConfig.getAccessControlManager() == null)
+			throw new InvalidConfigurationException("No access control manager configured");
 
 		// Create the access control list
 
@@ -1993,7 +1789,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		String attrib = acl.getAttribute("default");
 
-		if (attrib != null && attrib.length() > 0) {
+		if ( attrib != null && attrib.length() > 0) {
 
 			// Get the access level and validate
 
@@ -2008,21 +1804,18 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 				acls.setDefaultAccessLevel(access);
 			}
 			catch (InvalidACLTypeException ex) {
-				throw new InvalidConfigurationException(
-					"Default access level error, " + ex.toString());
+				throw new InvalidConfigurationException("Default access level error, " + ex.toString());
 			}
 			catch (ACLParseException ex) {
-				throw new InvalidConfigurationException(
-					"Default access level error, " + ex.toString());
+				throw new InvalidConfigurationException("Default access level error, " + ex.toString());
 			}
 		}
 
-		// Parse each access control element and create the required access
-		// control
+		// Parse each access control element and create the required access control
 
 		NodeList aclElems = acl.getChildNodes();
 
-		if (aclElems != null && aclElems.getLength() > 0) {
+		if ( aclElems != null && aclElems.getLength() > 0) {
 
 			// Create the access controls
 
@@ -2035,7 +1828,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				Node node = aclElems.item(i);
 
-				if (node.getNodeType() == ELEMENT_TYPE) {
+				if ( node.getNodeType() == ELEMENT_TYPE) {
 
 					// Access the ACL element
 
@@ -2046,57 +1839,44 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 					params = new GenericConfigElement("acl");
 
-					// Convert the element attributes into a list of name value
-					// pairs
+					// Convert the element attributes into a list of name value pairs
 
 					NamedNodeMap attrs = elem.getAttributes();
 
-					if (attrs == null || attrs.getLength() == 0)
-						throw new InvalidConfigurationException(
-							"Missing attribute(s) for access control " + type);
+					if ( attrs == null || attrs.getLength() == 0)
+						throw new InvalidConfigurationException("Missing attribute(s) for access control " + type);
 
 					for (int j = 0; j < attrs.getLength(); j++) {
 
-						// Create a name/value pair from the current attribute
-						// and add to the
+						// Create a name/value pair from the current attribute and add to the
 						// parameter list
 
 						Node attr = attrs.item(j);
-						params.addAttribute(
-							attr.getNodeName(), attr.getNodeValue());
+						params.addAttribute( attr.getNodeName(), attr.getNodeValue());
 					}
 
 					try {
 
 						// Create the access control and add to the list
 
-						acls.addControl(secConfig.getAccessControlManager()
-							.createAccessControl(
-								type, params));
+						acls.addControl(secConfig.getAccessControlManager().createAccessControl(type, params));
 					}
 					catch (InvalidACLTypeException ex) {
-						throw new InvalidConfigurationException(
-							"Invalid access control type - " + type);
+						throw new InvalidConfigurationException("Invalid access control type - " + type);
 					}
 					catch (ACLParseException ex) {
-						throw new InvalidConfigurationException(
-							"Access control parse error (" + type + "), " +
-								ex.toString());
+						throw new InvalidConfigurationException("Access control parse error (" + type + "), " + ex.toString());
 					}
 				}
 			}
 		}
 
-		// Check if there are no access control rules but the default access
-		// level is set to 'None',
+		// Check if there are no access control rules but the default access level is set to 'None',
 		// this is not allowed
 		// as the share would not be accessible or visible.
 
-		if (acls.getDefaultAccessLevel() == AccessControl.NoAccess &&
-			acls.numberOfControls() == 0)
-			throw new InvalidConfigurationException(
-				"Empty access control list and default access 'None' not " +
-				"allowed");
+		if ( acls.getDefaultAccessLevel() == AccessControl.NoAccess && acls.numberOfControls() == 0)
+			throw new InvalidConfigurationException("Empty access control list and default access 'None' not allowed");
 
 		// Return the access control list
 
@@ -2116,18 +1896,15 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Get the username
 
 		String attr = user.getAttribute("name");
-		if (attr == null || attr.length() == 0)
-			throw new InvalidConfigurationException(
-				"User name not specified, or zero length");
+		if ( attr == null || attr.length() == 0)
+			throw new InvalidConfigurationException("User name not specified, or zero length");
 
 		// Check if the user already exists
 
 		String userName = attr;
 
-		if (secConfig.hasUserAccounts() &&
-			secConfig.getUserAccounts().findUser(userName) != null)
-			throw new InvalidConfigurationException("User " + userName +
-				" already defined");
+		if ( secConfig.hasUserAccounts() && secConfig.getUserAccounts().findUser(userName) != null)
+			throw new InvalidConfigurationException("User " + userName + " already defined");
 
 		// Get the MD4 hashed password
 
@@ -2135,14 +1912,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		String password = null;
 
 		Element elem = findChildNode("md4", user.getChildNodes());
-		if (elem != null) {
+		if ( elem != null) {
 
 			// Get the MD4 hashed password string
 
 			String md4Str = getText(elem);
-			if (md4Str == null || md4Str.length() != 32)
-				throw new InvalidConfigurationException(
-					"Invalid MD4 hashed password for user " + userName);
+			if ( md4Str == null || md4Str.length() != 32)
+				throw new InvalidConfigurationException("Invalid MD4 hashed password for user " + userName);
 
 			// Decode the MD4 string
 
@@ -2160,9 +1936,8 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Get the password for the account
 
 			elem = findChildNode("password", user.getChildNodes());
-			if (elem == null)
-				throw new InvalidConfigurationException(
-					"No password specified for user " + userName);
+			if ( elem == null)
+				throw new InvalidConfigurationException("No password specified for user " + userName);
 
 			// Get the plaintext password
 
@@ -2177,29 +1952,29 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Check if the user in an administrator
 
 		elem = findChildNode("administrator", user.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			userAcc.setAdministrator(true);
 
 		// Get the real user name and comment
 
 		elem = findChildNode("realname", user.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			userAcc.setRealName(getText(elem));
 
 		elem = findChildNode("comment", user.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			userAcc.setComment(getText(elem));
 
 		// Get the home directory
 
 		elem = findChildNode("home", user.getChildNodes());
-		if (elem != null)
+		if ( elem != null)
 			userAcc.setHomeDirectory(getText(elem));
 
 		// Add the user account
 
 		UserAccountList accList = secConfig.getUserAccounts();
-		if (accList == null)
+		if ( accList == null)
 			secConfig.setUserAccounts(new UserAccountList());
 		secConfig.getUserAccounts().addUser(userAcc);
 	}
@@ -2210,48 +1985,42 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 	 * @param disk Element 2param filesysConfig FilesystemConfigSection
 	 * @exception InvalidConfigurationException
 	 */
-	protected final void addDiskShare(
-		Element disk, FilesystemsConfigSection filesysConfig)
+	protected final void addDiskShare(Element disk, FilesystemsConfigSection filesysConfig)
 		throws InvalidConfigurationException {
 
 		// Get the share name and comment attributes
 
 		String attr = disk.getAttribute("name");
-		if (attr == null || attr.length() == 0)
-			throw new InvalidConfigurationException(
-				"Disk share name must be specified");
+		if ( attr == null || attr.length() == 0)
+			throw new InvalidConfigurationException("Disk share name must be specified");
 
 		String name = attr;
 		String comment = null;
 
 		attr = disk.getAttribute("comment");
-		if (attr != null && attr.length() > 0)
+		if ( attr != null && attr.length() > 0)
 			comment = attr;
 
 		// Get the disk driver details
 
 		Element driverElem = findChildNode("driver", disk.getChildNodes());
-		if (driverElem == null)
-			throw new InvalidConfigurationException(
-				"No driver specified for disk share " + name);
+		if ( driverElem == null)
+			throw new InvalidConfigurationException("No driver specified for disk share " + name);
 
 		Element classElem = findChildNode("class", driverElem.getChildNodes());
-		if (classElem == null || getText(classElem).length() == 0)
-			throw new InvalidConfigurationException(
-				"No driver class specified for disk share " + name);
+		if ( classElem == null || getText(classElem).length() == 0)
+			throw new InvalidConfigurationException("No driver class specified for disk share " + name);
 
 		// Get the security configuration section
 
-		SecurityConfigSection secConfig =
-			(SecurityConfigSection) getConfigSection(
-				SecurityConfigSection.SectionName);
+		SecurityConfigSection secConfig = (SecurityConfigSection) getConfigSection(SecurityConfigSection.SectionName);
 
 		// Check if an access control list has been specified
 
 		AccessControlList acls = null;
 		Element aclElem = findChildNode("accessControl", disk.getChildNodes());
 
-		if (aclElem != null) {
+		if ( aclElem != null) {
 
 			// Parse the access control list
 
@@ -2270,17 +2039,14 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if change notification should be disabled for this device
 
-		boolean changeNotify =
-			findChildNode(
-				"disableChangeNotification", disk.getChildNodes()) != null
-				? false : true;
+		boolean changeNotify = findChildNode("disableChangeNotification", disk.getChildNodes()) != null ? false : true;
 
 		// Check if the volume information has been specified
 
 		Element volElem = findChildNode("volume", disk.getChildNodes());
 		VolumeInfo volInfo = null;
 
-		if (volElem != null) {
+		if ( volElem != null) {
 
 			// Create the volume information
 
@@ -2289,32 +2055,30 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Get the volume label
 
 			attr = volElem.getAttribute("label");
-			if (attr != null && attr.length() > 0)
+			if ( attr != null && attr.length() > 0)
 				volInfo.setVolumeLabel(attr);
 
 			// Get the serial number
 
 			attr = volElem.getAttribute("serial");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				try {
 					volInfo.setSerialNumber(Integer.parseInt(attr));
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Volume serial number invalid, " + attr);
+					throw new InvalidConfigurationException("Volume serial number invalid, " + attr);
 				}
 			}
 
 			// Get the creation date/time
 
 			attr = volElem.getAttribute("created");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				try {
 					volInfo.setCreationDateTime(m_dateFmt.parse(attr));
 				}
 				catch (ParseException ex) {
-					throw new InvalidConfigurationException(
-						"Volume creation date/time invalid, " + attr);
+					throw new InvalidConfigurationException("Volume creation date/time invalid, " + attr);
 				}
 			}
 		}
@@ -2322,10 +2086,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			// Create volume information using the share name
 
-			volInfo =
-				new VolumeInfo(
-					name, (int) System.currentTimeMillis(), new Date(
-						System.currentTimeMillis()));
+			volInfo = new VolumeInfo(name, (int) System.currentTimeMillis(), new Date(System.currentTimeMillis()));
 		}
 
 		// Check if the disk sizing information has been specified
@@ -2333,7 +2094,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		SrvDiskInfo diskInfo = null;
 		Element sizeElem = findChildNode("size", disk.getChildNodes());
 
-		if (sizeElem != null) {
+		if ( sizeElem != null) {
 
 			// Get the total disk size in bytes
 
@@ -2341,24 +2102,22 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			long freeSize = 0;
 
 			attr = sizeElem.getAttribute("totalSize");
-			if (attr != null && attr.length() > 0)
+			if ( attr != null && attr.length() > 0)
 				totSize = MemorySize.getByteValue(attr);
 
-			if (totSize == -1L)
-				throw new InvalidConfigurationException(
-					"Total disk size invalid or not specified");
+			if ( totSize == -1L)
+				throw new InvalidConfigurationException("Total disk size invalid or not specified");
 
 			// Get the free size in bytes
 
 			attr = sizeElem.getAttribute("freeSize");
-			if (attr != null && attr.length() > 0)
+			if ( attr != null && attr.length() > 0)
 				freeSize = MemorySize.getByteValue(attr);
 			else
 				freeSize = (totSize / 10L) * 9L;
 
-			if (freeSize == -1L)
-				throw new InvalidConfigurationException(
-					"Free disk size invalid or not specified");
+			if ( freeSize == -1L)
+				throw new InvalidConfigurationException("Free disk size invalid or not specified");
 
 			// Get the block size and blocks per unit values, if specified
 
@@ -2366,37 +2125,32 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			long blocksPerUnit = 64L; // 32Kb units
 
 			attr = sizeElem.getAttribute("blockSize");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				try {
 					blockSize = Long.parseLong(attr);
 
 					// Check for a multiple of 512 bytes
 
-					if (blockSize <= 0 || blockSize % 512 != 0)
-						throw new InvalidConfigurationException(
-							"Block size must be a multiple of 512");
+					if ( blockSize <= 0 || blockSize % 512 != 0)
+						throw new InvalidConfigurationException("Block size must be a multiple of 512");
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid block size specified, " + attr);
+					throw new InvalidConfigurationException("Invalid block size specified, " + attr);
 				}
 			}
 
 			attr = sizeElem.getAttribute("blocksPerUnit");
-			if (attr != null && attr.length() > 0) {
+			if ( attr != null && attr.length() > 0) {
 				try {
 					blocksPerUnit = Long.parseLong(attr);
 
 					// Check for a valid blocks per unit value
 
-					if (blocksPerUnit <= 0)
-						throw new InvalidConfigurationException(
-							"Invalid blocks per unit, must be greater " +
-							"than zero");
+					if ( blocksPerUnit <= 0)
+						throw new InvalidConfigurationException("Invalid blocks per unit, must be greater than zero");
 				}
 				catch (NumberFormatException ex) {
-					throw new InvalidConfigurationException(
-						"Invalid blocks per unit value");
+					throw new InvalidConfigurationException("Invalid blocks per unit value");
 				}
 			}
 
@@ -2406,8 +2160,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			long totUnits = totSize / unitSize;
 			long freeUnits = freeSize / unitSize;
 
-			diskInfo =
-				new SrvDiskInfo(totUnits, blocksPerUnit, blockSize, freeUnits);
+			diskInfo = new SrvDiskInfo(totUnits, blocksPerUnit, blockSize, freeUnits);
 		}
 		else {
 
@@ -2418,30 +2171,26 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if a share with this name already exists
 
-		if (filesysConfig.getShares().findShare(name) != null)
-			throw new InvalidConfigurationException("Share " + name +
-				" already exists");
+		if ( filesysConfig.getShares().findShare(name) != null)
+			throw new InvalidConfigurationException("Share " + name + " already exists");
 
-		// Validate the driver class, create a device context and add the new
-		// disk share
+		// Validate the driver class, create a device context and add the new disk share
 
 		try {
 
 			// Load the driver class
 
 			Object drvObj = Class.forName(getText(classElem)).newInstance();
-			if (drvObj instanceof DiskInterface) {
+			if ( drvObj instanceof DiskInterface) {
 
 				// Create the driver
 
 				DiskInterface diskDrv = (DiskInterface) drvObj;
 
-				// Create a context for this share instance, save the
-				// configuration parameters as
+				// Create a context for this share instance, save the configuration parameters as
 				// part of the context
 
-				DiskDeviceContext devCtx =
-					(DiskDeviceContext) diskDrv.createContext(name, params);
+				DiskDeviceContext devCtx = (DiskDeviceContext) diskDrv.createContext(name, params);
 				devCtx.setConfigurationParameters(params);
 
 				// Enable/disable change notification for this device
@@ -2460,11 +2209,9 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				devCtx.setShareName(name);
 
-				// Create the disk shared device and add to the server's list of
-				// shares
+				// Create the disk shared device and add to the server's list of shares
 
-				DiskSharedDevice diskDev =
-					new DiskSharedDevice(name, diskDrv, devCtx);
+				DiskSharedDevice diskDev = new DiskSharedDevice(name, diskDrv, devCtx);
 				diskDev.setComment(comment);
 
 				// Add any access controls to the share
@@ -2481,16 +2228,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			}
 		}
 		catch (ClassNotFoundException ex) {
-			throw new InvalidConfigurationException("Disk driver class " +
-				getText(classElem) + " not found");
+			throw new InvalidConfigurationException("Disk driver class " + getText(classElem) + " not found");
 		}
 		catch (DeviceContextException ex) {
-			throw new InvalidConfigurationException("Driver context error, " +
-				ex.toString());
+			throw new InvalidConfigurationException("Driver context error, " + ex.toString());
 		}
 		catch (Exception ex) {
-			throw new InvalidConfigurationException("Disk share setup error, " +
-				ex.toString());
+			throw new InvalidConfigurationException("Disk share setup error, " + ex.toString());
 		}
 	}
 
@@ -2505,7 +2249,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		// Check if the list is valid
 
-		if (list == null)
+		if ( list == null)
 			return null;
 
 		// Search for the required element
@@ -2515,8 +2259,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Get the current child node
 
 			Node child = list.item(i);
-			if (child.getNodeName().equals(name) &&
-				child.getNodeType() == ELEMENT_TYPE)
+			if ( child.getNodeName().equals(name) && child.getNodeType() == ELEMENT_TYPE)
 				return (Element) child;
 		}
 
@@ -2538,8 +2281,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		NodeList children = elem.getChildNodes();
 		String text = "";
 
-		if (children != null && children.getLength() > 0 &&
-			children.item(0).getNodeType() != ELEMENT_TYPE)
+		if ( children != null && children.getLength() > 0 && children.item(0).getNodeType() != ELEMENT_TYPE)
 			text = children.item(0).getNodeValue();
 
 		// Return the element text value
@@ -2564,14 +2306,13 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 	 * @param cfgElem GenericConfigElement
 	 * @return GenericConfigElement
 	 */
-	protected final GenericConfigElement buildConfigElement(
-		Element root, GenericConfigElement cfgElem) {
+	protected final GenericConfigElement buildConfigElement(Element root, GenericConfigElement cfgElem) {
 
 		// Create the top level element, if not specified
 
 		GenericConfigElement rootElem = cfgElem;
 
-		if (rootElem == null) {
+		if ( rootElem == null) {
 
 			// Create the root element
 
@@ -2580,11 +2321,10 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Add any attributes
 
 			NamedNodeMap attribs = root.getAttributes();
-			if (attribs != null) {
+			if ( attribs != null) {
 				for (int i = 0; i < attribs.getLength(); i++) {
 					Node attribNode = attribs.item(i);
-					rootElem.addAttribute(
-						attribNode.getNodeName(), attribNode.getNodeValue());
+					rootElem.addAttribute(attribNode.getNodeName(), attribNode.getNodeValue());
 				}
 			}
 		}
@@ -2592,7 +2332,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		// Get the child node list
 
 		NodeList nodes = root.getChildNodes();
-		if (nodes == null)
+		if ( nodes == null)
 			return rootElem;
 
 		// Process the child node list
@@ -2605,7 +2345,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			Node node = nodes.item(i);
 
-			if (node.getNodeType() == ELEMENT_TYPE) {
+			if ( node.getNodeType() == ELEMENT_TYPE) {
 
 				// Access the Element
 
@@ -2615,7 +2355,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 				NodeList children = elem.getChildNodes();
 
-				if (children != null && children.getLength() > 1) {
+				if ( children != null && children.getLength() > 1) {
 
 					// Add the child nodes as child configuration elements
 
@@ -2625,24 +2365,20 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 					// Create a normal name/value
 
-					if (children.getLength() > 0) {
-						childElem =
-							new GenericConfigElement(elem.getNodeName());
+					if ( children.getLength() > 0) {
+						childElem = new GenericConfigElement(elem.getNodeName());
 						childElem.setValue(children.item(0).getNodeValue());
 					}
 					else
-						childElem =
-							new GenericConfigElement(elem.getNodeName());
+						childElem = new GenericConfigElement(elem.getNodeName());
 
 					// Add any attributes
 
 					NamedNodeMap attribs = elem.getAttributes();
-					if (attribs != null) {
+					if ( attribs != null) {
 						for (int j = 0; j < attribs.getLength(); j++) {
 							Node attribNode = attribs.item(j);
-							childElem.addAttribute(
-								attribNode.getNodeName(),
-								attribNode.getNodeValue());
+							childElem.addAttribute(attribNode.getNodeName(), attribNode.getNodeValue());
 						}
 					}
 				}
@@ -2674,13 +2410,12 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 		List<Platform.Type> platformIds = new ArrayList<Platform.Type>();
 
-		if (platforms == null)
+		if ( platforms == null)
 			return platformIds;
 
 		// Split the platform list
 
-		StringTokenizer tokens =
-			new StringTokenizer(platforms.toUpperCase(Locale.ENGLISH), ",");
+		StringTokenizer tokens = new StringTokenizer(platforms.toUpperCase(Locale.ENGLISH), ",");
 
 		while (tokens.hasMoreTokens()) {
 
@@ -2692,18 +2427,17 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 			Platform.Type id = Platform.Type.Unknown;
 
-			if (platform.equalsIgnoreCase("WINDOWS"))
+			if ( platform.equalsIgnoreCase("WINDOWS"))
 				id = Platform.Type.WINDOWS;
-			else if (platform.equalsIgnoreCase("LINUX"))
+			else if ( platform.equalsIgnoreCase("LINUX"))
 				id = Platform.Type.LINUX;
-			else if (platform.equalsIgnoreCase("MACOSX"))
+			else if ( platform.equalsIgnoreCase("MACOSX"))
 				id = Platform.Type.MACOSX;
-			else if (platform.equalsIgnoreCase("SOLARIS"))
+			else if ( platform.equalsIgnoreCase("SOLARIS"))
 				id = Platform.Type.SOLARIS;
 
-			if (id == Platform.Type.Unknown)
-				throw new InvalidConfigurationException(
-					"Invalid platform type '" + platform + "'");
+			if ( id == Platform.Type.Unknown)
+				throw new InvalidConfigurationException("Invalid platform type '" + platform + "'");
 
 			// Add the platform id to the list
 
@@ -2731,13 +2465,11 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			ni = NetworkInterface.getByName(adapter);
 		}
 		catch (SocketException ex) {
-			throw new InvalidConfigurationException("Invalid adapter name, " +
-				adapter);
+			throw new InvalidConfigurationException("Invalid adapter name, " + adapter);
 		}
 
-		if (ni == null)
-			throw new InvalidConfigurationException(
-				"Invalid network adapter name, " + adapter);
+		if ( ni == null)
+			throw new InvalidConfigurationException("Invalid network adapter name, " + adapter);
 
 		// Get the IP address for the adapter
 
@@ -2749,19 +2481,17 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 			// Get the current address
 
 			InetAddress addr = addrEnum.nextElement();
-			if (IPAddress.isNumericAddress(addr.getHostAddress()))
+			if ( IPAddress.isNumericAddress(addr.getHostAddress()))
 				adapAddr = addr;
 		}
 
 		// Check if we found the IP address to bind to
 
-		if (adapAddr == null)
-			throw new InvalidConfigurationException("Adapter " + adapter +
-				" does not have a valid IP address");
+		if ( adapAddr == null)
+			throw new InvalidConfigurationException("Adapter " + adapter + " does not have a valid IP address");
 
 		// Return the adapter address
 
 		return adapAddr;
 	}
-
 }
