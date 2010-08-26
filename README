@@ -1,0 +1,38 @@
+About the Liferay CIFS project
+
+Liferay CIFS is a project created to provide access via CIFS (SMB) protocol to Liferay Portal document libraries. In other words, it allows working with a document library or its part as with a file server network share.
+Liferay CIFS implementation is built using the Alfresco JLAN Framework and is in fact a Liferay-specific implementation of Alfresco JLAN DiskInterface (see Alfresco JLAN developer documentation for more details about DiskInterface).
+Liferay CIFS is currently a version 0.2 prototype.
+
+Version 0.1 prototype had the following features available:
+-Announce a new SMB network host corresponding to a running instance of Liferay CIFS
+-Define any number of network file shares within the network host with each share targeting the document library root or a folder inside a document library of any Liferay Portal instance (shares may target different Liferay instances, the Liferay web service base URL, user ID and password are specified for each share)
+-Support getting file & folder list for share or any folder inside the share (navigate through folders)
+-Support getting file & folder properties
+-Support searching for files and folders by name, including support for wildcards
+
+Version 0.2 added support for the following features:
+-Getting file content
+-Writing file content
+-Deleting files and folders
+-Renaming/moving files & folders
+-Creating files & folders
+-The operation for setting file attributes is stubbed in version 0.2 because Liferay does not support file attributes.
+-Authentication is not fully implemented in version 0.2, the SMB service uses a predefined account to connect to Liferay and has its own userlist to allow or deny access to shares.
+
+This prototype is intended to be used for demonstration purposes and this document is the only piece of documentation provided with the prototype, excluding the Javadocs which come with the code.
+-Code structure
+-Alfresco JLAN source code is included in Liferay CIFS source code (all packages starting with org.alfresco).
+-All external dependencies are included in Lifera CIFS as source code or external jar files.
+-The code for Liferay CIFS itself resides in the com.arcusys.liferay.smb package. 
+
+
+Deployment
+
+All Alfresco JLAN & Liferay CIFS codes are deployed as a single jar file typically named LiferayCIFS.jar. The folder for the application also contains a configuration file named jlanConfig.xml and a script to start the CIFS server named runsrv.bat or runsrv.sh. All external dependencies reside in a lib subfolder.
+
+jlanConfix.xml is a standard Alfresco JLAN configuration files. You should pay attention to the following sections when deploying Liferay CIFS:
+
+SMB\host – provide host name, host description, domain name and network broadcast address as described in Alfresco JLAN documentation
+
+shares – for each share create a diskshare section here, specifying name, comment, com.arcusys.liferay.smb.DocumentLibraryDiskDriver as driver class, Liferay shared folder name (delimited with bacbkslashes, with a without tailing backslash, no leading backslash), Liferay URL, Liferay user ID, name & password to access Liferay (see example below).
